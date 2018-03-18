@@ -29,8 +29,8 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 		
 		var textLayer = CATextLayer()
 		textLayer.frame = layer.bounds
-		textLayer.font = CTFontCreateWithName("Courier" as CFString, 25, nil)
-		textLayer.string = "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes. The ones who see things differently. Because the people who are crazy enough to think they can change the world are the ones who do."
+		textLayer.font = CTFontCreateWithName("Courier" as CFString, 16, nil)
+		textLayer.string = "Here's to the crazy ones. The misfits. The round pegs in the square holes."
 		textLayer.isWrapped = true
 		textLayer.contentsGravity = kCAGravityCenter
 		textLayer.alignmentMode = kCAAlignmentLeft
@@ -84,7 +84,7 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 		node.scnScene = scnScene
 		node.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		node.name = "3dnode"
-		node.physicsBody = SKPhysicsBody(circleOfRadius: 100)
+		node.physicsBody = SKPhysicsBody(circleOfRadius: 50)
 		node.physicsBody?.categoryBitMask = PhysicsCategory.box
 		node.physicsBody?.contactTestBitMask = PhysicsCategory.key
 		node.physicsBody?.collisionBitMask = PhysicsCategory.none
@@ -115,7 +115,7 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 			l.fontColor = .red
 			l.fontSize = 80
 			l.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
-			l.physicsBody = SKPhysicsBody(circleOfRadius: l.frame.width/2)
+			l.physicsBody = SKPhysicsBody(circleOfRadius: l.frame.width/1.5)
 			l.physicsBody?.categoryBitMask = PhysicsCategory.key
 			l.physicsBody?.contactTestBitMask = PhysicsCategory.box
 			l.physicsBody?.affectedByGravity = true
@@ -205,10 +205,10 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 		}
 		
 		if (firstBody.categoryBitMask == PhysicsCategory.key && secondBody.categoryBitMask == PhysicsCategory.box) {
-			let fade = SKAction.fadeAlpha(to: 0, duration: 0.2)
-			let remove = SKAction.removeFromParent()
-			let seq = SKAction.sequence([fade,remove])
-			firstBody.node?.run(seq)
+//			let fade = SKAction.fadeAlpha(to: 0, duration: 0.2)
+//			let remove = SKAction.removeFromParent()
+//			let seq = SKAction.sequence([fade,remove])
+//			firstBody.node?.run(seq)
 			if paperBig {
 				
 				let layer = CALayer()
@@ -217,12 +217,12 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				
 				let textLayer = CATextLayer()
 				textLayer.frame = layer.bounds
-				textLayer.string = "kuhit67683oaiyefgo6217tyg8£^&R&cisudfyg8&^&Ruvisudgf87t*F&%Rgiusgdfg8ig8r7r3sr2q3trdziuishug08y97g&^R&^Giusidbfiyg87tgiwubfo776r737tf^$Euhirg97hiu87IGI&T8ugoeihrgo8hiy89ywieufiuiYGYTFIUiusd97fiwuebiufg87ts87fwouefiuwfuyca98y8w7egfihoih891729347tewgdf9guiw"
+				textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
 				textLayer.isWrapped = true
 				textLayer.truncationMode = kCATruncationNone
 				textLayer.contentsGravity = kCAGravityCenter
 				textLayer.alignmentMode = kCAAlignmentLeft
-				textLayer.font = CTFontCreateWithName("Courier" as CFString, 25, nil)
+				textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
 				textLayer.foregroundColor = UIColor.white.cgColor
 				textLayer.display()
 				layer.addSublayer(textLayer)
@@ -233,19 +233,45 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
 				
 				SCNTransaction.begin()
-				SCNTransaction.animationDuration = 1.5
+				SCNTransaction.animationDuration = 0.6
 				paperGeometry.height = 5
 				paperGeometry.length = 5
 				SCNTransaction.commit()
 				
 				self.paperBig = false
 			} else {
-				paperBig = true
+				
+				let layer = CALayer()
+				layer.frame = CGRect(x: 0, y: 0, width: 300, height: 450)
+				layer.backgroundColor = UIColor.white.cgColor
+				
+				let textLayer = CATextLayer()
+				textLayer.frame = layer.bounds
+				textLayer.font = CTFontCreateWithName("Courier" as CFString, 16, nil)
+				textLayer.string = "Here's to the crazy ones. The misfits. The round pegs in the square holes."
+				textLayer.isWrapped = true
+				textLayer.contentsGravity = kCAGravityCenter
+				textLayer.alignmentMode = kCAAlignmentLeft
+				textLayer.foregroundColor = UIColor.black.cgColor
+				textLayer.display()
+				layer.addSublayer(textLayer)
+				
+				let textMaterial = SCNMaterial()
+				textMaterial.diffuse.contents = layer
+				textMaterial.locksAmbientWithDiffuse = true
+				let whiteMaterial = SCNMaterial()
+				whiteMaterial.diffuse.contents = UIColor.white
+				whiteMaterial.locksAmbientWithDiffuse = true
+				self.paperGeometry.materials = [textMaterial, whiteMaterial, textMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+				
+				
 				SCNTransaction.begin()
-				SCNTransaction.animationDuration = 2
+				SCNTransaction.animationDuration = 0.6
 				paperGeometry.height = 8
 				paperGeometry.length = 0.7
 				SCNTransaction.commit()
+				
+				paperBig = true
 			}
 		}
 	}
