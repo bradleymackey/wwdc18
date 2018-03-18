@@ -11,9 +11,27 @@ import Foundation
 import SpriteKit
 import SceneKit
 
+extension UIImage {
+	class func image(from layer: CALayer) -> UIImage? {
+		UIGraphicsBeginImageContextWithOptions(layer.bounds.size,
+											   layer.isOpaque, UIScreen.main.scale)
+		
+		defer { UIGraphicsEndImageContext() }
+		
+		// Don't proceed unless we have context
+		guard let context = UIGraphicsGetCurrentContext() else {
+			return nil
+		}
+		
+		layer.render(in: context)
+		return UIGraphicsGetImageFromCurrentImageContext()
+	}
+}
+
 final class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
-	var label:SKLabelNode?
+	var publicKeyNode:SKLabelNode?
+	var privateKeyNode:SKLabelNode?
 	
 	var paper:SCNNode!
 	var paperGeometry:SCNBox!
@@ -41,7 +59,8 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 		
 		paperGeometry = SCNBox(width: 5, height: 8, length: 0.7, chamferRadius: 0)
 		let textMaterial = SCNMaterial()
-		textMaterial.diffuse.contents = layer
+		// render the layer to an UIImage to prevent display issue
+		textMaterial.diffuse.contents = UIImage.image(from: layer)
 		textMaterial.locksAmbientWithDiffuse = true
 		let whiteMaterial = SCNMaterial()
 		whiteMaterial.diffuse.contents = UIColor.white
@@ -56,11 +75,12 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 
 	struct PhysicsCategory {
-		static let none:UInt32    = 0
-		static let all:UInt32     = UInt32.max
-		static let key:UInt32     = 1 << 0
-		static let box:UInt32     = 1 << 1
-		static let boundry:UInt32 = 1 << 2
+		static let none:UInt32        = 0
+		static let all:UInt32         = UInt32.max
+		static let publicKey:UInt32   = 1 << 0
+		static let privateKey:UInt32  = 1 << 1
+		static let box:UInt32         = 1 << 2
+		static let boundry:UInt32     = 1 << 3
 	}
 	
 	override func sceneDidLoad() {
@@ -86,7 +106,7 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 		node.name = "3dnode"
 		node.physicsBody = SKPhysicsBody(circleOfRadius: 50)
 		node.physicsBody?.categoryBitMask = PhysicsCategory.box
-		node.physicsBody?.contactTestBitMask = PhysicsCategory.key
+		node.physicsBody?.contactTestBitMask = PhysicsCategory.publicKey | PhysicsCategory.privateKey
 		node.physicsBody?.collisionBitMask = PhysicsCategory.none
 		node.physicsBody?.affectedByGravity = false
 		let camera = SCNCamera()
@@ -106,44 +126,75 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 		self.addChild(node)
 		
 		
-		self.label = SKLabelNode(fontNamed: "Helvetica")
+		self.publicKeyNode = SKLabelNode(fontNamed: "Helvetica")
 		
-		if let l = self.label {
+		
+		if let l = self.publicKeyNode {
 			l.alpha = 1
-			l.name = "label"
+			l.name = "publicKeyNode"
 			l.text = "🔑"
 			l.fontColor = .red
 			l.fontSize = 80
 			l.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
 			l.physicsBody = SKPhysicsBody(circleOfRadius: l.frame.width/1.5)
-			l.physicsBody?.categoryBitMask = PhysicsCategory.key
+			l.physicsBody?.categoryBitMask = PhysicsCategory.publicKey
 			l.physicsBody?.contactTestBitMask = PhysicsCategory.box
 			l.physicsBody?.affectedByGravity = true
-			l.physicsBody?.collisionBitMask = PhysicsCategory.key | PhysicsCategory.boundry
+			l.physicsBody?.collisionBitMask = PhysicsCategory.publicKey | PhysicsCategory.privateKey | PhysicsCategory.boundry
 			l.physicsBody?.allowsRotation = true
 			l.physicsBody?.restitution = 0.1
 			self.addChild(l)
 		}
 		
+		self.privateKeyNode = SKLabelNode(fontNamed: "Helvetica")
+		
+		
+		if let l = self.privateKeyNode {
+			l.alpha = 1
+			l.name = "privateKeyNode"
+			l.text = "🔑"
+			l.fontColor = .red
+			l.fontSize = 80
+			l.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+			l.physicsBody = SKPhysicsBody(circleOfRadius: l.frame.width/1.5)
+			l.physicsBody?.categoryBitMask = PhysicsCategory.privateKey
+			l.physicsBody?.contactTestBitMask = PhysicsCategory.box
+			l.physicsBody?.affectedByGravity = true
+			l.physicsBody?.collisionBitMask = PhysicsCategory.publicKey | PhysicsCategory.privateKey | PhysicsCategory.boundry
+			l.physicsBody?.allowsRotation = true
+			l.physicsBody?.restitution = 0.1
+			self.addChild(l)
+		}
 		
 	}
 	
-	var movingLabel = false
+	var movingPublicKey = false
+	var movingPrivateKey = false
 	var movingBox = false
-	var lastLabelPoint:CGPoint?
+	var lastPublicKeyPoint:CGPoint?
+	var lastPrivateKeyPoint:CGPoint?
 	var lastBoxPoint:CGPoint?
 	
 	func touchDown(atPoint pos : CGPoint) {
 		let node = self.atPoint(pos)
-		if node.name == "label" {
-			movingLabel = true
-			self.label?.removeAllActions()
+		if node.name == "publicKeyNode" {
+			movingPublicKey = true
+			self.publicKeyNode?.removeAllActions()
 			
 			let moveAnimation = SKAction.move(to: pos, duration: 0.04)
-			self.label?.run(moveAnimation)
-			self.label?.physicsBody?.affectedByGravity = false
-			self.label?.physicsBody?.isDynamic = false
-			lastLabelPoint = pos
+			self.publicKeyNode?.run(moveAnimation)
+			self.publicKeyNode?.physicsBody?.affectedByGravity = false
+			self.publicKeyNode?.physicsBody?.isDynamic = false
+			lastPublicKeyPoint = pos
+		} else if node.name == "privateKeyNode" {
+			movingPrivateKey = true
+			self.privateKeyNode?.removeAllActions()
+			
+			let moveAnimation = SKAction.move(to: pos, duration: 0.04)
+			self.privateKeyNode?.run(moveAnimation)
+			self.privateKeyNode?.physicsBody?.affectedByGravity = false
+			self.privateKeyNode?.physicsBody?.isDynamic = false
+			lastPrivateKeyPoint = pos
 		} else if node.name == "3dnode" {
 			movingBox = true
 			lastBoxPoint = pos
@@ -152,11 +203,17 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	func touchMoved(toPoint pos : CGPoint) {
-		if movingLabel {
+		if movingPrivateKey {
 			let moveAnimation = SKAction.move(to: pos, duration: 0.02)
-			self.label?.run(moveAnimation)
+			self.privateKeyNode?.run(moveAnimation)
 			
-			lastLabelPoint = pos
+			lastPrivateKeyPoint = pos
+		}
+		if movingPublicKey {
+			let moveAnimation = SKAction.move(to: pos, duration: 0.02)
+			self.publicKeyNode?.run(moveAnimation)
+			
+			lastPublicKeyPoint = pos
 		}
 		if movingBox {
 			if let point = lastBoxPoint {
@@ -171,12 +228,13 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	func touchUp(atPoint pos : CGPoint) {
 		print("touch up")
-		if movingLabel {
-			self.label?.removeAllActions()
-			movingLabel = false
-			self.label?.physicsBody?.isDynamic = true
-			self.label?.physicsBody?.affectedByGravity = true
-			if let point = lastLabelPoint {
+		
+		if movingPrivateKey {
+			self.privateKeyNode?.removeAllActions()
+			
+			self.privateKeyNode?.physicsBody?.isDynamic = true
+			self.privateKeyNode?.physicsBody?.affectedByGravity = true
+			if let point = lastPrivateKeyPoint {
 				let moveX = pos.x - point.x
 				var moveY = pos.y - point.y
 				if moveY > 0 {
@@ -184,16 +242,32 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				}
 				let vec = CGVector(dx: moveX*25, dy: moveY*25)
 				let fling = SKAction.applyImpulse(vec, duration: 0.005)
-				self.label?.run(fling)
+				self.privateKeyNode?.run(fling)
 			}
 		}
-		if movingBox {
-			movingBox = false
+		if movingPublicKey {
+			self.publicKeyNode?.removeAllActions()
+			
+			self.publicKeyNode?.physicsBody?.isDynamic = true
+			self.publicKeyNode?.physicsBody?.affectedByGravity = true
+			if let point = lastPublicKeyPoint {
+				let moveX = pos.x - point.x
+				var moveY = pos.y - point.y
+				if moveY > 0 {
+					moveY *= 2
+				}
+				let vec = CGVector(dx: moveX*25, dy: moveY*25)
+				let fling = SKAction.applyImpulse(vec, duration: 0.005)
+				self.publicKeyNode?.run(fling)
+			}
 		}
-		
+		movingBox = false
+		movingPublicKey = false
+		movingPrivateKey = false
 	}
 	
 	func didBegin(_ contact: SKPhysicsContact) {
+		// determine the contact such that the lower bitMask valued body is the `firstBody`
 		var firstBody: SKPhysicsBody
 		var secondBody: SKPhysicsBody
 		if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
@@ -204,11 +278,8 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 			secondBody = contact.bodyA
 		}
 		
-		if (firstBody.categoryBitMask == PhysicsCategory.key && secondBody.categoryBitMask == PhysicsCategory.box) {
-//			let fade = SKAction.fadeAlpha(to: 0, duration: 0.2)
-//			let remove = SKAction.removeFromParent()
-//			let seq = SKAction.sequence([fade,remove])
-//			firstBody.node?.run(seq)
+		if (firstBody.categoryBitMask == PhysicsCategory.publicKey && secondBody.categoryBitMask == PhysicsCategory.box) {
+
 			if paperBig {
 				
 				let layer = CALayer()
@@ -228,7 +299,8 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				layer.addSublayer(textLayer)
 				
 				let textMaterial = SCNMaterial()
-				textMaterial.diffuse.contents = layer
+				// render layer to UIImage to prevent simulator display issue
+				textMaterial.diffuse.contents = UIImage.image(from: layer)
 				textMaterial.locksAmbientWithDiffuse = true
 				self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
 				
@@ -236,11 +308,59 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				SCNTransaction.animationDuration = 0.6
 				paperGeometry.height = 5
 				paperGeometry.length = 5
+				paperGeometry.width = 5
 				SCNTransaction.commit()
 				
 				self.paperBig = false
 			} else {
 				
+				let redMaterial = SCNMaterial()
+				redMaterial.diffuse.contents = UIColor.red
+				redMaterial.locksAmbientWithDiffuse = true
+				self.paperGeometry.materials = [redMaterial, redMaterial, redMaterial, redMaterial, redMaterial, redMaterial]
+				
+				
+				SCNTransaction.begin()
+				SCNTransaction.animationDuration = 0.15
+				paperGeometry.height = 6
+				paperGeometry.length = 6
+				paperGeometry.width = 6
+				SCNTransaction.completionBlock = {
+					let layer = CALayer()
+					layer.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+					layer.backgroundColor = UIColor.black.cgColor
+					
+					let textLayer = CATextLayer()
+					textLayer.frame = layer.bounds
+					textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
+					textLayer.isWrapped = true
+					textLayer.truncationMode = kCATruncationNone
+					textLayer.contentsGravity = kCAGravityCenter
+					textLayer.alignmentMode = kCAAlignmentLeft
+					textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
+					textLayer.foregroundColor = UIColor.white.cgColor
+					textLayer.display()
+					layer.addSublayer(textLayer)
+					
+					let textMaterial = SCNMaterial()
+					// render layer to UIImage to prevent simulator display issue
+					textMaterial.diffuse.contents = UIImage.image(from: layer)
+					textMaterial.locksAmbientWithDiffuse = true
+					self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
+					
+					SCNTransaction.begin()
+					SCNTransaction.animationDuration = 0.15
+					self.paperGeometry.height = 5
+					self.paperGeometry.length = 5
+					self.paperGeometry.width = 5
+					SCNTransaction.commit()
+				}
+				SCNTransaction.commit()
+				
+			}
+		}
+		else if (firstBody.categoryBitMask == PhysicsCategory.privateKey && secondBody.categoryBitMask == PhysicsCategory.box) {
+			if !paperBig {
 				let layer = CALayer()
 				layer.frame = CGRect(x: 0, y: 0, width: 300, height: 450)
 				layer.backgroundColor = UIColor.white.cgColor
@@ -257,7 +377,8 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				layer.addSublayer(textLayer)
 				
 				let textMaterial = SCNMaterial()
-				textMaterial.diffuse.contents = layer
+				// render layer to UIImage to prevent simulator display issue
+				textMaterial.diffuse.contents = UIImage.image(from: layer)
 				textMaterial.locksAmbientWithDiffuse = true
 				let whiteMaterial = SCNMaterial()
 				whiteMaterial.diffuse.contents = UIColor.white
@@ -268,10 +389,56 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 				SCNTransaction.begin()
 				SCNTransaction.animationDuration = 0.6
 				paperGeometry.height = 8
+				paperGeometry.width = 5
 				paperGeometry.length = 0.7
 				SCNTransaction.commit()
 				
 				paperBig = true
+			} else {
+				let redMaterial = SCNMaterial()
+				redMaterial.diffuse.contents = UIColor.red
+				redMaterial.locksAmbientWithDiffuse = true
+				self.paperGeometry.materials = [redMaterial, redMaterial, redMaterial, redMaterial, redMaterial, redMaterial]
+				
+				
+				SCNTransaction.begin()
+				SCNTransaction.animationDuration = 0.15
+				paperGeometry.height = 9
+				paperGeometry.width = 6
+				paperGeometry.length = 1
+				SCNTransaction.completionBlock = {
+					let layer = CALayer()
+					layer.frame = CGRect(x: 0, y: 0, width: 300, height: 450)
+					layer.backgroundColor = UIColor.white.cgColor
+					
+					let textLayer = CATextLayer()
+					textLayer.frame = layer.bounds
+					textLayer.font = CTFontCreateWithName("Courier" as CFString, 16, nil)
+					textLayer.string = "Here's to the crazy ones. The misfits. The round pegs in the square holes."
+					textLayer.isWrapped = true
+					textLayer.contentsGravity = kCAGravityCenter
+					textLayer.alignmentMode = kCAAlignmentLeft
+					textLayer.foregroundColor = UIColor.black.cgColor
+					textLayer.display()
+					layer.addSublayer(textLayer)
+					
+					let textMaterial = SCNMaterial()
+					// render layer to UIImage to prevent simulator display issue
+					textMaterial.diffuse.contents = UIImage.image(from: layer)
+					textMaterial.locksAmbientWithDiffuse = true
+					let whiteMaterial = SCNMaterial()
+					whiteMaterial.diffuse.contents = UIColor.white
+					whiteMaterial.locksAmbientWithDiffuse = true
+					self.paperGeometry.materials = [textMaterial, whiteMaterial, textMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+					
+					SCNTransaction.begin()
+					SCNTransaction.animationDuration = 0.15
+					self.paperGeometry.height = 8
+					self.paperGeometry.width = 5
+					self.paperGeometry.length = 0.7
+					SCNTransaction.commit()
+				}
+				SCNTransaction.commit()
 			}
 		}
 	}
@@ -297,9 +464,6 @@ final class IntroScene: SKScene, SKPhysicsContactDelegate {
 	override func update(_ currentTime: TimeInterval) {
 		// Called before each frame is rendered
 	}
-	
-	
-	
 	
 	
 }
