@@ -4,9 +4,6 @@
 import UIKit
 import PlaygroundSupport
 
-var str = "Hello, playground"
-
-
 let view = UIView(frame: CGRect(x: 0, y: 0, width: 150, height: 150))
 view.backgroundColor = .red
 
