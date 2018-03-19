@@ -1,5 +1,12 @@
+// by Bradley Mackey
+// for WWDC 2018
 
-//: # RSA Encryption
+/*:
+# RSA Encryption
+RSA is the modern way to encrypt data.
+It is used in almost every context in the modern age of computing.
+*/
+
 
 import UIKit
 import SpriteKit
@@ -19,4 +26,6 @@ view.presentScene(scene)
 
 PlaygroundPage.current.liveView = view
 
-//: [Click Here to try it out!](@next)
+//: [Let's see RSA in action](@next)
+
+
