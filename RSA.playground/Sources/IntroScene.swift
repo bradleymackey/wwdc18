@@ -101,7 +101,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		super.didMove(to: view)
 		
 		
-		let node = SK3DNode(viewportSize: CGSize(width: 200, height: 200))
+		let node = SK3DNode(viewportSize: CGSize(width: 150, height: 150))
 		node.scnScene = scnScene
 		node.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		node.name = "3dnode"
@@ -112,7 +112,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		node.physicsBody?.affectedByGravity = false
 		let camera = SCNCamera()
 		camera.usesOrthographicProjection = true
-		camera.orthographicScale = 9
+		camera.orthographicScale = 8
 		let cameraNode = SCNNode()
 		cameraNode.camera = camera
 		if let lookAtTarget = scnScene.rootNode.childNodes.first {

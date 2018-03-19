@@ -25,7 +25,7 @@ scene.scaleMode = .aspectFill
 ### Asymmetric Keys
 Go ahead and encrypt the message using the public key.
 
-Then try to to decrypt it using *the same public key*. It doesn't work.
+Then try to to decrypt it using *the same public key*. It won't work.
 */
 
 
