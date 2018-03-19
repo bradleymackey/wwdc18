@@ -42,14 +42,16 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		let scnScene = SCNScene()
 		
 		let layer = CALayer()
-		layer.frame = CGRect(x: 0, y: 0, width: 300, height: 450)
+		layer.frame = CGRect(x: 0, y: 0, width: 200, height: 300)
 		layer.backgroundColor = UIColor.white.cgColor
+		layer.contentsGravity = kCAGravityCenter
 		
 		var textLayer = CATextLayer()
-		textLayer.frame = layer.bounds
-		textLayer.font = CTFontCreateWithName("Courier" as CFString, 16, nil)
-		textLayer.string = "Here's to the crazy ones. The misfits. The round pegs in the square holes."
+		textLayer.frame = layer.bounds.insetBy(dx: 15, dy: 15)
+		textLayer.font = CTFontCreateWithName("Courier" as CFString, 6, nil)
+		textLayer.string = "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes."
 		textLayer.isWrapped = true
+		textLayer.fontSize = 23
 		textLayer.contentsGravity = kCAGravityCenter
 		textLayer.alignmentMode = kCAAlignmentLeft
 		textLayer.foregroundColor = UIColor.black.cgColor
@@ -110,7 +112,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		node.physicsBody?.affectedByGravity = false
 		let camera = SCNCamera()
 		camera.usesOrthographicProjection = true
-		camera.orthographicScale = 6
+		camera.orthographicScale = 9
 		let cameraNode = SCNNode()
 		cameraNode.camera = camera
 		if let lookAtTarget = scnScene.rootNode.childNodes.first {
@@ -125,10 +127,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		self.addChild(node)
 		
 		
-		let keyTexture = SKTexture(imageNamed: "key-icon.pdf")
+		let keyTexture = SKTexture(imageNamed: "key-icon")
 		
 		
-		self.publicKeyNode = SKSpriteNode(imageNamed: "key-icon.pdf")
+		self.publicKeyNode = SKSpriteNode(imageNamed: "key-icon")
 		self.publicKeyNode?.size = CGSize(width: 50, height: 50)
 		self.publicKeyNode?.colorBlendFactor = 1
 		self.publicKeyNode?.color = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
@@ -144,11 +146,11 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			l.physicsBody?.collisionBitMask = PhysicsCategory.publicKey | PhysicsCategory.privateKey | PhysicsCategory.boundry
 			l.physicsBody?.allowsRotation = true
 			l.physicsBody?.restitution = 0.1
-			l.physicsBody?.mass = 2
+			l.physicsBody?.mass = 0.5
 			self.addChild(l)
 		}
 		
-		self.privateKeyNode = SKSpriteNode(imageNamed: "key-icon.pdf")
+		self.privateKeyNode = SKSpriteNode(imageNamed: "key-icon")
 		self.privateKeyNode?.size = CGSize(width: 50, height: 50)
 		self.privateKeyNode?.colorBlendFactor = 1
 		self.privateKeyNode?.color = .red
@@ -164,7 +166,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			l.physicsBody?.collisionBitMask = PhysicsCategory.publicKey | PhysicsCategory.privateKey | PhysicsCategory.boundry
 			l.physicsBody?.allowsRotation = true
 			l.physicsBody?.restitution = 0.1
-			l.physicsBody?.mass = 2
+			l.physicsBody?.mass = 0.5
 			self.addChild(l)
 		}
 		
@@ -219,7 +221,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		}
 		if movingBox {
 			if let point = lastBoxPoint {
-				let rotate = SCNAction.rotateBy(x: (point.y - pos.y)/80, y: (pos.x - point.x)/80, z: 0, duration: 0.02)
+				let rotate = SCNAction.rotateBy(x: (point.y - pos.y)/80, y: (pos.x - point.x)/80, z: 0, duration: 0.03)
 				paper.runAction(rotate)
 			}
 			lastBoxPoint = pos
@@ -285,18 +287,21 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			if paperBig {
 				
 				let layer = CALayer()
-				layer.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+				layer.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
 				layer.backgroundColor = UIColor.black.cgColor
 				
 				let textLayer = CATextLayer()
-				textLayer.frame = layer.bounds
+				textLayer.frame = layer.bounds.insetBy(dx: 10, dy: 10)
+
 				textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
 				textLayer.isWrapped = true
 				textLayer.truncationMode = kCATruncationNone
+				
 				textLayer.contentsGravity = kCAGravityCenter
 				textLayer.alignmentMode = kCAAlignmentLeft
 				textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
 				textLayer.foregroundColor = UIColor.white.cgColor
+				textLayer.fontSize = 23
 				textLayer.display()
 				layer.addSublayer(textLayer)
 				
@@ -374,13 +379,14 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		else if (firstBody.categoryBitMask == PhysicsCategory.privateKey && secondBody.categoryBitMask == PhysicsCategory.box) {
 			if !paperBig {
 				let layer = CALayer()
-				layer.frame = CGRect(x: 0, y: 0, width: 300, height: 450)
+				layer.frame = CGRect(x: 0, y: 0, width: 200, height: 300)
 				layer.backgroundColor = UIColor.white.cgColor
 				
 				let textLayer = CATextLayer()
-				textLayer.frame = layer.bounds
-				textLayer.font = CTFontCreateWithName("Courier" as CFString, 16, nil)
-				textLayer.string = "Here's to the crazy ones. The misfits. The round pegs in the square holes."
+				textLayer.frame = layer.bounds.insetBy(dx: 15, dy: 15)
+				textLayer.font = CTFontCreateWithName("Courier" as CFString, 6, nil)
+				textLayer.string = "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes."
+				textLayer.fontSize = 23
 				textLayer.isWrapped = true
 				textLayer.contentsGravity = kCAGravityCenter
 				textLayer.alignmentMode = kCAAlignmentLeft
@@ -461,6 +467,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 				//					SCNTransaction.commit()
 				//				}
 				//				SCNTransaction.commit()
+				
 			}
 		}
 	}
@@ -489,3 +496,4 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	
 }
+
