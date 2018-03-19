@@ -126,11 +126,22 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		scnScene.rootNode.runAction(rotateForever)
 		self.addChild(node)
 		
+		guard let path = Bundle.main.path(forResource: "key", ofType: "png") else {
+			print("no path")
+			return
+		}
+		guard let data = FileManager.default.contents(atPath: path) else {
+			print("no data")
+			return
+		}
+		guard let image = UIImage(data: data) else {
+			print("no image")
+			return
+		}
+		let keyTexture = SKTexture(image: image)
 		
-		let keyTexture = SKTexture(imageNamed: "key-icon")
 		
-		
-		self.publicKeyNode = SKSpriteNode(imageNamed: "key-icon")
+		self.publicKeyNode = SKSpriteNode(texture: keyTexture)
 		self.publicKeyNode?.size = CGSize(width: 50, height: 50)
 		self.publicKeyNode?.colorBlendFactor = 1
 		self.publicKeyNode?.color = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
@@ -150,7 +161,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			self.addChild(l)
 		}
 		
-		self.privateKeyNode = SKSpriteNode(imageNamed: "key-icon")
+		self.privateKeyNode = SKSpriteNode(texture: keyTexture)
 		self.privateKeyNode?.size = CGSize(width: 50, height: 50)
 		self.privateKeyNode?.colorBlendFactor = 1
 		self.privateKeyNode?.color = .red
@@ -179,7 +190,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	var lastPrivateKeyPoint:CGPoint?
 	var lastBoxPoint:CGPoint?
 	
+	var currentFingerPosition:CGPoint?
+	
 	func touchDown(atPoint pos : CGPoint) {
+		currentFingerPosition = pos
 		let node = self.atPoint(pos)
 		if node.name == "publicKeyNode" {
 			movingPublicKey = true
@@ -188,7 +202,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			let moveAnimation = SKAction.move(to: pos, duration: 0.04)
 			self.publicKeyNode?.run(moveAnimation)
 			self.publicKeyNode?.physicsBody?.affectedByGravity = false
-			self.publicKeyNode?.physicsBody?.isDynamic = false
+			//self.publicKeyNode?.physicsBody?.isDynamic = false
 			lastPublicKeyPoint = pos
 		} else if node.name == "privateKeyNode" {
 			movingPrivateKey = true
@@ -197,7 +211,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			let moveAnimation = SKAction.move(to: pos, duration: 0.04)
 			self.privateKeyNode?.run(moveAnimation)
 			self.privateKeyNode?.physicsBody?.affectedByGravity = false
-			self.privateKeyNode?.physicsBody?.isDynamic = false
+			//self.privateKeyNode?.physicsBody?.isDynamic = false
 			lastPrivateKeyPoint = pos
 		} else if node.name == "3dnode" {
 			movingBox = true
@@ -207,18 +221,8 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	func touchMoved(toPoint pos : CGPoint) {
-		if movingPrivateKey {
-			let moveAnimation = SKAction.move(to: pos, duration: 0.02)
-			self.privateKeyNode?.run(moveAnimation)
-			
-			lastPrivateKeyPoint = pos
-		}
-		if movingPublicKey {
-			let moveAnimation = SKAction.move(to: pos, duration: 0.02)
-			self.publicKeyNode?.run(moveAnimation)
-			
-			lastPublicKeyPoint = pos
-		}
+		currentFingerPosition = pos
+		
 		if movingBox {
 			if let point = lastBoxPoint {
 				let rotate = SCNAction.rotateBy(x: (point.y - pos.y)/80, y: (pos.x - point.x)/80, z: 0, duration: 0.03)
@@ -236,7 +240,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		if movingPrivateKey {
 			self.privateKeyNode?.removeAllActions()
 			
-			self.privateKeyNode?.physicsBody?.isDynamic = true
+			//self.privateKeyNode?.physicsBody?.isDynamic = true
 			self.privateKeyNode?.physicsBody?.affectedByGravity = true
 			if let point = lastPrivateKeyPoint {
 				let moveX = pos.x - point.x
@@ -252,7 +256,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		if movingPublicKey {
 			self.publicKeyNode?.removeAllActions()
 			
-			self.publicKeyNode?.physicsBody?.isDynamic = true
+			//self.publicKeyNode?.physicsBody?.isDynamic = true
 			self.publicKeyNode?.physicsBody?.affectedByGravity = true
 			if let point = lastPublicKeyPoint {
 				let moveX = pos.x - point.x
@@ -292,7 +296,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 				
 				let textLayer = CATextLayer()
 				textLayer.frame = layer.bounds.insetBy(dx: 10, dy: 10)
-
+				
 				textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
 				textLayer.isWrapped = true
 				textLayer.truncationMode = kCATruncationNone
@@ -330,49 +334,49 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 				let pulse = SCNAction.sequence([begin,end])
 				paper.runAction(pulse)
 				
-//
-//								let redMaterial = SCNMaterial()
-//								redMaterial.diffuse.contents = UIColor.red
-//								redMaterial.locksAmbientWithDiffuse = true
-//								self.paperGeometry.materials = [redMaterial, redMaterial, redMaterial, redMaterial, redMaterial, redMaterial]
-//
-//
-//								SCNTransaction.begin()
-//								SCNTransaction.animationDuration = 0.15
-//								paperGeometry.height = 6
-//								paperGeometry.length = 6
-//								paperGeometry.width = 6
-//								SCNTransaction.completionBlock = {
-//									let layer = CALayer()
-//									layer.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-//									layer.backgroundColor = UIColor.black.cgColor
-//
-//									let textLayer = CATextLayer()
-//									textLayer.frame = layer.bounds
-//									textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
-//									textLayer.isWrapped = true
-//									textLayer.truncationMode = kCATruncationNone
-//									textLayer.contentsGravity = kCAGravityCenter
-//									textLayer.alignmentMode = kCAAlignmentLeft
-//									textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
-//									textLayer.foregroundColor = UIColor.white.cgColor
-//									textLayer.display()
-//									layer.addSublayer(textLayer)
-//
-//									let textMaterial = SCNMaterial()
-//									// render layer to UIImage to prevent simulator display issue
-//									textMaterial.diffuse.contents = UIImage.image(from: layer)
-//									textMaterial.locksAmbientWithDiffuse = true
-//									self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
-//
-//									SCNTransaction.begin()
-//									SCNTransaction.animationDuration = 0.15
-//									self.paperGeometry.height = 5
-//									self.paperGeometry.length = 5
-//									self.paperGeometry.width = 5
-//									SCNTransaction.commit()
-//								}
-//								SCNTransaction.commit()
+				//
+				//								let redMaterial = SCNMaterial()
+				//								redMaterial.diffuse.contents = UIColor.red
+				//								redMaterial.locksAmbientWithDiffuse = true
+				//								self.paperGeometry.materials = [redMaterial, redMaterial, redMaterial, redMaterial, redMaterial, redMaterial]
+				//
+				//
+				//								SCNTransaction.begin()
+				//								SCNTransaction.animationDuration = 0.15
+				//								paperGeometry.height = 6
+				//								paperGeometry.length = 6
+				//								paperGeometry.width = 6
+				//								SCNTransaction.completionBlock = {
+				//									let layer = CALayer()
+				//									layer.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+				//									layer.backgroundColor = UIColor.black.cgColor
+				//
+				//									let textLayer = CATextLayer()
+				//									textLayer.frame = layer.bounds
+				//									textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
+				//									textLayer.isWrapped = true
+				//									textLayer.truncationMode = kCATruncationNone
+				//									textLayer.contentsGravity = kCAGravityCenter
+				//									textLayer.alignmentMode = kCAAlignmentLeft
+				//									textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
+				//									textLayer.foregroundColor = UIColor.white.cgColor
+				//									textLayer.display()
+				//									layer.addSublayer(textLayer)
+				//
+				//									let textMaterial = SCNMaterial()
+				//									// render layer to UIImage to prevent simulator display issue
+				//									textMaterial.diffuse.contents = UIImage.image(from: layer)
+				//									textMaterial.locksAmbientWithDiffuse = true
+				//									self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
+				//
+				//									SCNTransaction.begin()
+				//									SCNTransaction.animationDuration = 0.15
+				//									self.paperGeometry.height = 5
+				//									self.paperGeometry.length = 5
+				//									self.paperGeometry.width = 5
+				//									SCNTransaction.commit()
+				//								}
+				//								SCNTransaction.commit()
 				
 			}
 		}
@@ -492,6 +496,21 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	override public func update(_ currentTime: TimeInterval) {
 		// Called before each frame is rendered
+		if movingPrivateKey {
+			if let fingerPos = currentFingerPosition {
+				let moveAnimation = SKAction.move(to: fingerPos, duration: 0.02)
+				self.privateKeyNode?.run(moveAnimation)
+				lastPrivateKeyPoint = fingerPos
+			}
+		}
+		if movingPublicKey {
+			if let fingerPos = currentFingerPosition {
+				let moveAnimation = SKAction.move(to: fingerPos, duration: 0.02)
+				self.publicKeyNode?.run(moveAnimation)
+				
+				lastPublicKeyPoint = fingerPos
+			}
+		}
 	}
 	
 	
