@@ -112,7 +112,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		node.physicsBody?.affectedByGravity = false
 		let camera = SCNCamera()
 		camera.usesOrthographicProjection = true
-		camera.orthographicScale = 8
+		camera.orthographicScale = 6
 		let cameraNode = SCNNode()
 		cameraNode.camera = camera
 		if let lookAtTarget = scnScene.rootNode.childNodes.first {
@@ -330,49 +330,49 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 				let pulse = SCNAction.sequence([begin,end])
 				paper.runAction(pulse)
 				
-				
-				//				let redMaterial = SCNMaterial()
-				//				redMaterial.diffuse.contents = UIColor.red
-				//				redMaterial.locksAmbientWithDiffuse = true
-				//				self.paperGeometry.materials = [redMaterial, redMaterial, redMaterial, redMaterial, redMaterial, redMaterial]
-				//
-				//
-				//				SCNTransaction.begin()
-				//				SCNTransaction.animationDuration = 0.15
-				//				paperGeometry.height = 6
-				//				paperGeometry.length = 6
-				//				paperGeometry.width = 6
-				//				SCNTransaction.completionBlock = {
-				//					let layer = CALayer()
-				//					layer.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
-				//					layer.backgroundColor = UIColor.black.cgColor
-				//
-				//					let textLayer = CATextLayer()
-				//					textLayer.frame = layer.bounds
-				//					textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
-				//					textLayer.isWrapped = true
-				//					textLayer.truncationMode = kCATruncationNone
-				//					textLayer.contentsGravity = kCAGravityCenter
-				//					textLayer.alignmentMode = kCAAlignmentLeft
-				//					textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
-				//					textLayer.foregroundColor = UIColor.white.cgColor
-				//					textLayer.display()
-				//					layer.addSublayer(textLayer)
-				//
-				//					let textMaterial = SCNMaterial()
-				//					// render layer to UIImage to prevent simulator display issue
-				//					textMaterial.diffuse.contents = UIImage.image(from: layer)
-				//					textMaterial.locksAmbientWithDiffuse = true
-				//					self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
-				//
-				//					SCNTransaction.begin()
-				//					SCNTransaction.animationDuration = 0.15
-				//					self.paperGeometry.height = 5
-				//					self.paperGeometry.length = 5
-				//					self.paperGeometry.width = 5
-				//					SCNTransaction.commit()
-				//				}
-				//				SCNTransaction.commit()
+//
+//								let redMaterial = SCNMaterial()
+//								redMaterial.diffuse.contents = UIColor.red
+//								redMaterial.locksAmbientWithDiffuse = true
+//								self.paperGeometry.materials = [redMaterial, redMaterial, redMaterial, redMaterial, redMaterial, redMaterial]
+//
+//
+//								SCNTransaction.begin()
+//								SCNTransaction.animationDuration = 0.15
+//								paperGeometry.height = 6
+//								paperGeometry.length = 6
+//								paperGeometry.width = 6
+//								SCNTransaction.completionBlock = {
+//									let layer = CALayer()
+//									layer.frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+//									layer.backgroundColor = UIColor.black.cgColor
+//
+//									let textLayer = CATextLayer()
+//									textLayer.frame = layer.bounds
+//									textLayer.string = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
+//									textLayer.isWrapped = true
+//									textLayer.truncationMode = kCATruncationNone
+//									textLayer.contentsGravity = kCAGravityCenter
+//									textLayer.alignmentMode = kCAAlignmentLeft
+//									textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
+//									textLayer.foregroundColor = UIColor.white.cgColor
+//									textLayer.display()
+//									layer.addSublayer(textLayer)
+//
+//									let textMaterial = SCNMaterial()
+//									// render layer to UIImage to prevent simulator display issue
+//									textMaterial.diffuse.contents = UIImage.image(from: layer)
+//									textMaterial.locksAmbientWithDiffuse = true
+//									self.paperGeometry.materials = [textMaterial, textMaterial, textMaterial, textMaterial, textMaterial, textMaterial]
+//
+//									SCNTransaction.begin()
+//									SCNTransaction.animationDuration = 0.15
+//									self.paperGeometry.height = 5
+//									self.paperGeometry.length = 5
+//									self.paperGeometry.width = 5
+//									SCNTransaction.commit()
+//								}
+//								SCNTransaction.commit()
 				
 			}
 		}

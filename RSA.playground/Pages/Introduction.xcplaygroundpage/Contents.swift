@@ -13,7 +13,7 @@ import SpriteKit
 import PlaygroundSupport
 
 
-let view = SKView(frame: CGRect(x: 0, y: 0, width: 450, height: 350))
+let view = SKView(frame: CGRect(x: 0, y: 0, width: 500, height: 500))
 
 // Load the SKScene from 'GameScene.sks'
 let scene = IntroScene(size: view.bounds.size)
