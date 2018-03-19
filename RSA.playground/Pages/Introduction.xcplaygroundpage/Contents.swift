@@ -26,6 +26,8 @@ view.presentScene(scene)
 
 PlaygroundPage.current.liveView = view
 
-//: [Let's see RSA in action](@next)
+/*:
+Sweet! Now we understand the basics, let's go and see how it's used.
 
-
+[See RSA in action.](@next)
+*/
