@@ -41,7 +41,6 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	
-	
 	override public func didMove(to view: SKView) {
 		super.didMove(to: view)
 		
@@ -115,7 +114,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func setupWorldPhysics() {
 		self.physicsWorld.contactDelegate = self
 		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-		self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+		self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame.insetBy(dx: 10, dy: 10))
 		self.physicsBody?.affectedByGravity = false
 		self.physicsBody?.categoryBitMask = PhysicsCategory.boundry
 		self.physicsBody?.contactTestBitMask = PhysicsCategory.none
@@ -248,8 +247,6 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 				paperScene.pulsePaper()
 			case .encrypted:
 				self.paperScene.paperState = .unencrypted
-				
-				
 				
 				let wait = SKAction.wait(forDuration: 1.5)
 				let remove = SKAction.removeFromParent()

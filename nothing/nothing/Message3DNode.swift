@@ -12,13 +12,21 @@ import SceneKit
 
 /// the spritekit node that contains the 3D scene with the message object in
 public final class Message3DNode: SK3DNode {
+    
+    // MARK: Constants
+    public static let timeForPaperRotation: TimeInterval = 2.1
+    
+    // MARK: Properties
 	
+    /// the scene that is presented inside of the node
 	public let messageScene:Message3DScene
 	
 	/// if we are rotating the message cube currently
 	private var isBeingRotated = false
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
+    
+    // MARK: Lifecycle
 	
 	public init(viewportSize: CGSize, messageScene: Message3DScene) {
 		self.messageScene = messageScene
@@ -53,11 +61,13 @@ public final class Message3DNode: SK3DNode {
 		}
 		self.pointOfView = cameraNode
 		self.pointOfView?.position = SCNVector3(x: 0, y: 0, z: 70)
-		// rotate forever
-		let rotate = SCNAction.rotate(by: .pi, around: SCNVector3(x: 0, y: .pi*2, z: 0), duration: 2.1)
+		// rotate the root node of the scene forever
+		let rotate = SCNAction.rotate(by: .pi, around: SCNVector3(x: 0, y: .pi*2, z: 0), duration: Message3DNode.timeForPaperRotation)
 		let rotateForever = SCNAction.repeatForever(rotate)
 		messageScene.rootNode.runAction(rotateForever)
 	}
+    
+    // MARK: Methods
 	
 	public func startRotating(at point:CGPoint) {
 		isBeingRotated = true
