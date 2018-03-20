@@ -43,23 +43,9 @@ public final class Message3DNode: SK3DNode {
 		// the scene that should be presented by this 3D node
 		self.scnScene = messageScene
 		// setup physics
-		self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame.insetBy(dx: 20, dy: 20))
-		self.physicsBody?.categoryBitMask = PhysicsCategory.box
-		self.physicsBody?.contactTestBitMask = PhysicsCategory.keys | PhysicsCategory.character
-		self.physicsBody?.collisionBitMask = PhysicsCategory.box | PhysicsCategory.boundry | PhysicsCategory.character
-		self.physicsBody?.affectedByGravity = false
-		self.physicsBody?.allowsRotation = false // we do not allow rotation, otherwise we will get nosense looking things
-		// setup camera
-		let camera = SCNCamera()
-		camera.usesOrthographicProjection = true
-		camera.orthographicScale = 6
-		let cameraNode = SCNNode()
-		cameraNode.camera = camera
-		if let lookAtTarget = messageScene.rootNode.childNodes.first {
-			let constraint = SCNLookAtConstraint(target: lookAtTarget)
-			cameraNode.constraints = [ constraint ]
-		}
-		self.pointOfView = cameraNode
+		self.physicsBody = Message3DNode.physicsBody(frame: self.frame.insetBy(dx: 20, dy: 20))
+		// setup point of view
+		self.pointOfView = Message3DNode.cameraNode(forScene: messageScene)
 		self.pointOfView?.position = SCNVector3(x: 0, y: 0, z: 70)
 		// rotate the root node of the scene forever
 		let rotate = SCNAction.rotate(by: .pi, around: SCNVector3(x: 0, y: .pi*2, z: 0), duration: Message3DNode.timeForPaperRotation)
@@ -68,6 +54,30 @@ public final class Message3DNode: SK3DNode {
 	}
     
     // MARK: Methods
+	
+	private class func physicsBody(frame: CGRect) -> SKPhysicsBody {
+		let body = SKPhysicsBody(edgeLoopFrom: frame)
+		body.categoryBitMask = PhysicsCategory.box
+		body.contactTestBitMask = PhysicsCategory.keys | PhysicsCategory.character
+		body.collisionBitMask = PhysicsCategory.box | PhysicsCategory.boundry | PhysicsCategory.character
+		body.affectedByGravity = false
+		body.allowsRotation = false // we do not allow rotation, otherwise we will get nosense looking things
+		return body
+	}
+	
+	private class func cameraNode(forScene scene:SCNScene) -> SCNNode {
+		let camera = SCNCamera()
+		camera.usesOrthographicProjection = true
+		camera.orthographicScale = 6
+		camera.motionBlurIntensity = 2
+		let cameraNode = SCNNode()
+		cameraNode.camera = camera
+		if let lookAtTarget = scene.rootNode.childNodes.first {
+			let constraint = SCNLookAtConstraint(target: lookAtTarget)
+			cameraNode.constraints = [constraint]
+		}
+		return cameraNode
+	}
 	
 	public func startRotating(at point:CGPoint) {
 		isBeingRotated = true

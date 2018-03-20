@@ -114,11 +114,16 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func setupWorldPhysics() {
 		self.physicsWorld.contactDelegate = self
 		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-		self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame.insetBy(dx: 10, dy: 10))
-		self.physicsBody?.affectedByGravity = false
-		self.physicsBody?.categoryBitMask = PhysicsCategory.boundry
-		self.physicsBody?.contactTestBitMask = PhysicsCategory.none
-		self.physicsBody?.collisionBitMask = PhysicsCategory.all
+		self.physicsBody = IntroScene.worldPhysicsBody(frame: self.frame.insetBy(dx: 10, dy: 10))
+	}
+	
+	private class func worldPhysicsBody(frame:CGRect) -> SKPhysicsBody {
+		let body = SKPhysicsBody(edgeLoopFrom: frame)
+		body.affectedByGravity = false
+		body.categoryBitMask = PhysicsCategory.boundry
+		body.contactTestBitMask = PhysicsCategory.none
+		body.collisionBitMask = PhysicsCategory.all
+		return body
 	}
 	
 	func touchDown(atPoint point: CGPoint) {

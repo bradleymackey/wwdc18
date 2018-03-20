@@ -21,8 +21,7 @@ public final class KeySprite: SKSpriteNode {
 		case priv
 	}
 	
-	/// the size of the key
-	static let size:CGFloat = 50
+	// MARK: Properties
 	
 	/// whether the user is dragging this key around or not
 	public var isBeingMoved = false
@@ -33,6 +32,13 @@ public final class KeySprite: SKSpriteNode {
 	public let owner: Owner
 	/// what type of key is this?
 	public let type: KeyType
+	
+	/// the size of the key
+	private static let size:CGFloat = 50
+	/// dimensions of the key
+	private static var dimensions:CGSize {
+		return CGPoint(x: size, y: size)
+	}
 	
 	var publicKeyAlice:Bool {
 		return owner == .alice && type == .pub
@@ -62,28 +68,33 @@ public final class KeySprite: SKSpriteNode {
 		}
 	}
 	
+	// MARK: Lifecycle
+	
 	public init(texture: SKTexture, color: UIColor, owner: Owner, type: KeyType) {
 		self.owner = owner
 		self.type = type
-		let size = CGSize(width: KeySprite.size, height: KeySprite.size)
-		super.init(texture: texture, color: color, size: size)
-		self.setup(texture: texture, size: size)
+		super.init(texture: texture, color: color, size: KeySprite.dimensions)
+		// setup the sprite
+		self.physicsBody = KeySprite.physicsBody(texture: texture)
+		self.colorBlendFactor = 1
 	}
 	
 	required public init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	private func setup(texture:SKTexture,size:CGSize) {
-		self.colorBlendFactor = 1
-		self.physicsBody = SKPhysicsBody(texture: texture, size: size)
-		self.physicsBody?.categoryBitMask = categoryMask // determine the correct category
-		self.physicsBody?.affectedByGravity = true
-		self.physicsBody?.collisionBitMask = PhysicsCategory.all ^ PhysicsCategory.box // collide with all but box
-		self.physicsBody?.contactTestBitMask = PhysicsCategory.box
-		self.physicsBody?.allowsRotation = true
-		self.physicsBody?.restitution = 0.1
-		self.physicsBody?.mass = 0.5
+	// MARK: Methods
+	
+	private class func physicsBody(texture:SKTexture) -> SKPhysicsBody {
+		let body = SKPhysicsBody(texture: texture, size: KeySprite.dimensions)
+		body.categoryBitMask = categoryMask // determine the correct category
+		body.affectedByGravity = true
+		body.collisionBitMask = PhysicsCategory.all ^ PhysicsCategory.box // collide with all but box
+		body.contactTestBitMask = PhysicsCategory.box
+		body.allowsRotation = true
+		sbody.restitution = 0.1
+		body.mass = 0.5
+		return body
 	}
 	
 	public func startMoving(initialPoint:CGPoint) {
