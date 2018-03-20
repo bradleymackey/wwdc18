@@ -41,8 +41,8 @@ public final class Message3DScene: SCNScene {
 	
 	// MARK: Constants
 	public static let surfaceFontSize:CGFloat = 23
-	public static var paperColors:(text:UIColor,background:UIColor) = (text: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), background: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-	public static var encryptedColors:(text:UIColor,background:UIColor) = (text: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0),background: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
+	public static var paperColors:(text:UIColor,background:UIColor) = ( #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1),  #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+	public static var encryptedColors:(text:UIColor,background:UIColor) = ( #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
 	
 	// MARK: Properties
 	
@@ -183,5 +183,6 @@ public final class Message3DScene: SCNScene {
 	}
 	
 }
+
 
 

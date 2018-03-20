@@ -1,6 +1,6 @@
 //
-//  rsa_builderUITests.swift
-//  rsa-builderUITests
+//  rsa_testerUITests.swift
+//  rsa-testerUITests
 //
 //  Created by Bradley Mackey on 20/03/2018.
 //  Copyright © 2018 Bradley Mackey. All rights reserved.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class rsa_builderUITests: XCTestCase {
+class rsa_testerUITests: XCTestCase {
         
     override func setUp() {
         super.setUp()

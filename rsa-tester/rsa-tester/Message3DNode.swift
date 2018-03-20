@@ -12,21 +12,21 @@ import SceneKit
 
 /// the spritekit node that contains the 3D scene with the message object in
 public final class Message3DNode: SK3DNode {
-    
-    // MARK: Constants
-    public static let timeForPaperRotation: TimeInterval = 2.1
-    
-    // MARK: Properties
 	
-    /// the scene that is presented inside of the node
+	// MARK: Constants
+	public static let timeForPaperRotation: TimeInterval = 2.1
+	
+	// MARK: Properties
+	
+	/// the scene that is presented inside of the node
 	public let messageScene:Message3DScene
 	
 	/// if we are rotating the message cube currently
 	private var isBeingRotated = false
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
-    
-    // MARK: Lifecycle
+	
+	// MARK: Lifecycle
 	
 	public init(viewportSize: CGSize, messageScene: Message3DScene) {
 		self.messageScene = messageScene
@@ -52,8 +52,8 @@ public final class Message3DNode: SK3DNode {
 		let rotateForever = SCNAction.repeatForever(rotate)
 		messageScene.rootNode.runAction(rotateForever)
 	}
-    
-    // MARK: Methods
+	
+	// MARK: Methods
 	
 	private class func physicsBody(frame: CGRect) -> SKPhysicsBody {
 		let body = SKPhysicsBody(edgeLoopFrom: frame)
@@ -69,7 +69,6 @@ public final class Message3DNode: SK3DNode {
 		let camera = SCNCamera()
 		camera.usesOrthographicProjection = true
 		camera.orthographicScale = 6
-		camera.motionBlurIntensity = 2
 		let cameraNode = SCNNode()
 		cameraNode.camera = camera
 		if let lookAtTarget = scene.rootNode.childNodes.first {
@@ -101,3 +100,4 @@ public final class Message3DNode: SK3DNode {
 	
 	
 }
+

@@ -24,3 +24,4 @@ public struct PhysicsCategory {
 	static let character:UInt32    = 1 << 5
 	static let boundry:UInt32      = 1 << 6
 }
+

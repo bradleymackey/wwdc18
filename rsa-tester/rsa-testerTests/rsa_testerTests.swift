@@ -1,15 +1,15 @@
 //
-//  rsa_builderTests.swift
-//  rsa-builderTests
+//  rsa_testerTests.swift
+//  rsa-testerTests
 //
 //  Created by Bradley Mackey on 20/03/2018.
 //  Copyright © 2018 Bradley Mackey. All rights reserved.
 //
 
 import XCTest
-@testable import rsa_builder
+@testable import rsa_tester
 
-class rsa_builderTests: XCTestCase {
+class rsa_testerTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

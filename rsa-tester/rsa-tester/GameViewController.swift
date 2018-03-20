@@ -1,34 +1,35 @@
 //
 //  GameViewController.swift
-//  nothing
+//  rsa-tester
 //
-//  Created by Bradley Mackey on 18/03/2018.
+//  Created by Bradley Mackey on 20/03/2018.
 //  Copyright © 2018 Bradley Mackey. All rights reserved.
 //
 
 import UIKit
 import SpriteKit
+import GameplayKit
 
-final class GameViewController: UIViewController {
+class GameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let view = self.view as! SKView? {
-            // Load the SKScene from 'GameScene.sks'
-            let scene = IntroScene(size: view.bounds.size)
+		if let view = self.view as! SKView? {
+			// Load the SKScene from 'GameScene.sks'
+			let scene = IntroScene(size: view.bounds.size)
 			// Set the scale mode to scale to fit the window
 			scene.scaleMode = .aspectFill
 			
 			// Present the scene
 			view.presentScene(scene)
-				
-            
-            //view.ignoresSiblingOrder = true
-            
-            view.showsFPS = true
-            view.showsNodeCount = true
-        }
+			
+			
+			//view.ignoresSiblingOrder = true
+			
+			view.showsFPS = true
+			view.showsNodeCount = true
+		}
     }
 
     override var shouldAutorotate: Bool {
