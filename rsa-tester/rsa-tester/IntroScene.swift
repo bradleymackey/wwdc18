@@ -19,7 +19,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     public static let mathsAnimationPauseTime:TimeInterval = 1.5
     public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
     
-    public static let mathsEnabled = false
+    public static let mathsEnabled = true
 	
 	// MARK: Sprites
 	var publicKeyNode:KeySprite!
@@ -218,7 +218,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
             }
             self.performMathsAnimation(transformToState: .encrypted)
         case .encrypted:
-            let wait = SKAction.wait(forDuration: 0.5)
+            let wait = SKAction.wait(forDuration: 0.4)
             let questionMark = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
                 self.paperScene.morphToQuestionMark(duration: 0.4)
             })
@@ -239,7 +239,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         currentlyAnimating = true
         switch (paperScene.paperState) {
         case .unencrypted:
-            let wait = SKAction.wait(forDuration: 0.5)
+            let wait = SKAction.wait(forDuration: 0.4)
             let questionMark = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
                 self.paperScene.morphToQuestionMark(duration: 0.4)
             })
