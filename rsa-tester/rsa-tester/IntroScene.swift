@@ -18,8 +18,9 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     public static let mathsAnimationMoveTime:TimeInterval = 0.8
     public static let mathsAnimationPauseTime:TimeInterval = 1.5
     public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
+	public static let invalidPulseTime:TimeInterval = 0.4
     
-    public static let mathsEnabled = true
+    public static let mathsEnabled = false
 	
 	// MARK: Sprites
 	var publicKeyNode:KeySprite!
@@ -40,7 +41,8 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	var dLabel:SKLabelNode!
 	var modLabel:SKLabelNode!
 	var cLabel:SKLabelNode!
-    
+	
+	/// the encryption engine
     let encryptor = RSAEncryptor(p: 3, q: 17)
 	
 	override public func sceneDidLoad() {
@@ -48,33 +50,25 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		self.backgroundColor = .white
 		// setup the physics for the world
 		self.setupWorldPhysics()
+		// create the paper and the scene node
+		self.createMessageSceneNode()
+		// create the key sprites
+		self.createKeySprites()
+		// only add the maths labels if maths is enabled
+		self.enableMathsModeIfNeeded()
 	}
-	
-	
-	override public func didMove(to view: SKView) {
-		super.didMove(to: view)
-		
+
+	private func createMessageSceneNode() {
 		let sceneSize = CGSize(width: 150, height: 150)
 		messageSceneNode = Message3DNode(viewportSize: sceneSize, messageScene: paperScene)
 		messageSceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		messageSceneNode.name = "3dnode"
 		self.addChild(messageSceneNode)
-		
-		guard let path = Bundle.main.path(forResource: "key", ofType: "png") else {
-			print("ERROR: could not get key texture")
-			return
-		}
-		guard let data = FileManager.default.contents(atPath: path) else {
-			print("ERROR: could not get key texture")
-			return
-		}
-		guard let image = UIImage(data: data) else {
-			print("ERROR: could not get key texture")
-			return
-		}
-		
-		let keyTexture = SKTexture(image: image)
-		
+	}
+	
+	private func createKeySprites() {
+		let keyImage = KeySprite.imageForSprite()
+		let keyTexture = SKTexture(image: keyImage)
 		self.publicKeyNode = KeySprite(texture: keyTexture, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), owner: .alice, type: .pub)
 		self.publicKeyNode.name = "publicKeyNode"
 		self.publicKeyNode.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
@@ -83,10 +77,11 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		self.privateKeyNode.name = "privateKeyNode"
 		self.privateKeyNode.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		self.addChild(privateKeyNode)
-        
-        // only add the maths labels if maths is enabled
-        guard IntroScene.mathsEnabled else { return }
-        self.createMathsLabels(message: 7)
+	}
+	
+	private func enableMathsModeIfNeeded() {
+		guard IntroScene.mathsEnabled else { return }
+		self.createMathsLabels(message: 7)
 	}
     
     private func createMathsLabels(message:Int) {
@@ -218,18 +213,8 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
             }
             self.performMathsAnimation(transformToState: .encrypted)
         case .encrypted:
-            let wait = SKAction.wait(forDuration: 0.4)
-            let questionMark = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-                self.paperScene.morphToQuestionMark(duration: 0.4)
-            })
-            let backToCrypto = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-                self.paperScene.morphToCrypto(duration: 0.4)
-            })
-            let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-                self.currentlyAnimating = false
-            })
-            let invalidContactSequence = SKAction.sequence([questionMark,wait,backToCrypto,wait,notAnimating])
-            self.messageSceneNode.run(invalidContactSequence)
+			// do the question mark animation
+            self.invalidContactAnimation(forState: .encrypted)
         }
     }
     
@@ -239,18 +224,8 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         currentlyAnimating = true
         switch (paperScene.paperState) {
         case .unencrypted:
-            let wait = SKAction.wait(forDuration: 0.4)
-            let questionMark = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-                self.paperScene.morphToQuestionMark(duration: 0.4)
-            })
-            let backToPaper = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-                self.paperScene.morphToPaper(duration: 0.4)
-            })
-            let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-                self.currentlyAnimating = false
-            })
-            let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
-            self.messageSceneNode.run(invalidContactSequence)
+			// do the question mark animation
+			self.invalidContactAnimation(forState: .unencrypted)
         case .encrypted:
             // mark the new state
             self.paperScene.paperState = .unencrypted
@@ -266,6 +241,22 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
             self.performMathsAnimation(transformToState: .unencrypted)
         }
     }
+	
+	/// the animation that should run when the incorrect key is brought to the box
+	private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
+		let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
+		let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
+			self.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
+		}
+		let backToPaper = SKAction.customAction(withDuration: 0) { _, _ in
+			state == .encrypted ? self.paperScene.morphToCrypto(duration: IntroScene.invalidPulseTime) : self.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
+		}
+		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
+			self.currentlyAnimating = false
+		}
+		let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
+		self.messageSceneNode.run(invalidContactSequence)
+	}
     
     /// animates the maths labels when the key is brought to the message label/crypto box
     private func performMathsAnimation(transformToState state:Message3DScene.PaperState) {

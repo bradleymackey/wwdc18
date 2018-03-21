@@ -86,6 +86,19 @@ public final class KeySprite: SKSpriteNode {
 	
 	// MARK: Methods
 	
+	public class func imageForSprite() -> UIImage {
+		guard let path = Bundle.main.path(forResource: "key", ofType: "png") else {
+			fatalError("ERROR: could not find key texture")
+		}
+		guard let data = FileManager.default.contents(atPath: path) else {
+			fatalError("ERROR: could not load key texture")
+		}
+		guard let image = UIImage(data: data) else {
+			fatalError("ERROR: could not interpret key texture image")
+		}
+		return image
+	}
+	
 	private class func physicsBody(texture:SKTexture,mask:UInt32) -> SKPhysicsBody {
 		let body = SKPhysicsBody(texture: texture, size: KeySprite.dimensions)
 		body.categoryBitMask = mask // determine the correct category
