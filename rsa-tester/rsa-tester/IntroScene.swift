@@ -31,6 +31,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	// MARK: Tracking Variables
 	var currentFingerPosition:CGPoint?
+    var currentlyAnimating = false
 	
 	// MARK: Maths labels
 	var mLabel:SKLabelNode!
@@ -199,6 +200,9 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
     
     private func publicKeyContact() {
+        // do nothing if we are currently animating
+        if currentlyAnimating { return }
+        currentlyAnimating = true
         switch (paperScene.paperState) {
         case .unencrypted:
             // mark the new state
@@ -210,14 +214,39 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
             }
             self.performMathsAnimation(transformToState: .encrypted)
         case .encrypted:
-            paperScene.pulsePaper()
+            let wait = SKAction.wait(forDuration: 0.5)
+            let questionMark = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+                self.paperScene.morphToQuestionMark(duration: 0.4)
+            })
+            let backToCrypto = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+                self.paperScene.morphToCrypto(duration: 0.4)
+            })
+            let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+                self.currentlyAnimating = false
+            })
+            let invalidContactSequence = SKAction.sequence([questionMark,wait,backToCrypto,wait,notAnimating])
+            self.messageSceneNode.run(invalidContactSequence)
         }
     }
     
     private func privateKeyContact() {
+        // do nothing if we are currently animating
+        if currentlyAnimating { return }
+        currentlyAnimating = true
         switch (paperScene.paperState) {
         case .unencrypted:
-            paperScene.pulsePaper()
+            let wait = SKAction.wait(forDuration: 0.5)
+            let questionMark = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+                self.paperScene.morphToQuestionMark(duration: 0.4)
+            })
+            let backToPaper = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+                self.paperScene.morphToPaper(duration: 0.4)
+            })
+            let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+                self.currentlyAnimating = false
+            })
+            let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
+            self.messageSceneNode.run(invalidContactSequence)
         case .encrypted:
             // mark the new state
             self.paperScene.paperState = .unencrypted
@@ -272,7 +301,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
             encrypting ? self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
         })
-        let morphSeq = SKAction.sequence([waitUntilEnd,morphAction])
+        let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+            self.currentlyAnimating = false
+        })
+        let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
         self.run(morphSeq)
     }
     

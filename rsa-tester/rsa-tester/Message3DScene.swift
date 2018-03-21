@@ -59,6 +59,8 @@ public final class Message3DScene: SCNScene {
 	private let paperSize = ObjectDimensions(height: 8, width: 5, length: 0.4)
 	/// the dimensions of the encrypted cube
 	private let cubeSize = ObjectDimensions(height: 6, width: 6, length: 6)
+    /// the size of the question mark cube
+    private let questionMarkSize = ObjectDimensions(height: 5, width: 5, length: 5)
 	/// the time of the last morph, so that we don't prematurley pulse the message
 	private var lastMorph = Date(timeIntervalSince1970: 0)
 	
@@ -98,6 +100,20 @@ public final class Message3DScene: SCNScene {
 		textMaterial.locksAmbientWithDiffuse = true
 		return textMaterial
 	}()
+    
+    private lazy var questionMarkMaterial: SCNMaterial = {
+        // create the surface image
+        let message = "?"
+        let encryptedSize = CGSize(width: 200, height: 200)
+        let textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        let backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        let surfaceImage = Message3DScene.renderedTextImage(message: message, size: encryptedSize, textColor: textColor, backgroundColor: backgroundColor, superLarge: true)
+        // create the material
+        let textMaterial = SCNMaterial()
+        textMaterial.diffuse.contents = surfaceImage
+        textMaterial.locksAmbientWithDiffuse = true
+        return textMaterial
+    }()
 	
 	// MARK: Lifecycle
 	
@@ -118,7 +134,7 @@ public final class Message3DScene: SCNScene {
 	
 	// MARK: Methods
 	
-	private class func renderedTextImage(message:String, size:CGSize, textColor:UIColor, backgroundColor:UIColor) -> UIImage? {
+    private class func renderedTextImage(message:String, size:CGSize, textColor:UIColor, backgroundColor:UIColor, superLarge:Bool = false) -> UIImage? {
 		let layer = CALayer()
 		layer.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
 		layer.backgroundColor = backgroundColor.cgColor
@@ -129,10 +145,10 @@ public final class Message3DScene: SCNScene {
 		textLayer.isWrapped = true
 		textLayer.truncationMode = kCATruncationNone
 		textLayer.contentsGravity = kCAGravityCenter
-		textLayer.alignmentMode = kCAAlignmentLeft
+        textLayer.alignmentMode = superLarge ? kCAAlignmentCenter : kCAAlignmentLeft
 		textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
 		textLayer.foregroundColor = textColor.cgColor
-		textLayer.fontSize = Message3DScene.surfaceFontSize
+        textLayer.fontSize = superLarge ? 140 : Message3DScene.surfaceFontSize
 		textLayer.display()
 		layer.addSublayer(textLayer)
 		// create the image and return
@@ -164,18 +180,19 @@ public final class Message3DScene: SCNScene {
 		paperGeometry.length = paperSize.length
 		SCNTransaction.commit()
 	}
-	
-	public func pulsePaper() {
-		// only pulse if enough time has passed
-		if Date().timeIntervalSince(lastMorph) < 0.8 {
-			return
-		}
-		lastMorph = Date()
-		let grow = SCNAction.scale(to: 1.2, duration: 0.1)
-		let shrink = SCNAction.scale(to: 1, duration: 0.1)
-		let pulse = SCNAction.sequence([grow,shrink])
-		paper.runAction(pulse)
-	}
+    
+    public func morphToQuestionMark(duration:TimeInterval) {
+        lastMorph = Date()
+        // update the surface materials
+        self.paperGeometry.materials = [questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial]
+        // animate to new size
+        SCNTransaction.begin()
+        SCNTransaction.animationDuration = duration
+        paperGeometry.height = questionMarkSize.height
+        paperGeometry.width = questionMarkSize.width
+        paperGeometry.length = questionMarkSize.length
+        SCNTransaction.commit()
+    }
 	
 	public func rotatePaper(dx: CGFloat, dy: CGFloat) {
 		let rotate = SCNAction.rotateBy(x: dx, y: dy, z: 0, duration: 0.03)
