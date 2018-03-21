@@ -32,7 +32,6 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	// MARK: Tracking Variables
 	var currentFingerPosition:CGPoint?
 	
-	
 	// MARK: Maths labels
 	var mLabel:SKLabelNode!
 	var nLabel:SKLabelNode!
@@ -88,27 +87,28 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
     
     private func createMathsLabels() {
-        mLabel = IntroScene.mathsLabel(text: "M", fontSize: 50, color: .black, bold: true)
+        // the message as number
+        mLabel = IntroScene.mathsLabel(text: "5", fontSize: 45, color: .black, bold: true)
         mLabel.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
         self.addChild(mLabel)
-        
-        nLabel = IntroScene.mathsLabel(text: "N", fontSize: 45, color: .gray, bold: false)
+        // the public modulus
+        nLabel = IntroScene.mathsLabel(text: "33", fontSize: 45, color: .gray, bold: false)
         nLabel.position =  CGPoint(x: self.size.width-30, y: self.size.height-30)
         self.addChild(nLabel)
-        
-        eLabel = IntroScene.mathsLabel(text: "e", fontSize: 30, color: .black, bold: false)
+        // the public exponent
+        eLabel = IntroScene.mathsLabel(text: "3", fontSize: 30, color: .black, bold: false)
         eLabel.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+30)
         self.addChild(eLabel)
-        
-        dLabel = IntroScene.mathsLabel(text: "d", fontSize: 30, color: .black, bold: false)
+        // private exponent
+        dLabel = IntroScene.mathsLabel(text: "7", fontSize: 30, color: .black, bold: false)
         dLabel.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+30)
         self.addChild(dLabel)
-        
-        modLabel = IntroScene.mathsLabel(text: "mod", fontSize: 35, color: .gray, bold: false)
+        // modulus label
+        modLabel = IntroScene.mathsLabel(text: "mod", fontSize: 30, color: .gray, bold: false)
         modLabel.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
         self.addChild(modLabel)
-        
-        cLabel = IntroScene.mathsLabel(text: "C", fontSize: 50, color: .black, bold: true)
+        // the encrypted text as number
+        cLabel = IntroScene.mathsLabel(text: "26", fontSize: 45, color: .black, bold: true)
         cLabel.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
         cLabel.alpha = 0
         self.addChild(cLabel)
