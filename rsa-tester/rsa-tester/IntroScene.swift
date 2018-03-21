@@ -264,7 +264,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         modLabel.run(fadeBackSequence)
         nLabel.run(fadeBackSequence)
         
-        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.5)
+        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
         let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
             encrypting ? self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
         })
