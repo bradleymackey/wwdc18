@@ -13,6 +13,11 @@ import SpriteKit
 import SceneKit
 
 final public class IntroScene: SKScene, SKPhysicsContactDelegate {
+    
+    // MARK: Constants
+    public static let mathsAnimationMoveTime:TimeInterval = 0.8
+    public static let mathsAnimationPauseTime:TimeInterval = 1.5
+    public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.4
 	
 	// MARK: Sprites
 	var publicKeyNode:KeySprite!
@@ -177,70 +182,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		if (firstBody.categoryBitMask == PhysicsCategory.publicKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
 			switch (paperScene.paperState) {
 			case .unencrypted:
+                // mark the new state
 				self.paperScene.paperState = .encrypted
-				
-				let wait = SKAction.wait(forDuration: 1.5)
-				let remove = SKAction.removeFromParent()
-				let shrink = SKAction.scale(to: 0.6, duration: 0.4)
-				shrink.timingMode = .easeIn
-				let grow = SKAction.scale(to: 1, duration: 0)
-				let fadeOut = SKAction.fadeOut(withDuration: 0.4)
-				let centerPosition = CGPoint(x: self.size.width/2, y: mLabel.position.y)
-				let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
-				let animateToCenter = SKAction.move(to: centerPosition, duration: 0.4)
-				let shrinkAndFade = SKAction.group([shrink,fadeOut,animateToCenter])
-				
-				let position = CGPoint(x: (self.size.width/2)-45, y: mLabel.position.y+25)
-				let moveToM = SKAction.move(to: position, duration: 0.8)
-				moveToM.timingMode = .easeOut
-				let eSequence = SKAction.sequence([moveToM,wait,shrinkAndFade,remove])
-				let eCopy = eLabel.copy() as! SKLabelNode
-				
-				self.addChild(eCopy)
-				eCopy.run(eSequence)
-				let moveMPos = CGPoint(x: (self.size.width/2)-70, y: mLabel.position.y)
-				let moveM = SKAction.move(to: moveMPos, duration: 0.8)
-				moveM.timingMode = .easeOut
-				let MSeq = SKAction.sequence([moveM,wait,shrinkAndFade,grow,moveToCenter])
-				mLabel.run(MSeq)
-				let moveModPos = CGPoint(x: self.size.width/2, y: mLabel.position.y)
-				let moveMod = SKAction.move(to: moveModPos, duration: 0.8)
-				moveMod.timingMode = .easeOut
-				let modSequence = SKAction.sequence([moveMod,wait,shrinkAndFade,remove])
-				let modCopy = modLabel.copy() as! SKLabelNode
-				
-				self.addChild(modCopy)
-				modCopy.run(modSequence)
-				let moveNPos = CGPoint(x: (self.size.width/2)+60, y: mLabel.position.y)
-				let moveN = SKAction.move(to: moveNPos, duration: 0.8)
-				moveN.timingMode = .easeOut
-				let Nseq = SKAction.sequence([moveN,wait,shrinkAndFade,remove])
-				let nCopy = nLabel.copy() as! SKLabelNode
-				self.addChild(nCopy)
-				nCopy.run(Nseq)
-				
-				// hide the original labels to give illusion of movement
-				eLabel.alpha = 0
-				modLabel.alpha = 0
-				nLabel.alpha = 0
-				
-				
-				let waitC = SKAction.wait(forDuration: 2.2)
-				let fade = SKAction.fadeIn(withDuration: 0.8)
-				fade.timingMode = .easeIn
-				let cSeq = SKAction.sequence([waitC,fade])
-				cLabel.run(cSeq)
-				eLabel.run(cSeq)
-				modLabel.run(cSeq)
-				nLabel.run(cSeq)
-				
-				let waitUntilEnd = SKAction.wait(forDuration: 2.3)
-				let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-					self.paperScene.morphToCrypto(duration: 0.8)
-				})
-				let morphSeq = SKAction.sequence([waitUntilEnd,morphAction])
-				self.run(morphSeq)
-				
+				// perform the maths animation
+				self.performMathsAnimation(transformToState: .encrypted)
 			case .encrypted:
 				paperScene.pulsePaper()
 			}
@@ -248,77 +193,85 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		else if (firstBody.categoryBitMask == PhysicsCategory.privateKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
 			switch (paperScene.paperState) {
 			case .unencrypted:
-				
 				paperScene.pulsePaper()
 			case .encrypted:
+                // mark the new state
 				self.paperScene.paperState = .unencrypted
-				
-				let wait = SKAction.wait(forDuration: 1.5)
-				let remove = SKAction.removeFromParent()
-				let shrink = SKAction.scale(to: 0.6, duration: 0.4)
-				shrink.timingMode = .easeIn
-				let grow = SKAction.scale(to: 1, duration: 0)
-				let fadeOut = SKAction.fadeOut(withDuration: 0.4)
-				let centerPosition = CGPoint(x: self.size.width/2, y: cLabel.position.y)
-				let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
-				let animateToCenter = SKAction.move(to: centerPosition, duration: 0.4)
-				
-				let shrinkAndFade = SKAction.group([shrink,fadeOut,animateToCenter])
-				
-				let position = CGPoint(x: (self.size.width/2)-45, y: cLabel.position.y+25)
-				let moveToM = SKAction.move(to: position, duration: 0.8)
-				moveToM.timingMode = .easeOut
-				let eSequence = SKAction.sequence([moveToM,wait,shrinkAndFade,remove])
-				let eCopy = dLabel.copy() as! SKLabelNode
-				
-				self.addChild(eCopy)
-				eCopy.run(eSequence)
-				let moveMPos = CGPoint(x: (self.size.width/2)-70, y: cLabel.position.y)
-				let moveM = SKAction.move(to: moveMPos, duration: 0.8)
-				moveM.timingMode = .easeOut
-				let MSeq = SKAction.sequence([moveM,wait,shrinkAndFade,grow,moveToCenter])
-				cLabel.run(MSeq)
-				let moveModPos = CGPoint(x: self.size.width/2, y: cLabel.position.y)
-				let moveMod = SKAction.move(to: moveModPos, duration: 0.8)
-				moveMod.timingMode = .easeOut
-				let modSequence = SKAction.sequence([moveMod,wait,shrinkAndFade,remove])
-				let modCopy = modLabel.copy() as! SKLabelNode
-				
-				self.addChild(modCopy)
-				modCopy.run(modSequence)
-				let moveNPos = CGPoint(x: (self.size.width/2)+60, y: cLabel.position.y)
-				let moveN = SKAction.move(to: moveNPos, duration: 0.8)
-				moveN.timingMode = .easeOut
-				let Nseq = SKAction.sequence([moveN,wait,shrinkAndFade,remove])
-				let nCopy = nLabel.copy() as! SKLabelNode
-				self.addChild(nCopy)
-				nCopy.run(Nseq)
-				
-				// hide the original labels to give illusion of movement
-				dLabel.alpha = 0
-				modLabel.alpha = 0
-				nLabel.alpha = 0
-				
-				
-				let waitC = SKAction.wait(forDuration: 2.2)
-				let fade = SKAction.fadeIn(withDuration: 0.8)
-				fade.timingMode = .easeIn
-				let cSeq = SKAction.sequence([waitC,fade])
-				mLabel.run(cSeq)
-				dLabel.run(cSeq)
-				modLabel.run(cSeq)
-				nLabel.run(cSeq)
-				
-				let waitUntilEnd = SKAction.wait(forDuration: 2.3)
-				let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-					self.paperScene.morphToPaper(duration: 0.8)
-				})
-				let morphSeq = SKAction.sequence([waitUntilEnd,morphAction])
-				self.run(morphSeq)
-				
+				// perform the maths animation
+				self.performMathsAnimation(transformToState: .unencrypted)
 			}
 		}
 	}
+    
+    /// animates the maths labels when the key is brought to the message label/crypto box
+    private func performMathsAnimation(transformToState state:Message3DScene.PaperState) {
+        
+        let encrypting = state == .encrypted
+        let keyLabel:SKLabelNode = encrypting ? eLabel : dLabel
+        let oldMessageLabel:SKLabelNode = encrypting ? mLabel : cLabel
+        let newMessageLabel:SKLabelNode = encrypting ? cLabel : mLabel
+        
+        let centerPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
+        // animate key label
+        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-45, y: oldMessageLabel.position.y+25)
+        self.moveShrinkFadeRemoveCopy(node: keyLabel, movePosition: keyLabelNewPosition, shrinkPosition: centerPosition)
+        // animate mod label
+        let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
+        self.moveShrinkFadeRemoveCopy(node: modLabel, movePosition: newModPosition, shrinkPosition: centerPosition)
+        // animate N
+        let newNPosition = CGPoint(x: (self.size.width/2)+60, y: oldMessageLabel.position.y)
+        self.moveShrinkFadeRemoveCopy(node: nLabel, movePosition: newNPosition, shrinkPosition: centerPosition)
+        // animate old message label
+        let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-70, y: oldMessageLabel.position.y)
+        let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
+        moveOldMessageAnimation.timingMode = .easeOut
+        let pauseShrinkFadeOld = IntroScene.pauseShrinkFade(toPosition: centerPosition)
+        let grow = SKAction.scale(to: 1, duration: 0)
+        let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
+        let oldMessageSequence = SKAction.sequence([moveOldMessageAnimation,pauseShrinkFadeOld,grow,moveToCenter])
+        oldMessageLabel.run(oldMessageSequence)
+        
+        // animate new message label and other labels back in
+        let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime + 0.7)
+        let fadeBackIn = SKAction.fadeIn(withDuration: IntroScene.mathsAnimationMoveTime)
+        fadeBackIn.timingMode = .easeIn
+        let fadeBackSequence = SKAction.sequence([waitNewLabel,fadeBackIn])
+        newMessageLabel.run(fadeBackSequence)
+        keyLabel.run(fadeBackSequence)
+        modLabel.run(fadeBackSequence)
+        nLabel.run(fadeBackSequence)
+        
+        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 0.8)
+        let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+            encrypting ? self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+        })
+        let morphSeq = SKAction.sequence([waitUntilEnd,morphAction])
+        self.run(morphSeq)
+    }
+    
+    private func moveShrinkFadeRemoveCopy(node:SKNode, movePosition:CGPoint, shrinkPosition:CGPoint) {
+        let moveAnimation = SKAction.move(to: movePosition, duration: IntroScene.mathsAnimationMoveTime)
+        moveAnimation.timingMode = .easeOut
+        let pauseShrinkFadeAction = IntroScene.pauseShrinkFade(toPosition: shrinkPosition)
+        let removeNode = SKAction.removeFromParent()
+        let sequence = SKAction.sequence([moveAnimation,pauseShrinkFadeAction,removeNode])
+        let nodeCopy = node.copy() as! SKNode
+        self.addChild(nodeCopy)
+        node.alpha = 0
+        nodeCopy.run(sequence)
+    }
+    
+    private class func pauseShrinkFade(toPosition newPosition:CGPoint) -> SKAction {
+        let pauseTime = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime)
+        let shrinkAnimation = SKAction.scale(to: 0.6, duration: IntroScene.mathsAnimationShrinkFadeTime)
+        shrinkAnimation.timingMode = .easeIn
+        let fadeAnimation = SKAction.fadeOut(withDuration: IntroScene.mathsAnimationShrinkFadeTime)
+        fadeAnimation.timingMode = .easeIn
+        let animateToPosition = SKAction.move(to: newPosition, duration: IntroScene.mathsAnimationShrinkFadeTime)
+        animateToPosition.timingMode = .easeIn
+        let group = SKAction.group([shrinkAnimation, fadeAnimation, animateToPosition])
+        return SKAction.sequence([pauseTime,group])
+    }
 	
 	override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 		for t in touches { self.touchDown(atPoint: t.location(in: self)) }
@@ -342,17 +295,19 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			self.publicKeyNode.updatePositionIfNeeded(to: fingerPos)
 			self.privateKeyNode.updatePositionIfNeeded(to: fingerPos)
 		}
-		if let t = eLabel {
-			let point = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+30)
-			let moveToPosition = SKAction.move(to: point, duration: 0.02)
-			t.run(moveToPosition)
+		if let eLabel = eLabel, let publicKey = publicKeyNode {
+			self.move(node: eLabel, above: publicKey)
 		}
-		if let t = dLabel {
-			let point = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+30)
-			let moveToPosition = SKAction.move(to: point, duration: 0.02)
-			t.run(moveToPosition)
+        if let dLabel = dLabel, let privateKey = privateKeyNode {
+			self.move(node: dLabel, above: privateKey)
 		}
 	}
+    
+    private func move(node:SKNode, above mainNode:SKNode) {
+        let point = CGPoint(x: mainNode.position.x, y: mainNode.position.y+30)
+        let moveToPosition = SKAction.move(to: point, duration: 0.02)
+        node.run(moveToPosition)
+    }
 	
 }
 
