@@ -56,7 +56,7 @@ public final class Message3DNode: SK3DNode {
 	// MARK: Methods
 	
 	private class func physicsBody(frame: CGRect) -> SKPhysicsBody {
-		let body = SKPhysicsBody(edgeLoopFrom: frame)
+		let body = SKPhysicsBody(circleOfRadius: frame.width/2)
 		body.categoryBitMask = PhysicsCategory.box
 		body.contactTestBitMask = PhysicsCategory.keys | PhysicsCategory.character
 		body.collisionBitMask = PhysicsCategory.box | PhysicsCategory.boundry | PhysicsCategory.character
@@ -98,6 +98,4 @@ public final class Message3DNode: SK3DNode {
 		isBeingRotated = false
 	}
 	
-	
 }
-
