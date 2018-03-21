@@ -23,18 +23,22 @@ public final class RSAEncryptor {
     
     public lazy var e:Int = {
         let toBeCoprime = (p-1)*(q-1)
-        var possibleE = 0
-        while possibleE != 1 {
+        var possibleE = 1
+        var termination = 0
+        while termination != 1 {
             possibleE += 1
-            possibleE = RSAEncryptor.gcd(first: possibleE, second: toBeCoprime)
+            termination = RSAEncryptor.gcd(first: possibleE, second: toBeCoprime)
         }
         return possibleE
     }()
     
     public lazy var d:Int = {
-        let toBeCoprime = (p-1)*(q-1)
-        
-        return 0
+        var possibleD = 1
+        // find a D such that e*d == 1 mod (p-1)(q-1)
+        while (possibleD*e)%((p-1)*(q-1)) != 1 {
+            possibleD += 1
+        }
+        return possibleD
     }()
     
     // MARK: Lifecycle
@@ -46,17 +50,19 @@ public final class RSAEncryptor {
     
     // MARK: Methods
     
+    /// encrypts a message based on the public modulus and `e`
     public func encryption(forMessage message:Int) -> Int {
-        let value = Int(powf(Float(message), Float(e)))
+        let value = Int(pow(Double(message), Double(e)))
         return value % Int(N)
     }
     
+    /// decrypts some cipertext based on the public modulus and `d`
     public func decryption(forCipherText ciper:Int) -> Int {
-        let value = Int(powf(Float(ciper), Float(d)))
+        let value = Int(pow(Double(ciper), Double(d)))
         return value % Int(N)
     }
     
-    /// simple gcd function
+    /// simple iterative gcd function
     private class func gcd(first:Int, second:Int) -> Int {
         var a = first, b = second, r = 0
         while b != 0 {
@@ -67,4 +73,5 @@ public final class RSAEncryptor {
         return a
     }
     
+
 }
