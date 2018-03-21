@@ -188,7 +188,6 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 				let centerPosition = CGPoint(x: self.size.width/2, y: mLabel.position.y)
 				let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
 				let animateToCenter = SKAction.move(to: centerPosition, duration: 0.4)
-				
 				let shrinkAndFade = SKAction.group([shrink,fadeOut,animateToCenter])
 				
 				let position = CGPoint(x: (self.size.width/2)-45, y: mLabel.position.y+25)
