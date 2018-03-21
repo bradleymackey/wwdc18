@@ -17,7 +17,9 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Constants
     public static let mathsAnimationMoveTime:TimeInterval = 0.8
     public static let mathsAnimationPauseTime:TimeInterval = 1.5
-    public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.4
+    public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
+    
+    public static let mathsEnabled = true
 	
 	// MARK: Sprites
 	var publicKeyNode:KeySprite!
@@ -79,33 +81,38 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		self.privateKeyNode.name = "privateKeyNode"
 		self.privateKeyNode.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		self.addChild(privateKeyNode)
-		
-		mLabel = IntroScene.mathsLabel(text: "M", fontSize: 50, color: .black, bold: true)
-		mLabel.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
-		self.addChild(mLabel)
-		
-		nLabel = IntroScene.mathsLabel(text: "N", fontSize: 45, color: .gray, bold: false)
-		nLabel.position =  CGPoint(x: self.size.width-30, y: self.size.height-30)
-		self.addChild(nLabel)
-		
-		eLabel = IntroScene.mathsLabel(text: "e", fontSize: 30, color: .black, bold: false)
-		eLabel.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+30)
-		self.addChild(eLabel)
-		
-		dLabel = IntroScene.mathsLabel(text: "d", fontSize: 30, color: .black, bold: false)
-		dLabel.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+30)
-		self.addChild(dLabel)
-		
-		modLabel = IntroScene.mathsLabel(text: "mod", fontSize: 35, color: .gray, bold: false)
-		modLabel.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
-		self.addChild(modLabel)
-		
-		cLabel = IntroScene.mathsLabel(text: "C", fontSize: 50, color: .black, bold: true)
-		cLabel.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
-		cLabel.alpha = 0
-		self.addChild(cLabel)
-		
+        
+        // only add the maths labels if maths is enabled
+        guard IntroScene.mathsEnabled else { return }
+		self.createMathsLabels()
 	}
+    
+    private func createMathsLabels() {
+        mLabel = IntroScene.mathsLabel(text: "M", fontSize: 50, color: .black, bold: true)
+        mLabel.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
+        self.addChild(mLabel)
+        
+        nLabel = IntroScene.mathsLabel(text: "N", fontSize: 45, color: .gray, bold: false)
+        nLabel.position =  CGPoint(x: self.size.width-30, y: self.size.height-30)
+        self.addChild(nLabel)
+        
+        eLabel = IntroScene.mathsLabel(text: "e", fontSize: 30, color: .black, bold: false)
+        eLabel.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+30)
+        self.addChild(eLabel)
+        
+        dLabel = IntroScene.mathsLabel(text: "d", fontSize: 30, color: .black, bold: false)
+        dLabel.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+30)
+        self.addChild(dLabel)
+        
+        modLabel = IntroScene.mathsLabel(text: "mod", fontSize: 35, color: .gray, bold: false)
+        modLabel.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
+        self.addChild(modLabel)
+        
+        cLabel = IntroScene.mathsLabel(text: "C", fontSize: 50, color: .black, bold: true)
+        cLabel.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
+        cLabel.alpha = 0
+        self.addChild(cLabel)
+    }
 	
 	private class func mathsLabel(text:String,fontSize:CGFloat,color:UIColor,bold:Bool) -> SKLabelNode {
 		let label = SKLabelNode(fontNamed: bold ? "Courier-Bold" : "Courier")
@@ -180,28 +187,44 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		}
 		
 		if (firstBody.categoryBitMask == PhysicsCategory.publicKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
-			switch (paperScene.paperState) {
-			case .unencrypted:
-                // mark the new state
-				self.paperScene.paperState = .encrypted
-				// perform the maths animation
-				self.performMathsAnimation(transformToState: .encrypted)
-			case .encrypted:
-				paperScene.pulsePaper()
-			}
+			self.publicKeyContact()
 		}
 		else if (firstBody.categoryBitMask == PhysicsCategory.privateKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
-			switch (paperScene.paperState) {
-			case .unencrypted:
-				paperScene.pulsePaper()
-			case .encrypted:
-                // mark the new state
-				self.paperScene.paperState = .unencrypted
-				// perform the maths animation
-				self.performMathsAnimation(transformToState: .unencrypted)
-			}
+			self.privateKeyContact()
 		}
 	}
+    
+    private func publicKeyContact() {
+        switch (paperScene.paperState) {
+        case .unencrypted:
+            // mark the new state
+            self.paperScene.paperState = .encrypted
+            // perform the maths animation if enabled, otherwise just morph
+            guard IntroScene.mathsEnabled else {
+                self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
+                return
+            }
+            self.performMathsAnimation(transformToState: .encrypted)
+        case .encrypted:
+            paperScene.pulsePaper()
+        }
+    }
+    
+    private func privateKeyContact() {
+        switch (paperScene.paperState) {
+        case .unencrypted:
+            paperScene.pulsePaper()
+        case .encrypted:
+            // mark the new state
+            self.paperScene.paperState = .unencrypted
+            // perform the maths animation is enabled, otherwise just morph
+            guard IntroScene.mathsEnabled else {
+                self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+                return
+            }
+            self.performMathsAnimation(transformToState: .unencrypted)
+        }
+    }
     
     /// animates the maths labels when the key is brought to the message label/crypto box
     private func performMathsAnimation(transformToState state:Message3DScene.PaperState) {
@@ -232,7 +255,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         oldMessageLabel.run(oldMessageSequence)
         
         // animate new message label and other labels back in
-        let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime + 0.7)
+        let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime + 1.0)
         let fadeBackIn = SKAction.fadeIn(withDuration: IntroScene.mathsAnimationMoveTime)
         fadeBackIn.timingMode = .easeIn
         let fadeBackSequence = SKAction.sequence([waitNewLabel,fadeBackIn])
@@ -241,7 +264,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         modLabel.run(fadeBackSequence)
         nLabel.run(fadeBackSequence)
         
-        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 0.8)
+        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.5)
         let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
             encrypting ? self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
         })
@@ -265,7 +288,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         let pauseTime = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime)
         let shrinkAnimation = SKAction.scale(to: 0.6, duration: IntroScene.mathsAnimationShrinkFadeTime)
         shrinkAnimation.timingMode = .easeIn
-        let fadeAnimation = SKAction.fadeOut(withDuration: IntroScene.mathsAnimationShrinkFadeTime)
+        let fadeAnimation = SKAction.fadeOut(withDuration: IntroScene.mathsAnimationShrinkFadeTime/1.2)
         fadeAnimation.timingMode = .easeIn
         let animateToPosition = SKAction.move(to: newPosition, duration: IntroScene.mathsAnimationShrinkFadeTime)
         animateToPosition.timingMode = .easeIn
