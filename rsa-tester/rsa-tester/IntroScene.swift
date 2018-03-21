@@ -19,7 +19,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     public static let mathsAnimationPauseTime:TimeInterval = 1.5
     public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
     
-    public static let mathsEnabled = true
+    public static let mathsEnabled = false
 	
 	// MARK: Sprites
 	var publicKeyNode:KeySprite!
@@ -210,6 +210,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
             // perform the maths animation if enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
                 self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
+                // inform that we are no longer animating after the animation when we are not using maths animations
+                DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
+                    self.currentlyAnimating = false
+                }
                 return
             }
             self.performMathsAnimation(transformToState: .encrypted)
@@ -253,6 +257,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
             // perform the maths animation is enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
                 self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+                // inform that we are no longer animating after the animation when we are not using maths animations
+                DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
+                    self.currentlyAnimating = false
+                }
                 return
             }
             self.performMathsAnimation(transformToState: .unencrypted)
