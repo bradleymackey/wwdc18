@@ -24,10 +24,17 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     public static var mathsEnabled = true
 	public static var useRealValues = true
 	
-	public static var message = 8
+	public static var message = 4
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+	
+	// MARK: 3D Scene
+	public static var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes.")
+	
+	// MARK: Encryption
+	/// the encryption engine
+	public static var encryptor = RSAEncryptor(p: 3, q: 7)
 	
 	// MARK: Sprites
 	
@@ -50,14 +57,13 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	private lazy var messageSceneNode:Message3DNode = {
 		let sceneSize = CGSize(width: 150, height: 150)
-		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: paperScene)
+		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		sceneNode.name = "3dnode"
 		return sceneNode
 	}()
 	
-	// MARK: 3D Scene
-	public lazy var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes.")
+	
 	
 	// MARK: Maths labels
 	
@@ -71,7 +77,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the public modulus
 	private lazy var nLabel:SKLabelNode = {
-		let labelText = IntroScene.useRealValues ? "\(encryptor.N)" : "N"
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 32, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.size.width-35, y: self.size.height-30)
 		return label
@@ -79,7 +85,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the public exponent
 	private lazy var eLabel:SKLabelNode = {
-		let labelText = IntroScene.useRealValues ? "\(encryptor.e)" : "e"
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+40)
 		return label
@@ -87,7 +93,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the private exponent
 	private lazy var dLabel:SKLabelNode = {
-		let labelText = IntroScene.useRealValues ? "\(encryptor.d)" : "d"
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.privateColor, bold: false)
 		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+40)
 		return label
@@ -103,7 +109,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	/// the encrpyted message label
 	private lazy var cLabel:SKLabelNode = {
 		// encrypt the message using the encryptor
-		let encryptedMessage = encryptor.encryption(forMessage: IntroScene.message)
+		let encryptedMessage = IntroScene.encryptor.encryption(forMessage: IntroScene.message)
 		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
@@ -112,7 +118,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 	
 	private lazy var pLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "p=\(encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
+		let label = IntroScene.mathsLabel(text: "p=\(IntroScene.encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-25)
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -120,7 +126,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "q=\(encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
+		let label = IntroScene.mathsLabel(text: "q=\(IntroScene.encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-50)
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -131,9 +137,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	var currentFingerPosition:CGPoint?
 	var currentlyAnimating = false
 	
-	// MARK: Encryption
-	/// the encryption engine
-    let encryptor = RSAEncryptor(p: 3, q: 7)
+	
 	
 	// MARK: - Methods
 	
@@ -261,13 +265,13 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         // do nothing if we are currently animating
         if currentlyAnimating { return }
         currentlyAnimating = true
-        switch (paperScene.paperState) {
+        switch (IntroScene.paperScene.paperState) {
         case .unencrypted:
             // mark the new state
-            self.paperScene.paperState = .encrypted
+            IntroScene.paperScene.paperState = .encrypted
             // perform the maths animation if enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
-                self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
+                IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
                 // inform that we are no longer animating after the animation when we are not using maths animations
                 DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
                     self.currentlyAnimating = false
@@ -285,16 +289,16 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         // do nothing if we are currently animating
         if currentlyAnimating { return }
         currentlyAnimating = true
-        switch (paperScene.paperState) {
+        switch (IntroScene.paperScene.paperState) {
         case .unencrypted:
 			// do the question mark animation
 			self.invalidContactAnimation(forState: .unencrypted)
         case .encrypted:
             // mark the new state
-            self.paperScene.paperState = .unencrypted
+            IntroScene.paperScene.paperState = .unencrypted
             // perform the maths animation is enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
-                self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+                IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
                 // inform that we are no longer animating after the animation when we are not using maths animations
                 DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
                     self.currentlyAnimating = false
@@ -309,10 +313,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
 		let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
 		let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
-			self.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
+			IntroScene.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
 		}
 		let backToPaper = SKAction.customAction(withDuration: 0) { _, _ in
-			state == .encrypted ? self.paperScene.morphToCrypto(duration: IntroScene.invalidPulseTime) : self.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
+			state == .encrypted ? IntroScene.paperScene.morphToCrypto(duration: IntroScene.invalidPulseTime) : IntroScene.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
 			self.currentlyAnimating = false
@@ -363,7 +367,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         
         let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
         let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
-            encrypting ? self.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : self.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+            encrypting ? IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
         })
         let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
             self.currentlyAnimating = false

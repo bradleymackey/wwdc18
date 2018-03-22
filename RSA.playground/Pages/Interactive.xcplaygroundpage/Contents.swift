@@ -1,8 +1,8 @@
 //: [Back to Introduction](@previous)
 
 /*:
-## Wait, but whats the point of 2 keys?
-Good point.
+## Wait, but what's the point of having 2 different keys?
+Good question.
 
 its so we lock up some data to send without having to send a key thats the same blah blah...
 
@@ -13,7 +13,7 @@ Go ahead and turn on `snoopingEnabled` to see that RSA is secure and say hello t
 ## How do we know it's secure?
 We don't. Well... sort of.
 
-touch on P = NP, touch on modulo easy one way but hard to reverse
+touch on P = NP VERY SLIGHTLY, touch on modulo easy one way but hard to reverse
 
 ### Phew, enough maths for one day...
 Go ahead and customise the scene by changing the variables below and have a play!

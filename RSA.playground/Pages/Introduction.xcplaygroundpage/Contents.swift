@@ -46,9 +46,9 @@ We now need to generate the keys so we know how to encrypt and decrypt the messa
 5. The public key is made up of both `N` and `e`.
 6. The private key is made up of both `N` and `d`.
 
-To encrypt some message `M`, we calculate `C = M^e mod N`, where `C` is the encrypted message or *cipertext*.
+To encrypt some message `M`, we calculate `C = M^e mod N`, where `C` is the encrypted message or *ciphertext*.
 
-To decrypt the cipertext, we calculate `M = C^d mod N`, where `M` is the original message.
+To decrypt the ciphertext, we calculate `M = C^d mod N`, where `M` is the original message.
 
 ### Try it out!
 
@@ -74,7 +74,7 @@ Change some of the numbers to see how the message gets encrypted differently!
 
 *For our example, make sure `p`, `q` and the message are numbers less than 18, otherwise the numbers will be way too big!*
 
-*Note that because the numbers we are using are really small, some numbers you pick may mean that the public and private keys have the same value - this wouldn't happen in the real world because the numbers are much bigger! It may also be the case that the message after it's encrypted is the same as the original message. Again, this wouldn't happen in the real world with the massive numbers!*
+*Note that because the numbers we are using are really small, some numbers you pick may mean that the public and private keys have the same value - this wouldn't happen in the real world because the numbers are much bigger! It may also be the case that the message after it's encrypted is the same as the original message. Again, this wouldn't happen in the real world when we are using massive numbers!*
 */
 
 // change the RSAEncryptor engine values
