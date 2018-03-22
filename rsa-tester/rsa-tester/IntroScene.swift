@@ -12,10 +12,12 @@ import Foundation
 import SpriteKit
 import SceneKit
 
+/// used for delegating the display of information about labels when tapped
 public protocol IntroSceneInformationDelegate: class {
 	func presentInformationPopup(title:String, message:String)
 }
 
+/// the initial scene used to introduce the user to RSA
 final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Constants

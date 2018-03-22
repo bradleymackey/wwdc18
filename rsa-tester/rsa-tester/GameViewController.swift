@@ -18,7 +18,6 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 	private lazy var blurView:UIVisualEffectView = {
 		let view = UIVisualEffectView(frame: self.view.frame)
 		view.effect = nil
-		//view.alpha = 0
 		return view
 	}()
 	
@@ -69,13 +68,15 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		view.addSubview(dismissLabel)
 		return view
 	}()
+	
+	private var scene:IntroScene!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
 		if let view = self.view as! SKView? {
 			// Load the SKScene from 'GameScene.sks'
-			let scene = IntroScene(size: view.bounds.size)
+			scene = IntroScene(size: view.bounds.size)
 			scene.informationDelegate = self
 			// Set the scale mode to scale to fit the window
 			scene.scaleMode = .aspectFill
@@ -89,9 +90,9 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			view.showsNodeCount = true
 		}
 		
+		// add the other views that enable the information style view
 		self.view.addSubview(blurView)
 		self.view.addSubview(informationView)
-		
     }
 
     override var shouldAutorotate: Bool {
@@ -120,13 +121,14 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		informationTitleLabel.text = title
 		informationDetailLabel.text = message
 		// cancel any animation that may currently be underway
-		self.cancelAnimationIfNeeded()
+		self.cancelPriorAnimationIfNeeded()
 		// animate upwards
 		informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
 			self.informationView.frame = CGRect(x: 0, y: 200, width: self.view.frame.width, height: self.view.frame.height-200)
 			self.informationView.layer.cornerRadius = 50
-			//self.blurView.alpha = 1
 			self.blurView.effect = UIBlurEffect(style: .light)
+			// make sure the user cannot tap other scene elements
+			self.scene.isUserInteractionEnabled = false
 		}
 		informationPaneAnimator.startAnimation()
 	}
@@ -135,12 +137,13 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		switch recogniser.state {
 		case .began:
 			// cancel and restart animation when user drags
-			self.cancelAnimationIfNeeded()
+			self.cancelPriorAnimationIfNeeded()
 			informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
 				self.informationView.frame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-200)
 				self.informationView.layer.cornerRadius = 0
-				//self.blurView.alpha = 0
 				self.blurView.effect = nil
+				// ensure that the scene is fully interactive again
+				self.scene.isUserInteractionEnabled = true
 			}
 			informationPaneAnimator.pauseAnimation()
 		case .changed:
@@ -151,11 +154,12 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			// continue animation when user lets go of display
 			informationPaneAnimator.continueAnimation(withTimingParameters: nil, durationFactor: 0.5)
 		case .possible, .cancelled, .failed:
+			// ignore other gesture events
 			return
 		}
 	}
 	
-	private func cancelAnimationIfNeeded() {
+	private func cancelPriorAnimationIfNeeded() {
 		// immediately stop any animation currently underway, and
 		informationPaneAnimator?.stopAnimation(true)
 		informationPaneAnimator?.finishAnimation(at: .current)
