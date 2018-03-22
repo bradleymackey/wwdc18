@@ -22,9 +22,9 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
+	public static var useRealValues = true
 	
-	public static var message = 7
-	public static var message3DScene = "Here's to the crazy ones."
+	public static var message = 3
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
@@ -63,28 +63,32 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(IntroScene.message)", fontSize: 45, color: .black, bold: true)
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 45, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		return label
 	}()
 	
 	/// the public modulus
 	private lazy var nLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.N)", fontSize: 45, color: IntroScene.publicColor, bold: false)
+		let labelText = IntroScene.useRealValues ? "\(encryptor.N)" : "N"
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 45, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.size.width-30, y: self.size.height-30)
 		return label
 	}()
 	
 	/// the public exponent
 	private lazy var eLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.e)", fontSize: 25, color: IntroScene.publicColor, bold: false)
+		let labelText = IntroScene.useRealValues ? "\(encryptor.e)" : "e"
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+40)
 		return label
 	}()
 	
 	/// the private exponent
 	private lazy var dLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.d)", fontSize: 25, color: IntroScene.privateColor, bold: false)
+		let labelText = IntroScene.useRealValues ? "\(encryptor.d)" : "d"
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.privateColor, bold: false)
 		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+40)
 		return label
 	}()
@@ -98,8 +102,10 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the encrpyted message label
 	private lazy var cLabel:SKLabelNode = {
+		// encrypt the message using the encryptor
 		let encryptedMessage = encryptor.encryption(forMessage: IntroScene.message)
-		let label = IntroScene.mathsLabel(text: "\(encryptedMessage)", fontSize: 45, color: .black, bold: true)
+		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 45, color: .black, bold: true)
 		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		label.alpha = 0
 		return label
@@ -158,7 +164,12 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func addMathsLabelsIfNeeded() {
 		guard IntroScene.mathsEnabled else { return }
 		// add the maths labels to the scene
-		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel, pLabel, qLabel].forEach {
+		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel].forEach {
+			self.addChild($0)
+		}
+		// add the p and q labels if we are displaying real values
+		guard IntroScene.useRealValues else { return }
+		[pLabel, qLabel].forEach {
 			self.addChild($0)
 		}
 	}
@@ -329,7 +340,9 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         let newNPosition = CGPoint(x: (self.size.width/2)+65, y: oldMessageLabel.position.y)
         self.moveShrinkFadeRemoveCopy(node: nLabel, movePosition: newNPosition, shrinkPosition: centerPosition)
         // animate old message label
-        let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-75, y: oldMessageLabel.position.y)
+		// move the label more if there are 2 characters being displayed
+		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 65 : 75
+        let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
         let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
         moveOldMessageAnimation.timingMode = .easeOut
         let pauseShrinkFadeOld = IntroScene.pauseShrinkFade(toPosition: centerPosition)
