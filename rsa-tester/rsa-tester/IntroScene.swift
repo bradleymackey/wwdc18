@@ -225,9 +225,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		currentFingerPosition = point
 		let node = self.atPoint(point)
 		// ensure that the node has a name
-		guard let nodeName = node.name else {
-			return
-		}
+		guard let nodeName = node.name else { return }
 		// different behaviour if this node is a label
 		guard !nodeName.contains("Label") else {
 			self.currentlySelectedLabel = nodeName
@@ -254,16 +252,20 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		currentFingerPosition = point
 	}
 	
-	func touchUp(atPoint pos: CGPoint) {
+	func touchUp(atPoint point: CGPoint) {
 		if let labelSelected = currentlySelectedLabel {
 			defer {
 				currentlySelectedLabel = nil
 			}
+			// ensure that the touch up was also inside of the label we started to touch
+			let node = self.atPoint(point)
+			guard let nodeName = node.name else { return }
+			guard nodeName == labelSelected else { return }
 			self.showInfoPanel(forLabel: labelSelected)
 		}
 		// stop moving keys if they were being moved
-		self.privateKeyNode.stopMoving(at: pos)
-		self.publicKeyNode.stopMoving(at: pos)
+		self.privateKeyNode.stopMoving(at: point)
+		self.publicKeyNode.stopMoving(at: point)
 		// stop rotating the message if it was being rotated
 		self.messageSceneNode.finishedRotating()
 	}
