@@ -12,30 +12,61 @@ import GameplayKit
 
 final class GameViewController: UIViewController, IntroSceneInformationDelegate {
 	
-	var informationPaneAnimator:UIViewPropertyAnimator!
+	/// animates the information overlay when labels are tapped
+	private var informationPaneAnimator:UIViewPropertyAnimator!
+	
+	private lazy var blurView:UIVisualEffectView = {
+		let view = UIVisualEffectView(frame: self.view.frame)
+		view.effect = nil
+		//view.alpha = 0
+		return view
+	}()
 	
 	/// the big bold title label that is displayed in the information view
 	private lazy var informationTitleLabel:UILabel = {
-		let label = UILabel(frame: .zero)
+		let labelFrame = CGRect(x: 30, y: 15, width: self.view.frame.width-60, height: 50)
+		let label = UILabel(frame: labelFrame)
+		label.font = UIFont.boldSystemFont(ofSize: 32)
+		label.numberOfLines = 0
+		label.textColor = .white
 		return label
 	}()
 	
 	/// the detail message label that is displayed in the information view
 	private lazy var informationDetailLabel:UILabel = {
-		let label = UILabel(frame: .zero)
+		let labelFrame = CGRect(x: 30, y: 55, width: self.view.frame.width-60, height: self.view.frame.height-300)
+		let label = UILabel(frame: labelFrame)
+		label.font = UIFont.systemFont(ofSize: 20)
+		label.textColor = .white
+		label.numberOfLines = 0
+		return label
+	}()
+	
+	/// the message that tells people to drag down to dismiss the message
+	private lazy var dismissLabel:UILabel = {
+		let labelFrame = CGRect(x: 0, y: self.view.frame.height-235, width: self.view.frame.width, height: 24)
+		let label = UILabel(frame: labelFrame)
+		label.text = "Drag down to dismiss"
+		label.font = UIFont.systemFont(ofSize: 15)
+		label.textColor = .white
+		label.textAlignment = .center
 		return label
 	}()
 	
 	/// the view that diplays the information about the label that was tapped
 	private lazy var informationView:UIView = {
 		// make the view a bit shorter than the height of the full view and set it offscreen initially.
-		let viewFrame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-100)
+		let viewFrame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-200)
 		let view = UIView(frame: viewFrame)
-		view.backgroundColor = .blue
+		view.backgroundColor = #colorLiteral(red: 0.6379951485, green: 0.6427444434, blue: 0.6216148005, alpha: 1)
 		// only mask the corners at the top of the view
 		view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
 		let recogniser = UIPanGestureRecognizer(target: self, action: #selector(GameViewController.handlePan(_:)))
 		view.addGestureRecognizer(recogniser)
+		// add the subviews to the pane
+		view.addSubview(informationTitleLabel)
+		view.addSubview(informationDetailLabel)
+		view.addSubview(dismissLabel)
 		return view
 	}()
 
@@ -58,7 +89,9 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			view.showsNodeCount = true
 		}
 		
+		self.view.addSubview(blurView)
 		self.view.addSubview(informationView)
+		
     }
 
     override var shouldAutorotate: Bool {
@@ -83,13 +116,17 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
     }
 	
 	func presentInformationPopup(title: String, message: String) {
-		print(title)
-		print(message)
+		// update the label text on the panels
+		informationTitleLabel.text = title
+		informationDetailLabel.text = message
+		// cancel any animation that may currently be underway
 		self.cancelAnimationIfNeeded()
 		// animate upwards
-		informationPaneAnimator = UIViewPropertyAnimator(duration: 0.5, curve: .easeOut) {
-			self.informationView.frame = CGRect(x: 0, y: 100, width: self.view.frame.width, height: self.view.frame.height-100)
+		informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
+			self.informationView.frame = CGRect(x: 0, y: 200, width: self.view.frame.width, height: self.view.frame.height-200)
 			self.informationView.layer.cornerRadius = 50
+			//self.blurView.alpha = 1
+			self.blurView.effect = UIBlurEffect(style: .light)
 		}
 		informationPaneAnimator.startAnimation()
 	}
@@ -99,9 +136,11 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		case .began:
 			// cancel and restart animation when user drags
 			self.cancelAnimationIfNeeded()
-			informationPaneAnimator = UIViewPropertyAnimator(duration: 0.5, curve: .easeOut) {
-				self.informationView.frame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-100)
+			informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
+				self.informationView.frame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-200)
 				self.informationView.layer.cornerRadius = 0
+				//self.blurView.alpha = 0
+				self.blurView.effect = nil
 			}
 			informationPaneAnimator.pauseAnimation()
 		case .changed:

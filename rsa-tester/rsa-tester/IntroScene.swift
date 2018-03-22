@@ -464,6 +464,20 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		switch label {
 		case "mLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations.")
+		case "cLabel":
+			self.informationDelegate?.presentInformationPopup(title: "Cipher Text", message: "This is the encrypted message. We can only convert this back to the original message with the private key.")
+		case "modLabel":
+			self.informationDelegate?.presentInformationPopup(title: "Modulo", message: "This is the operation that is performed blah blah.")
+		case "nLabel":
+			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This is the number that is makes up part of the public key and the private key. It is calculated by multiplying p and q, and is used when we encrypt the message and decrypt the cipher text.")
+		case "eLabel":
+			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key. In order to calculate the cipher text, the message is raised to the power of this number and then we calculate modulo N of this number.")
+		case "dLabel":
+			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key. In order to calculate the original message, the cipher text is raised to the power of this number and then we calculate modulo N of this number.")
+		case "pLabel":
+			self.informationDelegate?.presentInformationPopup(title: "p", message: "This is one of the prime numbers used to calculate N, and (p-1) is one of the numbers that contrain the possible values that e can be.")
+		case "qLabel":
+			self.informationDelegate?.presentInformationPopup(title: "q", message: "This is one of the prime numbers used to calculate N, and (q-1) is one of the numbers that contrain the possible values that e can be.")
 		default:
 			return
 		}
