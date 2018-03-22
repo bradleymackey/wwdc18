@@ -28,7 +28,7 @@ Notice that you can only encrypt with the public key and only decrypt with the p
 /*:
 ## How does it work?
 ### The modulo operator
-RSA makes heavy use of the *modulo* (`mod`) operator in its calculations. Don't be scared of this! It just means "the remainder after dividing". For example, `5mod2 = 1` because `5/2 = 2` ***remainder 1***.
+RSA makes use of the *modulo* (`mod`) operator in its calculations. Don't be scared of this! It just means "the remainder after dividing". For example, `5mod2 = 1` because `5/2 = 2` ***remainder 1***.
 
 In Swift (and many other programming languages) the modulo operator is represented by '`%`', so `5%2 = 1`.
 

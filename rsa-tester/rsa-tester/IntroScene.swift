@@ -144,7 +144,6 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
 	}()
 	
 	// MARK: Tracking Variables
-	var currentFingerPosition:CGPoint?
 	var currentlyAnimating = false
 	var currentlySelectedLabel:String?
 	
@@ -187,16 +186,18 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
 		}
 	}
 	
-	private func setupWorldPhysics() {
+	override public func setupWorldPhysics() {
+		super.setupWorldPhysics()
 		self.physicsWorld.contactDelegate = self
-		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-		self.physicsBody = RSAScene.worldPhysicsBody(frame: self.frame)
 	}
 	
 	// MARK: Methods
 	
-	func touchDown(atPoint point: CGPoint) {
-		currentFingerPosition = point
+	
+	override public func touchDown(atPoint point: CGPoint) {
+		// call the implementation in RSAScene
+		super.touchDown(atPoint: point)
+		// get the node that we have just touched
 		let node = self.atPoint(point)
 		// ensure that the node has a name
 		guard let nodeName = node.name else { return }
@@ -217,13 +218,16 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
 		}
 	}
 	
-	func touchMoved(toPoint point: CGPoint) {
+	override public func touchMoved(toPoint point: CGPoint) {
+		// call the implementation in RSAScene
+		super.touchMoved(toPoint: point)
 		// update objects if we need to
 		self.messageSceneNode.updateRotationIfRotating(newPoint: point)
-		currentFingerPosition = point
 	}
 	
-	func touchUp(atPoint point: CGPoint) {
+	override public func touchUp(atPoint point: CGPoint) {
+		// call the implementation in RSAScene
+		super.touchUp(atPoint: point)
 		if let labelSelected = currentlySelectedLabel {
 			defer {
 				currentlySelectedLabel = nil
@@ -401,22 +405,6 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
         let group = SKAction.group([shrinkAnimation, fadeAnimation, animateToPosition])
         return SKAction.sequence([pauseTime,group])
     }
-	
-	override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-		for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-	}
-	
-	override public func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-		for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
-	}
-	
-	override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-		for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-	}
-	
-	override public func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-		for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-	}
 	
 	override public func update(_ currentTime: TimeInterval) {
 		// Called before each frame is rendered

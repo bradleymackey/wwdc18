@@ -13,6 +13,9 @@ import SpriteKit
 /// - note: the aim of this scene is to give the user a real understanding of RSA and how it is really used
 public final class InteractiveScene: RSAScene, SKPhysicsContactDelegate  {
 	
+	// MARK: - Properties
+	
+	// MARK: - Setup
 	
 	public override func sceneDidLoad() {
 		super.sceneDidLoad()
@@ -20,10 +23,36 @@ public final class InteractiveScene: RSAScene, SKPhysicsContactDelegate  {
 		self.setupWorldPhysics()
 	}
 	
-	private func setupWorldPhysics() {
+	override public func setupWorldPhysics() {
+		super.setupWorldPhysics()
 		self.physicsWorld.contactDelegate = self
-		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-		self.physicsBody = RSAScene.worldPhysicsBody(frame: self.frame)
+	}
+	
+	// MARK: - Methods
+	
+	override public func touchDown(atPoint point: CGPoint) {
+		
+	}
+	
+	override public func touchMoved(toPoint point: CGPoint) {
+		
+	}
+	
+	override public func touchUp(atPoint point: CGPoint) {
+		
+	}
+	
+	public func didBegin(_ contact: SKPhysicsContact) {
+		// determine the contact such that the lower bitMask valued body is the `firstBody`
+		var firstBody: SKPhysicsBody
+		var secondBody: SKPhysicsBody
+		if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+			firstBody = contact.bodyA
+			secondBody = contact.bodyB
+		} else {
+			firstBody = contact.bodyB
+			secondBody = contact.bodyA
+		}
 	}
 	
 
