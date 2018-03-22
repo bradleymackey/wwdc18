@@ -207,7 +207,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func setupWorldPhysics() {
 		self.physicsWorld.contactDelegate = self
 		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-		self.physicsBody = IntroScene.worldPhysicsBody(frame: self.frame.insetBy(dx: 20, dy: 20))
+		self.physicsBody = IntroScene.worldPhysicsBody(frame: self.frame)
 	}
 	
 	private class func worldPhysicsBody(frame:CGRect) -> SKPhysicsBody {
@@ -244,9 +244,6 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	func touchMoved(toPoint point: CGPoint) {
-		// ignore movement if position is outside scene
-		let margin:CGFloat = 15
-		if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin { return }
 		// update objects if we need to
 		self.messageSceneNode.updateRotationIfNeeded(newPoint: point)
 		currentFingerPosition = point
@@ -283,9 +280,11 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		}
 		
 		if (firstBody.categoryBitMask == PhysicsCategory.publicKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
+			// public key has contacted box
 			self.publicKeyContact()
 		}
 		else if (firstBody.categoryBitMask == PhysicsCategory.privateKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
+			// private key has contacted
 			self.privateKeyContact()
 		}
 	}
@@ -447,9 +446,17 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	override public func update(_ currentTime: TimeInterval) {
 		// Called before each frame is rendered
-		if let fingerPos = currentFingerPosition, fingerPos.x > 20, fingerPos.y > 20, fingerPos.x < self.frame.size.width-20, fingerPos.y < self.frame.size.height-20 {
-			self.publicKeyNode.updatePositionIfNeeded(to: fingerPos)
-			self.privateKeyNode.updatePositionIfNeeded(to: fingerPos)
+		if let point = currentFingerPosition {
+			// ignore movement if position is outside scene
+			let margin:CGFloat = 10
+			if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
+				// stop moving keys if the touch is outside the margin
+				self.privateKeyNode.stopMoving(at: point)
+				self.publicKeyNode.stopMoving(at: point)
+			} else {
+				self.publicKeyNode.updatePositionIfNeeded(to: point)
+				self.privateKeyNode.updatePositionIfNeeded(to: point)
+			}
 		}
 		// make sure that the maths labels are above the keys if needed
 		if IntroScene.mathsEnabled {
@@ -467,21 +474,21 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func showInfoPanel(forLabel label:String) {
 		switch label {
 		case "mLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations.")
+			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations. We can encrypt the message by using the Public Modulus and Public Exponent.")
 		case "cLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Cipher Text", message: "This is the encrypted message. We can only convert this back to the original message with the private key.")
+			self.informationDelegate?.presentInformationPopup(title: "Cipher Text", message: "This is the encrypted message. We can only convert this back to the original message with the private key (the Public Modulus and Private Exponent).")
 		case "modLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Modulo", message: "This is the operation that is performed blah blah.")
+			self.informationDelegate?.presentInformationPopup(title: "Modulo", message: "This is the operator that calculates the remainder after dividing some number by another number.")
 		case "nLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This is the number that is makes up part of the public key and the private key. It is calculated by multiplying p and q, and is used when we encrypt the message and decrypt the cipher text.")
+			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This is the number that makes up part of the public key and the private key. It is calculated by multiplying p and q, and is used when we encrypt the message and also when we decrypt the cipher text.")
 		case "eLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key. In order to calculate the cipher text, the message is raised to the power of this number and then we calculate modulo N of this number.")
 		case "dLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key. In order to calculate the original message, the cipher text is raised to the power of this number and then we calculate modulo N of this number.")
 		case "pLabel":
-			self.informationDelegate?.presentInformationPopup(title: "p", message: "This is one of the prime numbers used to calculate N, and (p-1) is one of the numbers that contrain the possible values that e can be.")
+			self.informationDelegate?.presentInformationPopup(title: "p", message: "This is one of the prime numbers used to calculate N, and (p-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
 		case "qLabel":
-			self.informationDelegate?.presentInformationPopup(title: "q", message: "This is one of the prime numbers used to calculate N, and (q-1) is one of the numbers that contrain the possible values that e can be.")
+			self.informationDelegate?.presentInformationPopup(title: "q", message: "This is one of the prime numbers used to calculate N, and (q-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
 		default:
 			return
 		}
