@@ -83,7 +83,7 @@ public final class Message3DNode: SK3DNode {
 		lastRotationPoint = point
 	}
 	
-	public func updateRotationIfNeeded(newPoint point:CGPoint) {
+	public func updateRotationIfRotating(newPoint point:CGPoint) {
 		guard isBeingRotated else { return }
 		// rotate the paper
 		if let lastPoint = lastRotationPoint {

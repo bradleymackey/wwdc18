@@ -25,6 +25,8 @@
 		972FE96D20619E2B00AF243D /* key@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 972FE96A20619E2B00AF243D /* key@2x.png */; };
 		972FE96E20619E2B00AF243D /* key@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 972FE96B20619E2B00AF243D /* key@3x.png */; };
 		972FE96F20619E2B00AF243D /* key.png in Resources */ = {isa = PBXBuildFile; fileRef = 972FE96C20619E2B00AF243D /* key.png */; };
+		972FE971206444A300AF243D /* InteractiveScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE970206444A300AF243D /* InteractiveScene.swift */; };
+		972FE9732064459100AF243D /* RSAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE9722064459100AF243D /* RSAScene.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 /* End PBXBuildFile section */
 
@@ -70,6 +72,8 @@
 		972FE96A20619E2B00AF243D /* key@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "key@2x.png"; sourceTree = "<group>"; };
 		972FE96B20619E2B00AF243D /* key@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "key@3x.png"; sourceTree = "<group>"; };
 		972FE96C20619E2B00AF243D /* key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = key.png; sourceTree = "<group>"; };
+		972FE970206444A300AF243D /* InteractiveScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveScene.swift; sourceTree = "<group>"; };
+		972FE9722064459100AF243D /* RSAScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAScene.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -126,7 +130,9 @@
 				972FE92A20619AF800AF243D /* Actions.sks */,
 				972FE92C20619AF800AF243D /* GameScene.swift */,
 				972FE92E20619AF800AF243D /* GameViewController.swift */,
+				972FE9722064459100AF243D /* RSAScene.swift */,
 				972FE95A20619B4100AF243D /* IntroScene.swift */,
+				972FE970206444A300AF243D /* InteractiveScene.swift */,
 				972FE95C20619B7000AF243D /* KeySprite.swift */,
 				972FE95E20619B9500AF243D /* Message3DNode.swift */,
 				972FE96020619BA800AF243D /* Message3DScene.swift */,
@@ -302,11 +308,13 @@
 			files = (
 				972FE95D20619B7000AF243D /* KeySprite.swift in Sources */,
 				972FE96320619BBE00AF243D /* PhysicsCategory.swift in Sources */,
+				972FE9732064459100AF243D /* RSAScene.swift in Sources */,
 				972FE96120619BA800AF243D /* Message3DScene.swift in Sources */,
 				972FE92D20619AF800AF243D /* GameScene.swift in Sources */,
 				972FE95B20619B4100AF243D /* IntroScene.swift in Sources */,
 				972FE92F20619AF800AF243D /* GameViewController.swift in Sources */,
 				972FE95F20619B9500AF243D /* Message3DNode.swift in Sources */,
+				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,
 				972FE92720619AF800AF243D /* AppDelegate.swift in Sources */,
 			);
