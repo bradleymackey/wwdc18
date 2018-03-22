@@ -24,15 +24,9 @@ public final class RSAEncryptor {
 	
 	/// public exponent
     public lazy var e:Int = {
-        let toBeCoprime = (p-1)*(q-1)
-        var possibleE = 1
-        var termination = 0
-		// find an `e` coprime to (p-1)(q-1)
-        while termination != 1 {
-            possibleE += 1
-            termination = RSAEncryptor.gcd(first: possibleE, second: toBeCoprime)
-        }
-        return possibleE
+        let primes = [3,5,7,11,13,17]
+		let index = Int(arc4random_uniform(5))
+        return primes[index]
     }()
 	
 	/// private exponent

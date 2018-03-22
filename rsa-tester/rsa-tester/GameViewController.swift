@@ -10,7 +10,7 @@ import UIKit
 import SpriteKit
 import GameplayKit
 
-class GameViewController: UIViewController {
+final class GameViewController: UIViewController, IntroSceneInformationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,13 +18,13 @@ class GameViewController: UIViewController {
 		if let view = self.view as! SKView? {
 			// Load the SKScene from 'GameScene.sks'
 			let scene = IntroScene(size: view.bounds.size)
+			scene.informationDelegate = self
 			// Set the scale mode to scale to fit the window
 			scene.scaleMode = .aspectFill
 			
 			// Present the scene
 			view.presentScene(scene)
-			
-			
+		
 			//view.ignoresSiblingOrder = true
 			
 			view.showsFPS = true
@@ -52,4 +52,9 @@ class GameViewController: UIViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
+	
+	func presentInformationPopup(title: String, message: String) {
+		print(title)
+		print(message)
+	}
 }

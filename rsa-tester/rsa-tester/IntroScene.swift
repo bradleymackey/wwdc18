@@ -12,6 +12,10 @@ import Foundation
 import SpriteKit
 import SceneKit
 
+public protocol IntroSceneInformationDelegate: class {
+	func presentInformationPopup(title:String, message:String)
+}
+
 final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Constants
@@ -24,17 +28,21 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     public static var mathsEnabled = true
 	public static var useRealValues = true
 	
-	public static var message = 4
+	public static var message = 16
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
+	// MARK: Delegate
+	/// for delegating an information message for a UIView to present
+	public weak var informationDelegate:IntroSceneInformationDelegate?
+	
 	// MARK: 3D Scene
-	public static var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes.")
+	public static var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The round pegs in the square holes. Think different.")
 	
 	// MARK: Encryption
 	/// the encryption engine
-	public static var encryptor = RSAEncryptor(p: 3, q: 7)
+	public static var encryptor = RSAEncryptor(p: 17, q: 17)
 	
 	// MARK: Sprites
 	
@@ -63,8 +71,6 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		return sceneNode
 	}()
 	
-	
-	
 	// MARK: Maths labels
 	
 	/// the message
@@ -72,6 +78,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
+		label.name = "mLabel"
 		return label
 	}()
 	
@@ -80,6 +87,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 32, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.size.width-35, y: self.size.height-30)
+		label.name = "nLabel"
 		return label
 	}()
 	
@@ -88,6 +96,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+40)
+		label.name = "eLabel"
 		return label
 	}()
 	
@@ -96,6 +105,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.privateColor, bold: false)
 		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+40)
+		label.name = "dLabel"
 		return label
 	}()
 	
@@ -103,6 +113,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private lazy var modLabel:SKLabelNode = {
 		let label = IntroScene.mathsLabel(text: "mod", fontSize: 28, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
+		label.name = "modLabel"
 		return label
 	}()
 	
@@ -113,6 +124,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
 		let label = IntroScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
+		label.name = "cLabel"
 		label.alpha = 0
 		return label
 	}()
@@ -120,6 +132,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private lazy var pLabel:SKLabelNode = {
 		let label = IntroScene.mathsLabel(text: "p=\(IntroScene.encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-25)
+		label.name = "pLabel"
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
 		return label
@@ -128,6 +141,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private lazy var qLabel:SKLabelNode = {
 		let label = IntroScene.mathsLabel(text: "q=\(IntroScene.encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-50)
+		label.name = "qLabel"
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
 		return label
@@ -136,8 +150,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	// MARK: Tracking Variables
 	var currentFingerPosition:CGPoint?
 	var currentlyAnimating = false
-	
-	
+	var currentlySelectedLabel:String?
 	
 	// MARK: - Methods
 	
@@ -209,7 +222,13 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	func touchDown(atPoint point: CGPoint) {
 		currentFingerPosition = point
 		let node = self.atPoint(point)
+		// ensure that the node has a name
 		guard let nodeName = node.name else {
+			return
+		}
+		// different behaviour if this node is a label
+		guard !nodeName.contains("Label") else {
+			self.currentlySelectedLabel = nodeName
 			return
 		}
 		switch (nodeName) {
@@ -234,6 +253,12 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	func touchUp(atPoint pos: CGPoint) {
+		if let labelSelected = currentlySelectedLabel {
+			defer {
+				currentlySelectedLabel = nil
+			}
+			self.showInfoPanel(forLabel: labelSelected)
+		}
 		// stop moving keys if they were being moved
 		self.privateKeyNode.stopMoving(at: pos)
 		self.publicKeyNode.stopMoving(at: pos)
@@ -366,12 +391,12 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         nLabel.run(fadeBackSequence)
         
         let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
-        let morphAction = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+        let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
             encrypting ? IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
-        })
-        let notAnimating = SKAction.customAction(withDuration: 0, actionBlock: { (node, time) in
+        }
+        let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
             self.currentlyAnimating = false
-        })
+        }
         let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
         self.run(morphSeq)
     }
@@ -434,5 +459,14 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
         let moveToPosition = SKAction.move(to: point, duration: 0.01)
         node.run(moveToPosition)
     }
+	
+	private func showInfoPanel(forLabel label:String) {
+		switch label {
+		case "mLabel":
+			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations.")
+		default:
+			return
+		}
+	}
 	
 }

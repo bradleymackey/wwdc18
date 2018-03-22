@@ -56,6 +56,8 @@ Let's see it in action.
 
 Go ahead and turn on `viewMaths` to see the calculations that are done as we encrypt and decrypt!
 
+Tap on the labels for a description of what they do.
+
 To keep things simple, the `p`, `q` and the message are very small numbers, longer messages would require much longer numbers in the real world.
 */
 
