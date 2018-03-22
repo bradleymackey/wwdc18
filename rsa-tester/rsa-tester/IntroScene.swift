@@ -25,11 +25,31 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	public static let message = 7
 	
 	// MARK: Sprites
-	var publicKeyNode:KeySprite!
 	
-	var privateKeyNode:KeySprite!
+	/// simply loads the key texture so we don't have to reload it for each key
+	private static let keyTexture = KeySprite.textureForKey()
 	
-	var messageSceneNode:Message3DNode!
+	private lazy var publicKeyNode:KeySprite = {
+		let keySprite = KeySprite(texture: IntroScene.keyTexture, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), owner: .alice, type: .pub)
+		keySprite.name = "publicKeyNode"
+		keySprite.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
+		return keySprite
+	}()
+	
+	private lazy var privateKeyNode:KeySprite = {
+		let keySprite = KeySprite(texture: IntroScene.keyTexture, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), owner: .alice, type: .priv)
+		keySprite.name = "privateKeyNode"
+		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		return keySprite
+	}()
+	
+	private lazy var messageSceneNode:Message3DNode = {
+		let sceneSize = CGSize(width: 150, height: 150)
+		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: paperScene)
+		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+		sceneNode.name = "3dnode"
+		return sceneNode
+	}()
 	
 	// MARK: 3D Scene
 	lazy var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes.")
@@ -52,15 +72,15 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the public exponent
 	private lazy var eLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.e)", fontSize: 30, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), bold: false)
-		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+30)
+		let label = IntroScene.mathsLabel(text: "\(encryptor.e)", fontSize: 25, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), bold: false)
+		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+35)
 		return label
 	}()
 	
 	/// the private exponent
 	private lazy var dLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.d)", fontSize: 30, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
-		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+30)
+		let label = IntroScene.mathsLabel(text: "\(encryptor.d)", fontSize: 25, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
+		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+35)
 		return label
 	}()
 	
@@ -80,9 +100,21 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		return label
 	}()
 	
-	/// the `p` prime number, so that we can see what is being used by the encryptor
-	var pLabel:SKLabelNode!
-	var qLabel:SKLabelNode!
+	private lazy var pLabel:SKLabelNode = {
+		let label = IntroScene.mathsLabel(text: "p = \(encryptor.p)", fontSize: 22, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
+		label.position = CGPoint(x: 10, y: self.size.height-25)
+		// align left because it makes the most sense
+		label.horizontalAlignmentMode = .left
+		return label
+	}()
+	
+	private lazy var qLabel:SKLabelNode = {
+		let label = IntroScene.mathsLabel(text: "q = \(encryptor.q)", fontSize: 22, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
+		label.position = CGPoint(x: 10, y: self.size.height-50)
+		// align left because it makes the most sense
+		label.horizontalAlignmentMode = .left
+		return label
+	}()
 	
 	// MARK: Tracking Variables
 	var currentFingerPosition:CGPoint?
@@ -98,35 +130,23 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		// setup the physics for the world
 		self.setupWorldPhysics()
 		// create the paper and the scene node
-		self.createMessageSceneNode()
+		self.addMessageSceneNode()
 		// create the key sprites
-		self.createKeySprites()
+		self.addKeySprites()
 		// only add the maths labels if maths is enabled
-		self.enableMathsModeIfNeeded()
+		self.addMathsLabelsIfNeeded()
 	}
 
-	private func createMessageSceneNode() {
-		let sceneSize = CGSize(width: 150, height: 150)
-		messageSceneNode = Message3DNode(viewportSize: sceneSize, messageScene: paperScene)
-		messageSceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
-		messageSceneNode.name = "3dnode"
+	private func addMessageSceneNode() {
 		self.addChild(messageSceneNode)
 	}
 	
-	private func createKeySprites() {
-		let keyImage = KeySprite.imageForSprite()
-		let keyTexture = SKTexture(image: keyImage)
-		self.publicKeyNode = KeySprite(texture: keyTexture, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), owner: .alice, type: .pub)
-		self.publicKeyNode.name = "publicKeyNode"
-		self.publicKeyNode.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
+	private func addKeySprites() {
 		self.addChild(publicKeyNode)
-		self.privateKeyNode = KeySprite(texture: keyTexture, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), owner: .alice, type: .priv)
-		self.privateKeyNode.name = "privateKeyNode"
-		self.privateKeyNode.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		self.addChild(privateKeyNode)
 	}
 	
-	private func enableMathsModeIfNeeded() {
+	private func addMathsLabelsIfNeeded() {
 		guard IntroScene.mathsEnabled else { return }
 		// add the maths labels to the scene
 		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel, pLabel, qLabel].forEach {
@@ -134,6 +154,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		}
 	}
 	
+	/// the basic structure of a maths labels, which all labels share
 	private class func mathsLabel(text:String,fontSize:CGFloat,color:UIColor,bold:Bool) -> SKLabelNode {
 		let label = SKLabelNode(fontNamed: bold ? "Courier-Bold" : "Courier")
 		label.text = text
@@ -373,17 +394,16 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 			self.publicKeyNode.updatePositionIfNeeded(to: fingerPos)
 			self.privateKeyNode.updatePositionIfNeeded(to: fingerPos)
 		}
-		if let eLabel = eLabel, let publicKey = publicKeyNode {
-			self.move(node: eLabel, above: publicKey)
-		}
-        if let dLabel = dLabel, let privateKey = privateKeyNode {
-			self.move(node: dLabel, above: privateKey)
+		// make sure that the maths labels are above the keys if needed
+		if IntroScene.mathsEnabled {
+			self.move(node: eLabel, above: publicKeyNode)
+			self.move(node: dLabel, above: privateKeyNode)
 		}
 	}
     
     private func move(node:SKNode, above mainNode:SKNode) {
-        let point = CGPoint(x: mainNode.position.x, y: mainNode.position.y+30)
-        let moveToPosition = SKAction.move(to: point, duration: 0.02)
+        let point = CGPoint(x: mainNode.position.x, y: mainNode.position.y+35)
+        let moveToPosition = SKAction.move(to: point, duration: 0.01)
         node.run(moveToPosition)
     }
 	
