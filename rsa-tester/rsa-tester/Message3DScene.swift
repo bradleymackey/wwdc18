@@ -73,6 +73,7 @@ public final class Message3DScene: SCNScene {
 	}()
 	
 	/// the regular text surface on the unencrypted box
+	/// - note: must be lazy so that we are able to know what the message is after initilisation
 	private lazy var messageMaterial: SCNMaterial = {
 		// create the surface image
 		let paperSize = CGSize(width: 200, height: 300)
@@ -87,7 +88,7 @@ public final class Message3DScene: SCNScene {
 	}()
 	
 	/// the encrypted text on the ciper block (same material all sides)
-	private lazy var encryptedMaterial: SCNMaterial = {
+	private let encryptedMaterial: SCNMaterial = {
 		// create the surface image
 		let encryptedMessage = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
 		let encryptedSize = CGSize(width: 200, height: 200)
@@ -100,8 +101,9 @@ public final class Message3DScene: SCNScene {
 		textMaterial.locksAmbientWithDiffuse = true
 		return textMaterial
 	}()
-    
-    private lazy var questionMarkMaterial: SCNMaterial = {
+	
+	/// the question mark material (same on all sides of the message block)
+    private let questionMarkMaterial: SCNMaterial = {
         // create the surface image
         let message = "?"
         let encryptedSize = CGSize(width: 200, height: 200)
