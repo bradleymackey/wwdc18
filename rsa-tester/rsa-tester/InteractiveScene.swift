@@ -15,6 +15,38 @@ public final class InteractiveScene: RSAScene  {
 	
 	// MARK: - Properties
 	
+	// MARK: Constants
+	
+	// MARK: Instance Variables
+	
+	private lazy var alicePublicKeyNode:KeySprite = {
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .pub)
+		keySprite.name = "alicePublicKeyNode"
+		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		return keySprite
+	}()
+	
+	private lazy var alicePrivateKeyNode:KeySprite = {
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .priv)
+		keySprite.name = "alicePrivateKeyNode"
+		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		return keySprite
+	}()
+	
+	private lazy var bobPublicKeyNode:KeySprite = {
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .pub)
+		keySprite.name = "bobPublicKeyNode"
+		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		return keySprite
+	}()
+	
+	private lazy var bobPrivateKeyNode:KeySprite = {
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .priv)
+		keySprite.name = "bobPrivateKeyNode"
+		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		return keySprite
+	}()
+	
 	// MARK: - Setup
 	
 	public override func sceneDidLoad() {

@@ -12,11 +12,6 @@ import SpriteKit
 
 public final class KeySprite: SKSpriteNode {
 	
-	public enum Owner {
-		case alice
-		case bob
-	}
-	
 	public enum KeyType {
 		case pub
 		case priv
@@ -30,7 +25,7 @@ public final class KeySprite: SKSpriteNode {
 	public var lastPoint:CGPoint?
 	
 	/// who owns the key
-	public let owner: Owner
+	public let owner: KeyOwner
 	/// what type of key is this?
 	public let type: KeyType
 	
@@ -71,7 +66,7 @@ public final class KeySprite: SKSpriteNode {
 	
 	// MARK: Lifecycle
 	
-	public init(texture: SKTexture, color: UIColor, owner: Owner, type: KeyType) {
+	public init(texture: SKTexture, color: UIColor, owner: KeyOwner, type: KeyType) {
 		self.owner = owner
 		self.type = type
 		super.init(texture: texture, color: color, size: KeySprite.dimensions)

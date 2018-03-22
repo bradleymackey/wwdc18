@@ -27,6 +27,7 @@
 		972FE96F20619E2B00AF243D /* key.png in Resources */ = {isa = PBXBuildFile; fileRef = 972FE96C20619E2B00AF243D /* key.png */; };
 		972FE971206444A300AF243D /* InteractiveScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE970206444A300AF243D /* InteractiveScene.swift */; };
 		972FE9732064459100AF243D /* RSAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE9722064459100AF243D /* RSAScene.swift */; };
+		972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97620645D7B00AF243D /* KeyOwner.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,7 @@
 		972FE96C20619E2B00AF243D /* key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = key.png; sourceTree = "<group>"; };
 		972FE970206444A300AF243D /* InteractiveScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveScene.swift; sourceTree = "<group>"; };
 		972FE9722064459100AF243D /* RSAScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAScene.swift; sourceTree = "<group>"; };
+		972FE97620645D7B00AF243D /* KeyOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyOwner.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -134,6 +136,7 @@
 				972FE95A20619B4100AF243D /* IntroScene.swift */,
 				972FE970206444A300AF243D /* InteractiveScene.swift */,
 				972FE95C20619B7000AF243D /* KeySprite.swift */,
+				972FE97620645D7B00AF243D /* KeyOwner.swift */,
 				972FE95E20619B9500AF243D /* Message3DNode.swift */,
 				972FE96020619BA800AF243D /* Message3DScene.swift */,
 				972FE96220619BBE00AF243D /* PhysicsCategory.swift */,
@@ -306,6 +309,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */,
 				972FE95D20619B7000AF243D /* KeySprite.swift in Sources */,
 				972FE96320619BBE00AF243D /* PhysicsCategory.swift in Sources */,
 				972FE9732064459100AF243D /* RSAScene.swift in Sources */,
