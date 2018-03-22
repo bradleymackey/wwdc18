@@ -24,7 +24,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     public static var mathsEnabled = true
 	public static var useRealValues = true
 	
-	public static var message = 3
+	public static var message = 8
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
@@ -64,7 +64,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
-		let label = IntroScene.mathsLabel(text: labelText, fontSize: 45, color: .black, bold: true)
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		return label
 	}()
@@ -72,8 +72,8 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	/// the public modulus
 	private lazy var nLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(encryptor.N)" : "N"
-		let label = IntroScene.mathsLabel(text: labelText, fontSize: 45, color: IntroScene.publicColor, bold: false)
-		label.position =  CGPoint(x: self.size.width-30, y: self.size.height-30)
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 32, color: IntroScene.publicColor, bold: false)
+		label.position =  CGPoint(x: self.size.width-35, y: self.size.height-30)
 		return label
 	}()
 	
@@ -95,7 +95,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "mod", fontSize: 30, color: IntroScene.publicColor, bold: false)
+		let label = IntroScene.mathsLabel(text: "mod", fontSize: 28, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
 		return label
 	}()
@@ -105,14 +105,14 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		// encrypt the message using the encryptor
 		let encryptedMessage = encryptor.encryption(forMessage: IntroScene.message)
 		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
-		let label = IntroScene.mathsLabel(text: labelText, fontSize: 45, color: .black, bold: true)
+		let label = IntroScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		label.alpha = 0
 		return label
 	}()
 	
 	private lazy var pLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "p = \(encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
+		let label = IntroScene.mathsLabel(text: "p=\(encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-25)
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -120,7 +120,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "q = \(encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
+		let label = IntroScene.mathsLabel(text: "q=\(encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-50)
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left

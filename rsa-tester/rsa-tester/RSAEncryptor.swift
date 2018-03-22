@@ -50,7 +50,7 @@ public final class RSAEncryptor {
     public init(p:Int, q:Int) {
         self.p = p
         self.q = q
-		if p > 11 || q > 11 {
+		if p > 17 || q > 17 {
 			fatalError("p and q must be 11 or less!")
 		}
     }
