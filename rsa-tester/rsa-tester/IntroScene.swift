@@ -15,14 +15,19 @@ import SceneKit
 final public class IntroScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Constants
+	
     public static let mathsAnimationMoveTime:TimeInterval = 0.8
     public static let mathsAnimationPauseTime:TimeInterval = 1.5
     public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
 	public static let invalidPulseTime:TimeInterval = 0.4
     
-    public static let mathsEnabled = true
+    public static var mathsEnabled = true
 	
-	public static let message = 7
+	public static var message = 7
+	public static var message3DScene = "Here's to the crazy ones."
+	
+	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
+	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
 	// MARK: Sprites
 	
@@ -30,14 +35,14 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private static let keyTexture = KeySprite.textureForKey()
 	
 	private lazy var publicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: IntroScene.keyTexture, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), owner: .alice, type: .pub)
+		let keySprite = KeySprite(texture: IntroScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .pub)
 		keySprite.name = "publicKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var privateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: IntroScene.keyTexture, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), owner: .alice, type: .priv)
+		let keySprite = KeySprite(texture: IntroScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .priv)
 		keySprite.name = "privateKeyNode"
 		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		return keySprite
@@ -52,7 +57,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 	
 	// MARK: 3D Scene
-	lazy var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes.")
+	public lazy var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The troublemakers. The round pegs in the square holes.")
 	
 	// MARK: Maths labels
 	
@@ -65,28 +70,28 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	/// the public modulus
 	private lazy var nLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.N)", fontSize: 45, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), bold: false)
+		let label = IntroScene.mathsLabel(text: "\(encryptor.N)", fontSize: 45, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.size.width-30, y: self.size.height-30)
 		return label
 	}()
 	
 	/// the public exponent
 	private lazy var eLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.e)", fontSize: 25, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), bold: false)
-		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+35)
+		let label = IntroScene.mathsLabel(text: "\(encryptor.e)", fontSize: 25, color: IntroScene.publicColor, bold: false)
+		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+40)
 		return label
 	}()
 	
 	/// the private exponent
 	private lazy var dLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "\(encryptor.d)", fontSize: 25, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
-		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+35)
+		let label = IntroScene.mathsLabel(text: "\(encryptor.d)", fontSize: 25, color: IntroScene.privateColor, bold: false)
+		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+40)
 		return label
 	}()
 	
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "mod", fontSize: 30, color: #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1), bold: false)
+		let label = IntroScene.mathsLabel(text: "mod", fontSize: 30, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
 		return label
 	}()
@@ -101,7 +106,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 	
 	private lazy var pLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "p = \(encryptor.p)", fontSize: 22, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
+		let label = IntroScene.mathsLabel(text: "p = \(encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-25)
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -109,7 +114,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
-		let label = IntroScene.mathsLabel(text: "q = \(encryptor.q)", fontSize: 22, color: #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1), bold: false)
+		let label = IntroScene.mathsLabel(text: "q = \(encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: 10, y: self.size.height-50)
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -122,7 +127,11 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	// MARK: Encryption
 	/// the encryption engine
-    let encryptor = RSAEncryptor(p: 3, q: 17)
+    let encryptor = RSAEncryptor(p: 3, q: 7)
+	
+	// MARK: - Methods
+	
+	// MARK: Setup
 	
 	override public func sceneDidLoad() {
 		super.sceneDidLoad()
@@ -168,7 +177,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	private func setupWorldPhysics() {
 		self.physicsWorld.contactDelegate = self
 		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-		self.physicsBody = IntroScene.worldPhysicsBody(frame: self.frame.insetBy(dx: 10, dy: 10))
+		self.physicsBody = IntroScene.worldPhysicsBody(frame: self.frame.insetBy(dx: 20, dy: 20))
 	}
 	
 	private class func worldPhysicsBody(frame:CGRect) -> SKPhysicsBody {
@@ -179,6 +188,8 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		body.collisionBitMask = PhysicsCategory.all
 		return body
 	}
+	
+	// MARK: Methods
 	
 	func touchDown(atPoint point: CGPoint) {
 		currentFingerPosition = point
@@ -390,7 +401,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	
 	override public func update(_ currentTime: TimeInterval) {
 		// Called before each frame is rendered
-		if let fingerPos = currentFingerPosition {
+		if let fingerPos = currentFingerPosition, fingerPos.x > 20, fingerPos.y > 20, fingerPos.x < self.frame.size.width-20, fingerPos.y < self.frame.size.height-20 {
 			self.publicKeyNode.updatePositionIfNeeded(to: fingerPos)
 			self.privateKeyNode.updatePositionIfNeeded(to: fingerPos)
 		}
@@ -402,7 +413,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 	}
     
     private func move(node:SKNode, above mainNode:SKNode) {
-        let point = CGPoint(x: mainNode.position.x, y: mainNode.position.y+35)
+        let point = CGPoint(x: mainNode.position.x, y: mainNode.position.y+40)
         let moveToPosition = SKAction.move(to: point, duration: 0.01)
         node.run(moveToPosition)
     }

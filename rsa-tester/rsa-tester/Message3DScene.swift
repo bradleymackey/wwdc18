@@ -52,17 +52,21 @@ public final class Message3DScene: SCNScene {
 	public var paperState = PaperState.unencrypted
 	
 	/// the paper/encrypted box object
-	private var paper: SCNNode!
+	private lazy var paper: SCNNode = {
+		return SCNNode(geometry: paperGeometry)
+	}()
 	/// the geometry of the paper. this gets animated to change the dimensions of the box
-	private var paperGeometry: SCNBox!
+	private lazy var paperGeometry: SCNBox = {
+		let geometry = SCNBox(width: paperSize.width, height: paperSize.height, length: paperSize.length, chamferRadius: 0.1)
+		geometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+		return geometry
+	}()
 	/// the dimensions of the unencrypted paper
 	private let paperSize = ObjectDimensions(height: 8, width: 5, length: 0.4)
 	/// the dimensions of the encrypted cube
 	private let cubeSize = ObjectDimensions(height: 6, width: 6, length: 6)
     /// the size of the question mark cube
     private let questionMarkSize = ObjectDimensions(height: 5, width: 5, length: 5)
-	/// the time of the last morph, so that we don't prematurley pulse the message
-	private var lastMorph = Date(timeIntervalSince1970: 0)
 	
 	/// blank white material to show on sides of the paper without text
 	private let whiteMaterial: SCNMaterial = {
@@ -123,10 +127,7 @@ public final class Message3DScene: SCNScene {
 		// initialise scene
 		self.message = message
 		super.init()
-		// create the geometry and paper object
-		paperGeometry = SCNBox(width: paperSize.width, height: paperSize.height, length: paperSize.length, chamferRadius: 0.1)
-		paperGeometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
-		paper = SCNNode(geometry: paperGeometry)
+		// add the paper to the scene
 		self.rootNode.addChildNode(paper)
 	}
 	
@@ -158,7 +159,6 @@ public final class Message3DScene: SCNScene {
 	}
 	
 	public func morphToCrypto(duration:TimeInterval) {
-		lastMorph = Date()
 		// update the surface materials
 		self.paperGeometry.materials = [encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial]
 		// animate to new size
@@ -171,7 +171,6 @@ public final class Message3DScene: SCNScene {
 	}
 	
 	public func morphToPaper(duration:TimeInterval) {
-		lastMorph = Date()
 		// update the surface materials
 		self.paperGeometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
 		// animate to new size
@@ -184,7 +183,6 @@ public final class Message3DScene: SCNScene {
 	}
     
     public func morphToQuestionMark(duration:TimeInterval) {
-        lastMorph = Date()
         // update the surface materials
         self.paperGeometry.materials = [questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial]
         // animate to new size
