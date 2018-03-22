@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 
 /// a scene that implements shared functionality between the intro scene and interactive scene
-public class RSAScene: SKScene {
+public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	
 	// MARK: - Properties
 	
@@ -21,6 +21,12 @@ public class RSAScene: SKScene {
 	public static let keyTexture = KeySprite.textureForKey()
 	
 	// MARK: - Methods
+	
+	public override func sceneDidLoad() {
+		super.sceneDidLoad()
+		// setup the world physics
+		self.setupWorldPhysics()
+	}
 	
 	/// the basic structure of a maths labels, which all labels share
 	public class func mathsLabel(text:String,fontSize:CGFloat,color:UIColor,bold:Bool) -> SKLabelNode {
@@ -44,6 +50,7 @@ public class RSAScene: SKScene {
 	
 	/// the physics for the world
 	public func setupWorldPhysics() {
+		self.physicsWorld.contactDelegate = self
 		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
 		self.physicsBody = RSAScene.worldPhysicsBody(frame: self.frame)
 	}
@@ -84,6 +91,26 @@ public class RSAScene: SKScene {
 	}
 	
 	public func touchUp(atPoint point: CGPoint) {
+		// add more in subclass
+	}
+	
+	public func didBegin(_ contact: SKPhysicsContact) {
+		// determine the contact such that the lower bitMask valued body is the `firstBody`
+		var firstBody: SKPhysicsBody
+		var secondBody: SKPhysicsBody
+		if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
+			firstBody = contact.bodyA
+			secondBody = contact.bodyB
+		} else {
+			firstBody = contact.bodyB
+			secondBody = contact.bodyA
+		}
+		// call our other nicer method
+		self.bodyContact(firstBody: firstBody, secondBody: secondBody)
+	}
+	
+	public func bodyContact(firstBody:SKPhysicsBody, secondBody:SKPhysicsBody) {
+		// override in subclasses
 	}
 
 }

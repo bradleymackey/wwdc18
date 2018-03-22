@@ -15,7 +15,7 @@ public protocol IntroSceneInformationDelegate: class {
 }
 
 /// the initial scene used to introduce the user to RSA
-public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
+public final class IntroScene: RSAScene {
     
     // MARK: Constants
 	
@@ -154,8 +154,6 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
 	override public func sceneDidLoad() {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
-		// setup the physics for the world
-		self.setupWorldPhysics()
 		// create the paper and the scene node
 		self.addMessageSceneNode()
 		// create the key sprites
@@ -186,13 +184,7 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
 		}
 	}
 	
-	override public func setupWorldPhysics() {
-		super.setupWorldPhysics()
-		self.physicsWorld.contactDelegate = self
-	}
-	
 	// MARK: Methods
-	
 	
 	override public func touchDown(atPoint point: CGPoint) {
 		// call the implementation in RSAScene
@@ -245,18 +237,8 @@ public final class IntroScene: RSAScene, SKPhysicsContactDelegate {
 		self.messageSceneNode.finishedRotating()
 	}
 	
-	public func didBegin(_ contact: SKPhysicsContact) {
-		// determine the contact such that the lower bitMask valued body is the `firstBody`
-		var firstBody: SKPhysicsBody
-		var secondBody: SKPhysicsBody
-		if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-			firstBody = contact.bodyA
-			secondBody = contact.bodyB
-		} else {
-			firstBody = contact.bodyB
-			secondBody = contact.bodyA
-		}
-		
+	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
+		super.bodyContact(firstBody: firstBody, secondBody: secondBody)
 		if (firstBody.categoryBitMask == PhysicsCategory.publicKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
 			// public key has contacted box
 			self.publicKeyContact()
