@@ -478,7 +478,7 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		case "cLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Cipher Text", message: "This is the encrypted message. We can only convert this back to the original message with the private key (the Public Modulus and Private Exponent).")
 		case "modLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Modulo", message: "This is the operator that calculates the remainder after dividing some number by another number.")
+			self.informationDelegate?.presentInformationPopup(title: "Modulo Operator", message: "This is the operator that is used to calculate the remainder after dividing some number by another number.")
 		case "nLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This is the number that makes up part of the public key and the private key. It is calculated by multiplying p and q, and is used when we encrypt the message and also when we decrypt the cipher text.")
 		case "eLabel":
@@ -486,9 +486,9 @@ final public class IntroScene: SKScene, SKPhysicsContactDelegate {
 		case "dLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key. In order to calculate the original message, the cipher text is raised to the power of this number and then we calculate modulo N of this number.")
 		case "pLabel":
-			self.informationDelegate?.presentInformationPopup(title: "p", message: "This is one of the prime numbers used to calculate N, and (p-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
+			self.informationDelegate?.presentInformationPopup(title: "Prime p", message: "This is one of the prime numbers used to calculate N (p*q), and (p-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
 		case "qLabel":
-			self.informationDelegate?.presentInformationPopup(title: "q", message: "This is one of the prime numbers used to calculate N, and (q-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
+			self.informationDelegate?.presentInformationPopup(title: "Prime q", message: "This is one of the prime numbers used to calculate N (p*q), and (q-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
 		default:
 			return
 		}
