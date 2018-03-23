@@ -28,6 +28,7 @@
 		972FE971206444A300AF243D /* InteractiveScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE970206444A300AF243D /* InteractiveScene.swift */; };
 		972FE9732064459100AF243D /* RSAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE9722064459100AF243D /* RSAScene.swift */; };
 		972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97620645D7B00AF243D /* KeyOwner.swift */; };
+		972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97820651A2600AF243D /* CharacterSprite.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +77,7 @@
 		972FE970206444A300AF243D /* InteractiveScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveScene.swift; sourceTree = "<group>"; };
 		972FE9722064459100AF243D /* RSAScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAScene.swift; sourceTree = "<group>"; };
 		972FE97620645D7B00AF243D /* KeyOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyOwner.swift; sourceTree = "<group>"; };
+		972FE97820651A2600AF243D /* CharacterSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSprite.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -135,6 +137,7 @@
 				972FE9722064459100AF243D /* RSAScene.swift */,
 				972FE95A20619B4100AF243D /* IntroScene.swift */,
 				972FE970206444A300AF243D /* InteractiveScene.swift */,
+				972FE97820651A2600AF243D /* CharacterSprite.swift */,
 				972FE95C20619B7000AF243D /* KeySprite.swift */,
 				972FE97620645D7B00AF243D /* KeyOwner.swift */,
 				972FE95E20619B9500AF243D /* Message3DNode.swift */,
@@ -318,6 +321,7 @@
 				972FE95B20619B4100AF243D /* IntroScene.swift in Sources */,
 				972FE92F20619AF800AF243D /* GameViewController.swift in Sources */,
 				972FE95F20619B9500AF243D /* Message3DNode.swift in Sources */,
+				972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */,
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,
 				972FE92720619AF800AF243D /* AppDelegate.swift in Sources */,

@@ -19,6 +19,10 @@ public final class InteractiveScene: RSAScene  {
 	
 	// MARK: Instance Variables
 	
+	private lazy var aliceCharacter:CharacterSprite = {
+		let alice = CharacterSprite(waiting: "👩🏽‍💼", acting: "👩🏽‍💻")
+	}()
+	
 	private lazy var alicePublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .pub)
 		keySprite.name = "alicePublicKeyNode"
