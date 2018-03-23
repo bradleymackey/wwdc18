@@ -19,8 +19,43 @@ public final class InteractiveScene: RSAScene  {
 	
 	// MARK: Instance Variables
 	
+	/*
+	
+		FULLY FREE-FORM
+
+		PRIVATE KEYS ARE ATTACHED TO EACH CHARACTER WITH A CHAIN
+		PUBLIC KEYS ARE FREE FLOATING
+	
+		THE MESSAGE CAN ONLY BE DRAGGED TO TARGET ZONES ABOVE THE CHARACTERS (where it will snap and remain in that position)
+
+	*/
+	
+	public static var paperScene = Message3DScene(message: "Another message. Go ahead and encrypt me.")
+	
+	private lazy var messageNode:Message3DNode = {
+		let sceneSize = CGSize(width: 75, height: 75)
+		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
+		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+		sceneNode.name = "messageNode"
+		return sceneNode
+	}()
+	
 	private lazy var aliceCharacter:CharacterSprite = {
-		let alice = CharacterSprite(waiting: "👩🏽‍💼", acting: "👩🏽‍💻")
+		let alice = CharacterSprite(waiting: "👩🏽‍💼", acting: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
+		alice.name = "aliceCharacter"
+		return alice
+	}()
+	
+	private lazy var bobCharacter:CharacterSprite = {
+		let bob = CharacterSprite(waiting: "👨🏼‍💼", acting: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
+		bob.name = "bobCharacter"
+		return bob
+	}()
+	
+	private lazy var eveCharacter:CharacterSprite = {
+		let eve = CharacterSprite(waiting: "👩🏻‍💼", acting: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
+		eve.name = "eveCharacter"
+		return eve
 	}()
 	
 	private lazy var alicePublicKeyNode:KeySprite = {
@@ -55,6 +90,8 @@ public final class InteractiveScene: RSAScene  {
 	
 	public override func sceneDidLoad() {
 		super.sceneDidLoad()
+		self.backgroundColor = .white
+		self.addChild(messageNode)
 	}
 	
 	// MARK: - Methods
@@ -75,5 +112,4 @@ public final class InteractiveScene: RSAScene  {
 		super.bodyContact(firstBody: firstBody, secondBody: secondBody)
 	}
 	
-
 }

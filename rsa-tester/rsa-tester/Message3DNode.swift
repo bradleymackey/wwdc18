@@ -78,11 +78,15 @@ public final class Message3DNode: SK3DNode {
 		return cameraNode
 	}
 	
+	// MARK: Rotation
+	
+	/// rotation of the message/cube object has began
 	public func startRotating(at point:CGPoint) {
 		isBeingRotated = true
 		lastRotationPoint = point
 	}
 	
+	/// updating the angle of the rotating
 	public func updateRotationIfRotating(newPoint point:CGPoint) {
 		guard isBeingRotated else { return }
 		// rotate the paper
@@ -93,8 +97,8 @@ public final class Message3DNode: SK3DNode {
 		lastRotationPoint = point
 	}
 	
+	/// mark the rotation as complete
 	public func finishedRotating() {
-		guard isBeingRotated else { return }
 		isBeingRotated = false
 	}
 	
