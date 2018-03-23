@@ -68,7 +68,7 @@ public final class Message3DNode: SK3DNode {
 	private class func cameraNode(forScene scene:SCNScene) -> SCNNode {
 		let camera = SCNCamera()
 		camera.usesOrthographicProjection = true
-		camera.orthographicScale = 6
+		camera.orthographicScale = 1.7
 		let cameraNode = SCNNode()
 		cameraNode.camera = camera
 		if let lookAtTarget = scene.rootNode.childNodes.first {

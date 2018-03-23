@@ -57,16 +57,16 @@ public final class Message3DScene: SCNScene {
 	}()
 	/// the geometry of the paper. this gets animated to change the dimensions of the box
 	private lazy var paperGeometry: SCNBox = {
-		let geometry = SCNBox(width: paperSize.width, height: paperSize.height, length: paperSize.length, chamferRadius: 0.1)
+		let geometry = SCNBox(width: paperSize.width, height: paperSize.height, length: paperSize.length, chamferRadius: 0.05)
 		geometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
 		return geometry
 	}()
 	/// the dimensions of the unencrypted paper
-	private let paperSize = ObjectDimensions(height: 8, width: 5, length: 0.4)
+	private let paperSize = ObjectDimensions(height: 2, width: 1.25, length: 0.1)
 	/// the dimensions of the encrypted cube
-	private let cubeSize = ObjectDimensions(height: 6, width: 6, length: 6)
+	private let cubeSize = ObjectDimensions(height: 1.5, width: 1.5, length: 1.5)
     /// the size of the question mark cube
-    private let questionMarkSize = ObjectDimensions(height: 5, width: 5, length: 5)
+    private let questionMarkSize = ObjectDimensions(height: 1.25, width: 1.25, length: 1.25)
 	
 	/// blank white material to show on sides of the paper without text
 	private let whiteMaterial: SCNMaterial = {
