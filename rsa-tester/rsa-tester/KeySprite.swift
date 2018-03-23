@@ -30,7 +30,7 @@ public final class KeySprite: SKSpriteNode {
 	public let type: KeyType
 	
 	/// the size of the key
-	private static let size:CGFloat = 50
+	private static let size:CGFloat = 60
 	/// dimensions of the key
 	private static var dimensions:CGSize {
 		return CGSize(width: size, height: size)

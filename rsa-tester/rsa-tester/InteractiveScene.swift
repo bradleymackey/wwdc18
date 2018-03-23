@@ -33,7 +33,7 @@ public final class InteractiveScene: RSAScene  {
 	public static var paperScene = Message3DScene(message: "Another message. Go ahead and encrypt me.")
 	
 	private lazy var messageNode:Message3DNode = {
-		let sceneSize = CGSize(width: 75, height: 75)
+		let sceneSize = CGSize(width: 170, height: 170)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		sceneNode.name = "messageNode"

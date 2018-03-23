@@ -40,7 +40,7 @@ public final class Message3DScene: SCNScene {
 	}
 	
 	// MARK: Constants
-	public static let surfaceFontSize:CGFloat = 23
+	public static let surfaceFontSize:CGFloat = 17
 	public static var paperColors:(text:UIColor,background:UIColor) = (text: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), background: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
 	public static var encryptedColors:(text:UIColor,background:UIColor) = (text: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), background: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
 	
@@ -80,7 +80,7 @@ public final class Message3DScene: SCNScene {
 	/// - note: must be lazy so that we are able to know what the message is after initilisation
 	private lazy var messageMaterial: SCNMaterial = {
 		// create the surface image
-		let paperSize = CGSize(width: 200, height: 300)
+		let paperSize = CGSize(width: 150, height: 225)
 		let textColor = Message3DScene.paperColors.text
 		let backgroundColor = Message3DScene.paperColors.background
 		let surfaceImage = Message3DScene.renderedTextImage(message: self.message, size: paperSize, textColor: textColor, backgroundColor: backgroundColor)
@@ -95,7 +95,7 @@ public final class Message3DScene: SCNScene {
 	private let encryptedMaterial: SCNMaterial = {
 		// create the surface image
 		let encryptedMessage = "kuhit67683o aiyefgo6217tyg8£^&Rkjdnf &cisudfyg8&^ uvisudgf87t*F&%Rgiusgdfg8i g8r7r3sr2q3trdz iuishug08y9 7g&^R&^Giusid bfiyg87tgiwubfo776r 737tf^$Euhir  g97hiu87IGI &T8ugoeihrgo8h iy89ywieufiuiYGYTFI Uiusd97fiw uebiufg87ts87f wouefiuwfuyc a98y8w7egf ihoih891729347tewgdf9guiw"
-		let encryptedSize = CGSize(width: 200, height: 200)
+		let encryptedSize = CGSize(width: 150, height: 150)
 		let textColor = Message3DScene.encryptedColors.text
 		let backgroundColor = Message3DScene.encryptedColors.background
 		let surfaceImage = Message3DScene.renderedTextImage(message: encryptedMessage, size: encryptedSize, textColor: textColor, backgroundColor: backgroundColor)
@@ -110,7 +110,7 @@ public final class Message3DScene: SCNScene {
     private let questionMarkMaterial: SCNMaterial = {
         // create the surface image
         let message = "?"
-        let encryptedSize = CGSize(width: 200, height: 200)
+        let encryptedSize = CGSize(width: 150, height: 150)
         let textColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         let backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         let surfaceImage = Message3DScene.renderedTextImage(message: message, size: encryptedSize, textColor: textColor, backgroundColor: backgroundColor, superLarge: true)
@@ -151,7 +151,7 @@ public final class Message3DScene: SCNScene {
         textLayer.alignmentMode = superLarge ? kCAAlignmentCenter : kCAAlignmentLeft
 		textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
 		textLayer.foregroundColor = textColor.cgColor
-        textLayer.fontSize = superLarge ? 140 : Message3DScene.surfaceFontSize
+        textLayer.fontSize = superLarge ? 100 : Message3DScene.surfaceFontSize
 		textLayer.display()
 		layer.addSublayer(textLayer)
 		// create the image and return

@@ -60,7 +60,7 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var messageSceneNode:Message3DNode = {
-		let sceneSize = CGSize(width: 150, height: 150)
+		let sceneSize = CGSize(width: 180, height: 180)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		sceneNode.name = "3dnode"
