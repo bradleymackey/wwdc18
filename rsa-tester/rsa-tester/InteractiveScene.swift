@@ -41,21 +41,21 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var aliceCharacter:CharacterSprite = {
-        let alice = CharacterSprite(characterName: "Alice", waiting: "🙋🏽‍♀️", acting: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
+        let alice = CharacterSprite(characterName: "Alice", waiting: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
 		alice.name = "aliceCharacter"
         alice.position = CGPoint(x: self.size.width/4, y: 40)
 		return alice
 	}()
 	
 	private lazy var bobCharacter:CharacterSprite = {
-		let bob = CharacterSprite(characterName: "Bob", waiting: "🙋🏼‍♂️", acting: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
+		let bob = CharacterSprite(characterName: "Bob", waiting: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
 		bob.name = "bobCharacter"
         bob.position = CGPoint(x: 3*self.size.width/4, y: 40)
 		return bob
 	}()
 	
 	private lazy var eveCharacter:CharacterSprite = {
-		let eve = CharacterSprite(characterName: "Eve", waiting: "🙋🏻‍♀️", acting: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
+		let eve = CharacterSprite(characterName: "Eve", waiting: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
 		eve.name = "eveCharacter"
         eve.position = CGPoint(x: 2*self.size.width/4, y: 2*self.size.height/3)
 		return eve
@@ -88,25 +88,55 @@ public final class InteractiveScene: RSAScene  {
 		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		return keySprite
 	}()
+    
+    /// convenience property to get all characters
+    private lazy var allCharacters:[CharacterSprite] = {
+        return [aliceCharacter, bobCharacter, eveCharacter]
+    }()
+    
+    /// convenience property to get all keys
+    private lazy var allKeys:[KeySprite] = {
+        return [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode, bobPrivateKeyNode]
+    }()
 	
 	// MARK: - Setup
 	
 	public override func sceneDidLoad() {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
-        [aliceCharacter, bobCharacter, eveCharacter].forEach {
-            self.addChild($0)
-        }
-        [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode, bobPrivateKeyNode].forEach {
-            self.addChild($0)
-        }
-		self.addChild(messageNode)
+        self.addNodesToScene()
 	}
+    
+    private func addNodesToScene() {
+        self.allCharacters.forEach {
+            self.addChild($0)
+        }
+        self.allKeys.forEach {
+            self.addChild($0)
+        }
+        self.addChild(messageNode)
+    }
 	
 	// MARK: - Methods
 	
 	override public func touchDown(atPoint point: CGPoint) {
 		super.touchDown(atPoint: point)
+        // get the node that we have just touched
+        let node = self.atPoint(point)
+        // ensure that the node has a name
+        guard let nodeName = node.name else { return }
+        switch (nodeName) {
+        case "alicePublicKeyNode":
+            self.alicePublicKeyNode.startMoving(initialPoint: point)
+        case "alicePrivateKeyNode":
+            self.alicePrivateKeyNode.startMoving(initialPoint: point)
+        case "bobPublicKeyNode":
+            self.bobPublicKeyNode.startMoving(initialPoint: point)
+        case "bobPrivateKeyNode":
+            self.bobPrivateKeyNode.startMoving(initialPoint: point)
+        default:
+            return
+        }
 	}
 	
 	override public func touchMoved(toPoint point: CGPoint) {
@@ -115,10 +145,32 @@ public final class InteractiveScene: RSAScene  {
 	
 	override public func touchUp(atPoint point: CGPoint) {
 		super.touchUp(atPoint: point)
+        self.allKeys.forEach {
+            $0.stopMoving(at: point)
+        }
 	}
 	
 	public override func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
 		super.bodyContact(firstBody: firstBody, secondBody: secondBody)
 	}
+    
+    public override func update(_ currentTime: TimeInterval) {
+        super.update(currentTime)
+        // Called before each frame is rendered
+        if let point = currentFingerPosition {
+            // ignore movement if position is outside scene
+            let margin:CGFloat = 10
+            if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
+                // stop moving keys if the touch is outside the margin
+                self.allKeys.forEach {
+                    $0.stopMoving(at: point)
+                }
+            } else {
+                self.allKeys.forEach {
+                    $0.updatePositionIfNeeded(to: point)
+                }
+            }
+        }
+    }
 	
 }

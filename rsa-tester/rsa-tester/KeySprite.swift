@@ -97,12 +97,12 @@ public final class KeySprite: SKSpriteNode {
 	
 	private class func physicsBody(texture:SKTexture,mask:UInt32) -> SKPhysicsBody {
 		let body = SKPhysicsBody(texture: texture, size: KeySprite.dimensions)
-		body.categoryBitMask = mask // determine the correct category
+		body.categoryBitMask = mask // assign correct category for this specific key
 		body.affectedByGravity = true
 		body.collisionBitMask = PhysicsCategory.all ^ PhysicsCategory.box // collide with all but box
 		body.contactTestBitMask = PhysicsCategory.box
 		body.allowsRotation = true
-		body.restitution = 0.1
+		body.restitution = 0.15
 		body.mass = 0.5
 		return body
 	}

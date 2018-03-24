@@ -15,7 +15,6 @@ public final class CharacterSprite: SKLabelNode {
 	/// the possible states that a character can be in
 	public enum State {
 		case waiting
-		case acting
 		case success
 		case fail
 	}
@@ -29,8 +28,6 @@ public final class CharacterSprite: SKLabelNode {
     public let characterName:String
 	/// the expression the character gives when waiting
 	private let waiting:String
-	/// the expression the character gives when encrypting a message or reading
-	private let acting:String
 	/// the expression after a success event
 	private let success:String
 	/// the expression after a fail event
@@ -40,8 +37,6 @@ public final class CharacterSprite: SKLabelNode {
 		switch self.currentState {
 		case .waiting:
 			return self.waiting
-		case .acting:
-			return self.acting
 		case .success:
 			return self.success
 		case .fail:
@@ -51,10 +46,9 @@ public final class CharacterSprite: SKLabelNode {
 	
 	// MARK: - Setup
 	
-    public init(characterName:String, waiting:String, acting:String, success:String, fail:String) {
+    public init(characterName:String, waiting:String, success:String, fail:String) {
         self.characterName = characterName
 		self.waiting = waiting
-		self.acting = acting
 		self.success = success
 		self.fail = fail
 		super.init() // font does not matter, we are using emoji
@@ -70,7 +64,7 @@ public final class CharacterSprite: SKLabelNode {
     private func setup() {
         self.text = self.waiting // we are initially waiting
         self.setupLabelProperties()
-        self.physicsBody = CharacterSprite.physicsBody(ofRadius: self.frame.size.width/2)
+        self.physicsBody = CharacterSprite.physicsBody(ofRadius: 2*self.frame.size.width/3)
         self.addNameAboveCharacter()
         self.startToCycle()
     }
@@ -79,18 +73,18 @@ public final class CharacterSprite: SKLabelNode {
 		let body = SKPhysicsBody(circleOfRadius: radius)
         body.categoryBitMask = PhysicsCategory.character
         body.contactTestBitMask = PhysicsCategory.none
-        body.collisionBitMask = PhysicsCategory.all
+        body.collisionBitMask = PhysicsCategory.all ^ PhysicsCategory.boundry // collide with all but boundry
         body.allowsRotation = false
         body.pinned = true // the character is fixed to the canvas
         return body
 	}
     
     private func addNameAboveCharacter() {
-        let nameLabel = SKLabelNode(fontNamed: "SanFranciscoText-Regular")
+        let nameLabel = SKLabelNode(fontNamed: "San-Francisco")
         nameLabel.text = self.characterName
-        nameLabel.fontSize = 17
+        nameLabel.fontSize = 19
         nameLabel.fontColor = .black
-        nameLabel.position = CGPoint(x: 0, y: 60)
+        nameLabel.position = CGPoint(x: 0, y: 70)
         nameLabel.horizontalAlignmentMode = .center
         nameLabel.verticalAlignmentMode = .center
         self.addChild(nameLabel)
@@ -112,17 +106,14 @@ public final class CharacterSprite: SKLabelNode {
         let waitingAction = SKAction.customAction(withDuration: 0) { (_, _) in
             self.text = self.waiting
         }
-        let actingAction = SKAction.customAction(withDuration: 0) { (_, _) in
-            self.text = self.acting
-        }
         let successAction = SKAction.customAction(withDuration: 0) { (_, _) in
             self.text = self.success
         }
         let failAction = SKAction.customAction(withDuration: 0) { (_, _) in
             self.text = self.fail
         }
-        let wait = SKAction.wait(forDuration: 0.2)
-        let seq = SKAction.sequence([waitingAction,wait,actingAction,wait,successAction,wait,failAction,wait])
+        let wait = SKAction.wait(forDuration: 0.6)
+        let seq = SKAction.sequence([waitingAction,wait,successAction,wait,failAction,wait])
         let forever = SKAction.repeatForever(seq)
         self.run(forever)
     }

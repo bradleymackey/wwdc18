@@ -389,6 +389,7 @@ public final class IntroScene: RSAScene {
     }
 	
 	override public func update(_ currentTime: TimeInterval) {
+        super.update(currentTime)
 		// Called before each frame is rendered
 		if let point = currentFingerPosition {
 			// ignore movement if position is outside scene
