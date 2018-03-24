@@ -12,11 +12,6 @@ import SpriteKit
 
 public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
-	public enum KeyType {
-		case pub
-		case priv
-	}
-	
 	// MARK: Properties
 	
 	/// whether the user is dragging this key around or not
@@ -37,19 +32,19 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	}
 	
 	var publicKeyAlice:Bool {
-		return owner == .alice && type == .pub
+		return owner == .alice && type == .`public`
 	}
 	
 	var publicKeyBob:Bool {
-		return owner == .bob && type == .pub
+		return owner == .bob && type == .`public`
 	}
 	
 	var privateKeyAlice:Bool {
-		return owner == .alice && type == .priv
+		return owner == .alice && type == .`private`
 	}
 	
 	var privateKeyBob:Bool {
-		return owner == .bob && type == .priv
+		return owner == .bob && type == .`private`
 	}
 	
 	var categoryMask:UInt32 {

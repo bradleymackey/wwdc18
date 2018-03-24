@@ -50,6 +50,8 @@ public final class Message3DScene: SCNScene {
 	public var message: String
 	/// the current state of the paper
 	public var paperState = PaperState.unencrypted
+    /// the person that has encrypted the message
+    public var encryptedBy:KeyOwner?
     
     /// for the interactive scene, this is the person's message we are currently showing
     public var currentlyDisplayingMessage:InteractiveScene.SceneCharacters = .alice
@@ -70,6 +72,10 @@ public final class Message3DScene: SCNScene {
 	private let cubeSize = ObjectDimensions(height: 1.5, width: 1.5, length: 1.5)
     /// the size of the question mark cube
     private let questionMarkSize = ObjectDimensions(height: 1.25, width: 1.25, length: 1.25)
+    
+    /// the materials that were used prior to encryption
+    /// - important: this is needed because any of the characters in the interactive scene can change the message, so we need to know what is was before we encrypt it
+    private var priorMaterials:[SCNMaterial]?
 	
 	/// blank white material to show on sides of the paper without text
 	private let whiteMaterial: SCNMaterial = {
@@ -178,6 +184,8 @@ public final class Message3DScene: SCNScene {
 	}
 	
 	public func morphToCrypto(duration:TimeInterval) {
+        // set the prior materials, so we know what to morph back to when decrypting
+        self.priorMaterials = self.paperGeometry.materials
 		// update the surface materials
 		self.paperGeometry.materials = [encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial]
 		// animate to new size
@@ -191,7 +199,11 @@ public final class Message3DScene: SCNScene {
 	
 	public func morphToPaper(duration:TimeInterval) {
 		// update the surface materials
-		self.paperGeometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+        if let prior = self.priorMaterials {
+            self.paperGeometry.materials = prior
+        } else {
+            self.paperGeometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+        }
 		// animate to new size
 		SCNTransaction.begin()
 		SCNTransaction.animationDuration = duration

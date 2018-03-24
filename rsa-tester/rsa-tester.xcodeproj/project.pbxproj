@@ -30,6 +30,7 @@
 		972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97620645D7B00AF243D /* KeyOwner.swift */; };
 		972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97820651A2600AF243D /* CharacterSprite.swift */; };
 		973B5368206676CE001366A0 /* MoveableSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B5367206676CE001366A0 /* MoveableSprite.swift */; };
+		973B536A2066C325001366A0 /* KeyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B53692066C325001366A0 /* KeyType.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,7 @@
 		972FE97620645D7B00AF243D /* KeyOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyOwner.swift; sourceTree = "<group>"; };
 		972FE97820651A2600AF243D /* CharacterSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSprite.swift; sourceTree = "<group>"; };
 		973B5367206676CE001366A0 /* MoveableSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveableSprite.swift; sourceTree = "<group>"; };
+		973B53692066C325001366A0 /* KeyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyType.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -143,6 +145,7 @@
 				973B5367206676CE001366A0 /* MoveableSprite.swift */,
 				972FE95C20619B7000AF243D /* KeySprite.swift */,
 				972FE97620645D7B00AF243D /* KeyOwner.swift */,
+				973B53692066C325001366A0 /* KeyType.swift */,
 				972FE95E20619B9500AF243D /* Message3DNode.swift */,
 				972FE96020619BA800AF243D /* Message3DScene.swift */,
 				972FE96220619BBE00AF243D /* PhysicsCategory.swift */,
@@ -324,6 +327,7 @@
 				972FE95B20619B4100AF243D /* IntroScene.swift in Sources */,
 				972FE92F20619AF800AF243D /* GameViewController.swift in Sources */,
 				972FE95F20619B9500AF243D /* Message3DNode.swift in Sources */,
+				973B536A2066C325001366A0 /* KeyType.swift in Sources */,
 				973B5368206676CE001366A0 /* MoveableSprite.swift in Sources */,
 				972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */,
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,

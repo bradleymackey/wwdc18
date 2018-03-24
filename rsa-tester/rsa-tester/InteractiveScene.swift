@@ -25,6 +25,8 @@ public final class InteractiveScene: RSAScene  {
     
     public static var fadedDown:CGFloat = 0.15
     public static var fadeTime:TimeInterval = 0.2
+    public static var invalidPulseTime:TimeInterval = 0.2
+    public static var cubeChangeTime:TimeInterval = 0.6
     
     public static var aliceMessage = "Hello world."
     public static var bobMessage = "This is a test."
@@ -78,28 +80,28 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .pub)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`)
 		keySprite.name = "alicePublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/4)+20, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .priv)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`)
 		keySprite.name = "alicePrivateKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/4)-20, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .pub)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .`public`)
 		keySprite.name = "bobPublicKeyNode"
 		keySprite.position = CGPoint(x: (3*self.size.width/4)-20, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .priv)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .`private`)
 		keySprite.name = "bobPrivateKeyNode"
 		keySprite.position = CGPoint(x: (3*self.size.width/4)+20, y: self.size.height/4)
 		return keySprite
@@ -233,32 +235,77 @@ public final class InteractiveScene: RSAScene  {
         // determine which item collided with the box
         switch firstBody.categoryBitMask {
         case PhysicsCategory.publicKeyA:
-            self.alicePublicContact()
+            self.publicKeyContact(owner: .alice)
         case PhysicsCategory.privateKeyA:
-            return
+            self.privateKeyContact(owner: .alice)
         case PhysicsCategory.publicKeyB:
-            return
+            self.publicKeyContact(owner: .bob)
         case PhysicsCategory.privateKeyB:
-            return
+            self.privateKeyContact(owner: .bob)
         default:
             return
         }
 	}
     
-    private func alicePublicContact() {
-        
+    private func publicKeyContact(owner: KeyOwner) {
+        guard !currentlyAnimating else { return }
+        currentlyAnimating = true
+        InteractiveScene.paperScene.encryptedBy = owner
+        switch (InteractiveScene.paperScene.paperState) {
+        case .unencrypted:
+            // mark the new state
+            InteractiveScene.paperScene.paperState = .encrypted
+            // perform the maths animation if enabled, otherwise just morph
+            InteractiveScene.paperScene.morphToCrypto(duration: InteractiveScene.cubeChangeTime)
+            // inform that we are no longer animating after the animation when we are not using maths animations
+            DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
+                self.currentlyAnimating = false
+            }
+        case .encrypted:
+            // do the question mark animation
+            self.invalidContactAnimation(forState: .encrypted)
+        }
     }
     
-    private func alicePrivateContact() {
-        
+    private func privateKeyContact(owner: KeyOwner) {
+        guard !currentlyAnimating else { return }
+        guard let encryptor = InteractiveScene.paperScene.encryptedBy else { return }
+        currentlyAnimating = true
+        // the decryptor key must be owned by same as encryptor
+        guard owner == encryptor else {
+            self.invalidContactAnimation(forState: .unencrypted)
+            return
+        }
+        switch (InteractiveScene.paperScene.paperState) {
+        case .unencrypted:
+            // do the question mark animation
+            self.invalidContactAnimation(forState: .unencrypted)
+        case .encrypted:
+            // mark the new state
+            InteractiveScene.paperScene.paperState = .unencrypted
+            // perform the maths animation if enabled, otherwise just morph
+            InteractiveScene.paperScene.morphToPaper(duration: InteractiveScene.cubeChangeTime)
+            // inform that we are no longer animating after the animation when we are not using maths animations
+            DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
+                self.currentlyAnimating = false
+            }
+        }
     }
-    
-    private func bobPublicContact() {
-        
-    }
-    
-    private func bobPrivateContact() {
-        
+
+    /// the animation that should run when the incorrect key is brought to the box
+    private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
+        let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
+        let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
+            InteractiveScene.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
+        }
+        let backToPaper = SKAction.customAction(withDuration: 0) { _, _ in
+            state == .encrypted ? InteractiveScene.paperScene.morphToCrypto(duration: InteractiveScene.invalidPulseTime) : InteractiveScene.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
+        }
+        let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
+            self.currentlyAnimating = false
+        }
+        let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
+        self.messageNode.run(invalidContactSequence)
     }
     
     public override func update(_ currentTime: TimeInterval) {
