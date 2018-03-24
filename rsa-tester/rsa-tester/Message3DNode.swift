@@ -109,7 +109,6 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
     
     public func startMoving(initialPoint:CGPoint) {
         self.isBeingMoved = true
-        self.removeAllActions()
         let moveAnimation = SKAction.move(to: initialPoint, duration: 0.04)
         self.run(moveAnimation)
     }
@@ -121,9 +120,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
     }
     
     public func stopMoving(at lastPoint:CGPoint) {
-        defer { self.isBeingMoved = false }
-        guard isBeingMoved else { return }
-        self.removeAllActions()
+        self.isBeingMoved = false
     }
 	
 }
