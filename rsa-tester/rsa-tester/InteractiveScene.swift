@@ -26,7 +26,7 @@ public final class InteractiveScene: RSAScene  {
     public static var fadedDown:CGFloat = 0.15
     public static var fadeTime:TimeInterval = 0.2
     public static var invalidPulseTime:TimeInterval = 0.2
-    public static var cubeChangeTime:TimeInterval = 0.6
+    public static var cubeChangeTime:TimeInterval = 0.5
     
     public static var aliceMessage = "Hello world."
     public static var bobMessage = "This is a test."
@@ -271,16 +271,16 @@ public final class InteractiveScene: RSAScene  {
         guard !currentlyAnimating else { return }
         guard let encryptor = InteractiveScene.paperScene.encryptedBy else { return }
         currentlyAnimating = true
-        // the decryptor key must be owned by same as encryptor
-        guard owner == encryptor else {
-            self.invalidContactAnimation(forState: .unencrypted)
-            return
-        }
         switch (InteractiveScene.paperScene.paperState) {
         case .unencrypted:
             // do the question mark animation
             self.invalidContactAnimation(forState: .unencrypted)
         case .encrypted:
+            // the decryptor key must be owned by same as encryptor
+            guard owner == encryptor else {
+                self.invalidContactAnimation(forState: .encrypted)
+                return
+            }
             // mark the new state
             InteractiveScene.paperScene.paperState = .unencrypted
             // perform the maths animation if enabled, otherwise just morph
