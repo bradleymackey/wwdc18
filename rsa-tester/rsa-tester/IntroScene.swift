@@ -60,7 +60,7 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var messageSceneNode:Message3DNode = {
-		let sceneSize = CGSize(width: 180, height: 180)
+		let sceneSize = CGSize(width: 220, height: 220)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		sceneNode.name = "3dnode"
@@ -72,7 +72,7 @@ public final class IntroScene: RSAScene {
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 60, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		label.name = "mLabel"
 		return label
@@ -81,8 +81,8 @@ public final class IntroScene: RSAScene {
 	/// the public modulus
 	private lazy var nLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 32, color: IntroScene.publicColor, bold: false)
-		label.position =  CGPoint(x: self.size.width-35, y: self.size.height-30)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: IntroScene.publicColor, bold: false)
+		label.position =  CGPoint(x: self.size.width-65, y: self.size.height-60)
 		label.name = "nLabel"
 		return label
 	}()
@@ -90,8 +90,8 @@ public final class IntroScene: RSAScene {
 	/// the public exponent
 	private lazy var eLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.publicColor, bold: false)
-		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+40)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 30, color: IntroScene.publicColor, bold: true)
+		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
 		label.name = "eLabel"
 		return label
 	}()
@@ -99,16 +99,16 @@ public final class IntroScene: RSAScene {
 	/// the private exponent
 	private lazy var dLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 25, color: IntroScene.privateColor, bold: false)
-		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+40)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 30, color: IntroScene.privateColor, bold: true)
+		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
 		label.name = "dLabel"
 		return label
 	}()
 	
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "mod", fontSize: 28, color: IntroScene.publicColor, bold: false)
-		label.position =  CGPoint(x: self.nLabel.position.x-60, y: self.nLabel.position.y)
+		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: IntroScene.publicColor, bold: false)
+		label.position =  CGPoint(x: self.nLabel.position.x-90, y: self.nLabel.position.y)
 		label.name = "modLabel"
 		return label
 	}()
@@ -118,7 +118,7 @@ public final class IntroScene: RSAScene {
 		// encrypt the message using the encryptor
 		let encryptedMessage = IntroScene.encryptor.encryption(forMessage: IntroScene.message)
 		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 60, color: .black, bold: true)
 		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		label.name = "cLabel"
 		label.alpha = 0
@@ -126,8 +126,8 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var pLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "p=\(IntroScene.encryptor.p)", fontSize: 22, color: IntroScene.privateColor, bold: false)
-		label.position = CGPoint(x: 10, y: self.size.height-25)
+		let label = RSAScene.mathsLabel(text: "p=\(IntroScene.encryptor.p)", fontSize: 30, color: IntroScene.privateColor, bold: false)
+		label.position = CGPoint(x: 25, y: self.size.height-45)
 		label.name = "pLabel"
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -135,8 +135,8 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "q=\(IntroScene.encryptor.q)", fontSize: 22, color: IntroScene.privateColor, bold: false)
-		label.position = CGPoint(x: 10, y: self.size.height-50)
+		let label = RSAScene.mathsLabel(text: "q=\(IntroScene.encryptor.q)", fontSize: 30, color: IntroScene.privateColor, bold: false)
+		label.position = CGPoint(x: 25, y: self.size.height-85)
 		label.name = "qLabel"
 		// align left because it makes the most sense
 		label.horizontalAlignmentMode = .left
@@ -323,17 +323,17 @@ public final class IntroScene: RSAScene {
         
         let centerPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
         // animate key label
-        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-43, y: oldMessageLabel.position.y+28)
+        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-48, y: oldMessageLabel.position.y+34)
         self.moveShrinkFadeRemoveCopy(node: keyLabel, movePosition: keyLabelNewPosition, shrinkPosition: centerPosition)
         // animate mod label
         let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
         self.moveShrinkFadeRemoveCopy(node: modLabel, movePosition: newModPosition, shrinkPosition: centerPosition)
         // animate N
-        let newNPosition = CGPoint(x: (self.size.width/2)+65, y: oldMessageLabel.position.y)
+        let newNPosition = CGPoint(x: (self.size.width/2)+90, y: oldMessageLabel.position.y)
         self.moveShrinkFadeRemoveCopy(node: nLabel, movePosition: newNPosition, shrinkPosition: centerPosition)
         // animate old message label
 		// move the label more if there are 2 characters being displayed
-		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 65 : 75
+		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 90 : 100
         let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
         let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
         moveOldMessageAnimation.timingMode = .easeOut
@@ -392,8 +392,8 @@ public final class IntroScene: RSAScene {
         super.update(currentTime)
         // make sure that the maths labels are above the keys if needed
         if IntroScene.mathsEnabled {
-            self.move(node: eLabel, above: publicKeyNode, by: CGFloat(40.0))
-            self.move(node: dLabel, above: privateKeyNode, by: CGFloat(40.0))
+            self.move(node: eLabel, above: publicKeyNode, by: 45.0)
+            self.move(node: dLabel, above: privateKeyNode, by: 45.0)
         }
 		// update finger position or exit
         guard let point = currentFingerPosition else { return }
