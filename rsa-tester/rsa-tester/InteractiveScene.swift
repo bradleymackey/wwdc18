@@ -337,7 +337,7 @@ public final class InteractiveScene: RSAScene  {
     }
     
     private func setNoKeyFocus() {
-        for (keyLabel,key) in keyToKeyLabel {
+        for (key,keyLabel) in keyToKeyLabel {
             key.run(fadeDown)
             keyLabel.run(fadeDown)
             key.isUserInteractionEnabled = true
