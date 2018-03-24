@@ -29,8 +29,8 @@ public final class CharacterSprite: SKLabelNode {
             return _currentState
         }
         set {
-            self.text = self.textForCurrentState
             _currentState = newValue
+            self.text = self.textForCurrentState
         }
     }
     private var _currentState = State.waiting

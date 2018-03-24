@@ -390,24 +390,23 @@ public final class IntroScene: RSAScene {
 	
 	override public func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
-		// Called before each frame is rendered
-		if let point = currentFingerPosition {
-			// ignore movement if position is outside scene
-			let margin:CGFloat = 10
-			if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
-				// stop moving keys if the touch is outside the margin
-				self.privateKeyNode.stopMoving(at: point)
-				self.publicKeyNode.stopMoving(at: point)
-			} else {
-				self.publicKeyNode.updatePositionIfNeeded(to: point)
-				self.privateKeyNode.updatePositionIfNeeded(to: point)
-			}
-		}
-		// make sure that the maths labels are above the keys if needed
-		if IntroScene.mathsEnabled {
-			self.move(node: eLabel, above: publicKeyNode, by: CGFloat(40.0))
-			self.move(node: dLabel, above: privateKeyNode, by: CGFloat(40.0))
-		}
+        // make sure that the maths labels are above the keys if needed
+        if IntroScene.mathsEnabled {
+            self.move(node: eLabel, above: publicKeyNode, by: CGFloat(40.0))
+            self.move(node: dLabel, above: privateKeyNode, by: CGFloat(40.0))
+        }
+		// update finger position or exit
+        guard let point = currentFingerPosition else { return }
+        // ignore movement if position is outside scene
+        let margin:CGFloat = 10
+        if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
+            // stop moving keys if the touch is outside the margin
+            self.privateKeyNode.stopMoving(at: point)
+            self.publicKeyNode.stopMoving(at: point)
+        } else {
+            self.publicKeyNode.updatePositionIfNeeded(to: point)
+            self.privateKeyNode.updatePositionIfNeeded(to: point)
+        }
 	}
 	
 	private func showInfoPanel(forLabel label:String) {

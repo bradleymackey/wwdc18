@@ -167,18 +167,31 @@ public final class InteractiveScene: RSAScene  {
     
     public override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
-        // Called before each frame is rendered
-        if let point = currentFingerPosition {
-            // ignore movement if position is outside scene
-            let margin:CGFloat = 10
-            if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
-                // stop moving keys if the touch is outside the margin
-                self.allMoveable.forEach {
-                    $0.stopMoving(at: point)
-                }
-            } else {
-                self.allMoveable.forEach {
-                    $0.updatePositionIfNeeded(to: point)
+        
+        // update finger position or exit
+        guard let point = currentFingerPosition else { return }
+        // ignore movement if position is outside scene
+        let margin:CGFloat = 10
+        if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
+            // stop moving keys if the touch is outside the margin
+            self.allMoveable.forEach {
+                $0.stopMoving(at: point)
+            }
+        } else {
+            self.allMoveable.forEach {
+                $0.updatePositionIfNeeded(to: point)
+            }
+            // calculate message position to each character
+            for char in allCharacters {
+                let x = messageNode.position.x - char.position.x
+                let y = messageNode.position.y - char.position.y
+                let dist = sqrt(x*x + y*y)
+                if dist < 170 {
+                    char.currentState = .inRange
+                } else {
+                    if char.currentState != .waiting {
+                        char.currentState = .waiting
+                    }
                 }
             }
         }

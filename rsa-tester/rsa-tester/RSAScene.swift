@@ -91,7 +91,8 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	}
 	
 	public func touchUp(atPoint point: CGPoint) {
-		// add more in subclass
+        // on exit, set finger position to nil
+        defer { currentFingerPosition = nil }
 	}
 	
 	public func didBegin(_ contact: SKPhysicsContact) {
