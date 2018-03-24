@@ -96,7 +96,7 @@ public final class CharacterSprite: SKLabelNode {
     private func addNameAboveCharacter() {
         let nameLabel = SKLabelNode(fontNamed: "San-Francisco")
         nameLabel.text = self.characterName
-        nameLabel.fontSize = 19
+        nameLabel.fontSize = 21
         nameLabel.fontColor = .black
         nameLabel.position = CGPoint(x: 0, y: 70)
         nameLabel.horizontalAlignmentMode = .center

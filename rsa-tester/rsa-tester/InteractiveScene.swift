@@ -22,21 +22,27 @@ public final class InteractiveScene: RSAScene  {
 	// MARK: - Properties
 	
 	// MARK: Constants
+    
+    public static var fadedDown:CGFloat = 0.15
+    public static var fadeTime:TimeInterval = 0.1
 	
 	// MARK: Instance Variables
 	
-	/*
-	
-		FULLY FREE-FORM
-
-		PRIVATE KEYS ARE ATTACHED TO EACH CHARACTER WITH A CHAIN
-		PUBLIC KEYS ARE FREE FLOATING
-	
-		THE MESSAGE CAN ONLY BE DRAGGED TO TARGET ZONES ABOVE THE CHARACTERS (where it will snap and remain in that position)
-
-	*/
-	
 	public static var paperScene = Message3DScene(message: "Another message. Go ahead and encrypt me.")
+    
+    /// for fading items up that come into focus
+    private let fadeUp:SKAction = {
+        let action = SKAction.fadeAlpha(to: 1, duration: InteractiveScene.fadeTime)
+        action.timingMode = .easeOut
+        return action
+    }()
+    
+    /// for fading items down that lose focus
+    private let fadeDown:SKAction = {
+        let action = SKAction.fadeAlpha(to: InteractiveScene.fadedDown, duration: InteractiveScene.fadeTime)
+        action.timingMode = .easeOut
+        return action
+    }()
 	
 	private lazy var messageNode:Message3DNode = {
 		let sceneSize = CGSize(width: 150, height: 150)
@@ -94,6 +100,19 @@ public final class InteractiveScene: RSAScene  {
 		keySprite.position = CGPoint(x: (3*self.size.width/4)+20, y: self.size.height/4)
 		return keySprite
 	}()
+    
+    private lazy var alicePublicLabel:SKLabelNode = {
+        let label = SKLabelNode(fontNamed: "SanFransico")
+        label.text = "Alice Public"
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 2
+        label.fontColor = .black
+        label.fontSize = 15
+        label.horizontalAlignmentMode = .center
+        label.verticalAlignmentMode = .center
+        label.position = CGPoint(x: alicePublicKeyNode.position.x, y: alicePublicKeyNode.position.y + 40)
+        return label
+    }()
     
     /// convenience property to get all characters
     private lazy var allCharacters:[CharacterSprite] = {
@@ -233,22 +252,23 @@ public final class InteractiveScene: RSAScene  {
     private func focus(character:CharacterSprite, defocus:[CharacterSprite]) {
         self.characterInRange = character
         character.currentState = .inRange
-        character.alpha = 1
+        character.run(fadeUp)
         for other in defocus {
             if other.currentState != .waiting {
                 other.currentState = .waiting
             }
-            other.alpha = 0.4
+            other.run(fadeDown)
         }
     }
     
     private func focus(keys:[KeySprite], defocus:[KeySprite]) {
         for key in keys {
-            key.alpha = 1
+            key.run(fadeUp)
             key.isUserInteractionEnabled = false
         }
         for key in defocus {
-            key.alpha = 0.4
+            key.removeAllActions()
+            key.run(fadeDown)
             key.isUserInteractionEnabled = true
         }
     }
@@ -259,13 +279,13 @@ public final class InteractiveScene: RSAScene  {
             if $0.currentState != .waiting {
                 $0.currentState = .waiting
             }
-            $0.alpha = 1
+            $0.run(fadeUp)
         }
     }
     
     private func setNoKeyFocus() {
         self.allKeys.forEach {
-            $0.alpha = 0.4
+            $0.run(fadeDown)
             $0.isUserInteractionEnabled = true
         }
     }
