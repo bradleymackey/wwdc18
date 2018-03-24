@@ -239,14 +239,17 @@ public final class IntroScene: RSAScene {
 	
 	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
 		super.bodyContact(firstBody: firstBody, secondBody: secondBody)
-		if (firstBody.categoryBitMask == PhysicsCategory.publicKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
-			// public key has contacted box
-			self.publicKeyContact()
-		}
-		else if (firstBody.categoryBitMask == PhysicsCategory.privateKeyA && secondBody.categoryBitMask == PhysicsCategory.box) {
-			// private key has contacted
-			self.privateKeyContact()
-		}
+        // we only care about contact where the second item is the box
+        guard secondBody.categoryBitMask == PhysicsCategory.box else { return }
+        // determine the first body
+        switch firstBody.categoryBitMask {
+        case PhysicsCategory.publicKeyA:
+            self.publicKeyContact()
+        case PhysicsCategory.privateKeyA:
+            self.privateKeyContact()
+        default:
+            return
+        }
 	}
     
     private func publicKeyContact() {

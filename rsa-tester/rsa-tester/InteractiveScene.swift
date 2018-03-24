@@ -151,6 +151,8 @@ public final class InteractiveScene: RSAScene  {
     
     /// the character that is currently in range of the message
     private weak var characterInRange:CharacterSprite?
+    /// whether the box animation is currently taking place
+    private var currentlyAnimating = false
 	
 	// MARK: - Setup
 	
@@ -163,12 +165,12 @@ public final class InteractiveScene: RSAScene  {
 	}
     
     private func addNodesToScene() {
-        // the 3d message
-        self.addChild(messageNode)
         // characters
         for character in allCharacters {
             self.addChild(character)
         }
+        // the 3d message
+        self.addChild(messageNode)
         // keys and labels
         for (key,keyLabel) in keyToKeyLabel {
             // add the key before the label so it can be positioned above it
@@ -226,7 +228,38 @@ public final class InteractiveScene: RSAScene  {
 	
 	public override func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
 		super.bodyContact(firstBody: firstBody, secondBody: secondBody)
+        // we only care about contact when the second item is the box
+        guard secondBody.categoryBitMask == PhysicsCategory.box else { return }
+        // determine which item collided with the box
+        switch firstBody.categoryBitMask {
+        case PhysicsCategory.publicKeyA:
+            self.alicePublicContact()
+        case PhysicsCategory.privateKeyA:
+            return
+        case PhysicsCategory.publicKeyB:
+            return
+        case PhysicsCategory.privateKeyB:
+            return
+        default:
+            return
+        }
 	}
+    
+    private func alicePublicContact() {
+        
+    }
+    
+    private func alicePrivateContact() {
+        
+    }
+    
+    private func bobPublicContact() {
+        
+    }
+    
+    private func bobPrivateContact() {
+        
+    }
     
     public override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)

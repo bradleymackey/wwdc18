@@ -110,6 +110,7 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		self.bodyContact(firstBody: firstBody, secondBody: secondBody)
 	}
 	
+    /// a more friendly `didBegin(_:)` method, where first body is always of a lower bitmask value
 	public func bodyContact(firstBody:SKPhysicsBody, secondBody:SKPhysicsBody) {
 		// override in subclasses
 	}

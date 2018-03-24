@@ -19,6 +19,8 @@ public struct PhysicsCategory {
 	static let publicKeyB:UInt32   = 1 << 2
 	static let privateKeyB:UInt32  = 1 << 3
 	static let keys:UInt32 = publicKeyA | privateKeyA | publicKeyB | privateKeyB
+    static let publicKeys:UInt32   = publicKeyA | publicKeyB
+    static let privateKeys:UInt32  = privateKeyA | privateKeyB
 	// MARK: MISC
 	static let box:UInt32          = 1 << 4
 	static let character:UInt32    = 1 << 5
