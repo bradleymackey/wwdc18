@@ -12,6 +12,12 @@ import SpriteKit
 /// the interactive scene used to display the real scenario
 /// - note: the aim of this scene is to give the user a real understanding of RSA and how it is really used
 public final class InteractiveScene: RSAScene  {
+    
+    public enum SceneCharacters: String {
+        case alice = "aliceCharacter"
+        case bob = "bobCharacter"
+        case eve = "eveCharacter"
+    }
 	
 	// MARK: - Properties
 	
@@ -35,7 +41,7 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var messageNode:Message3DNode = {
 		let sceneSize = CGSize(width: 150, height: 150)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
-		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/3)
 		sceneNode.name = "messageNode"
 		return sceneNode
 	}()
@@ -104,6 +110,9 @@ public final class InteractiveScene: RSAScene  {
         moveable.append(messageNode)
         return moveable
     }()
+    
+    /// the character that is currently in range of the message
+    private weak var characterInRange:CharacterSprite?
 	
 	// MARK: - Setup
 	
@@ -111,9 +120,13 @@ public final class InteractiveScene: RSAScene  {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
         self.addNodesToScene()
+        self.setNoCharacterFocus()
+        self.setNoKeyFocus()
 	}
     
     private func addNodesToScene() {
+        // the 3d message
+        self.addChild(messageNode)
         // characters
         self.allCharacters.forEach {
             self.addChild($0)
@@ -122,8 +135,6 @@ public final class InteractiveScene: RSAScene  {
         self.allKeys.forEach {
             self.addChild($0)
         }
-        // the 3d message
-        self.addChild(messageNode)
     }
 	
 	// MARK: - Methods
@@ -167,9 +178,10 @@ public final class InteractiveScene: RSAScene  {
     
     public override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
-        
         // update finger position or exit
         guard let point = currentFingerPosition else { return }
+        // determine which character is in range of message
+        self.determineCharacterInRangeOfMessage()
         // ignore movement if position is outside scene
         let margin:CGFloat = 10
         if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
@@ -181,19 +193,80 @@ public final class InteractiveScene: RSAScene  {
             self.allMoveable.forEach {
                 $0.updatePositionIfNeeded(to: point)
             }
-            // calculate message position to each character
-            for char in allCharacters {
-                let x = messageNode.position.x - char.position.x
-                let y = messageNode.position.y - char.position.y
-                let dist = sqrt(x*x + y*y)
-                if dist < 170 {
-                    char.currentState = .inRange
-                } else {
-                    if char.currentState != .waiting {
-                        char.currentState = .waiting
-                    }
-                }
+        }
+    }
+    
+    private func determineCharacterInRangeOfMessage() {
+        // calculate message position to each character
+        for char in allCharacters {
+            // use pythagoras to get distance to message
+            let x = messageNode.position.x - char.position.x
+            let y = messageNode.position.y - char.position.y
+            let dist = sqrt(x*x + y*y)
+            if dist < 170 {
+                self.setCharacterFocus(character: char)
+                // exit after this
+                return
             }
+        }
+        self.setNoCharacterFocus()
+        self.setNoKeyFocus()
+    }
+    
+    /// sets the focus on a single character, and focuses the possible keys that can be used by them
+    private func setCharacterFocus(character:CharacterSprite) {
+        guard let nodeName = character.name else { return }
+        guard let character = SceneCharacters(rawValue: nodeName) else { return }
+        switch character {
+        case .alice:
+            self.focus(character: aliceCharacter, defocus: [bobCharacter, eveCharacter])
+            self.focus(keys: [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode], defocus: [bobPrivateKeyNode])
+        case .bob:
+            self.focus(character: bobCharacter, defocus: [aliceCharacter, eveCharacter])
+            self.focus(keys: [alicePublicKeyNode, bobPrivateKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode])
+        case .eve:
+            self.focus(character: eveCharacter, defocus: [aliceCharacter, bobCharacter])
+            self.focus(keys: [alicePublicKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode, bobPrivateKeyNode])
+        }
+    }
+    
+    private func focus(character:CharacterSprite, defocus:[CharacterSprite]) {
+        self.characterInRange = character
+        character.currentState = .inRange
+        character.alpha = 1
+        for other in defocus {
+            if other.currentState != .waiting {
+                other.currentState = .waiting
+            }
+            other.alpha = 0.4
+        }
+    }
+    
+    private func focus(keys:[KeySprite], defocus:[KeySprite]) {
+        for key in keys {
+            key.alpha = 1
+            key.isUserInteractionEnabled = false
+        }
+        for key in defocus {
+            key.alpha = 0.4
+            key.isUserInteractionEnabled = true
+        }
+    }
+    
+    private func setNoCharacterFocus() {
+        // no characters in range, set all waiting with full alpha
+        self.allCharacters.forEach {
+            if $0.currentState != .waiting {
+                $0.currentState = .waiting
+            }
+            $0.alpha = 1
+        }
+    }
+    
+    private func setNoKeyFocus() {
+        self.allKeys.forEach {
+            $0.alpha = 0.4
+            $0.isUserInteractionEnabled = true
         }
     }
 	
