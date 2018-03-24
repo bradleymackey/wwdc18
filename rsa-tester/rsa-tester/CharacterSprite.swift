@@ -54,9 +54,11 @@ public final class CharacterSprite: SKLabelNode {
 		self.acting = acting
 		self.success = success
 		self.fail = fail
-		super.init(fontNamed: "Helvetica") // font does not matter, we are using emoji
+		super.init() // font does not matter, we are using emoji
 		self.text = self.waiting // we are initially waiting
 		self.setupLabelProperties()
+        // add the physics body
+        self.physicsBody = CharacterSprite.physicsBody(ofSize: self.frame.size)
 	}
 	
 	required public init?(coder aDecoder: NSCoder) {
@@ -65,13 +67,19 @@ public final class CharacterSprite: SKLabelNode {
 	
 	// MARK: - Methods
 	
-	private class func physicsBody() -> SKPhysicsBody {
-		let body = SKPhysicsBody
+    private class func physicsBody(ofSize size:CGSize) -> SKPhysicsBody {
+		let body = SKPhysicsBody(rectangleOf: size)
+        body.categoryBitMask = PhysicsCategory.character
+        body.contactTestBitMask = PhysicsCategory.none
+        body.collisionBitMask = PhysicsCategory.all
+        body.allowsRotation = false
+        body.pinned = true // the character is fixed to the canvas
+        return body
 	}
 	
 	/// sets up properties of the label
 	private func setupLabelProperties() {
-		self.fontSize = 30
+		self.fontSize = 90
 		self.horizontalAlignmentMode = .center
 		self.verticalAlignmentMode = .center
 	}

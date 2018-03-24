@@ -43,18 +43,21 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var aliceCharacter:CharacterSprite = {
 		let alice = CharacterSprite(waiting: "👩🏽‍💼", acting: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
 		alice.name = "aliceCharacter"
+        alice.position = CGPoint(x: self.size.width/4, y: 40)
 		return alice
 	}()
 	
 	private lazy var bobCharacter:CharacterSprite = {
 		let bob = CharacterSprite(waiting: "👨🏼‍💼", acting: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
 		bob.name = "bobCharacter"
+        bob.position = CGPoint(x: 3*self.size.width/4, y: 40)
 		return bob
 	}()
 	
 	private lazy var eveCharacter:CharacterSprite = {
 		let eve = CharacterSprite(waiting: "👩🏻‍💼", acting: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
 		eve.name = "eveCharacter"
+        eve.position = CGPoint(x: 2*self.size.width/4, y: 2*self.size.height/3)
 		return eve
 	}()
 	
@@ -91,6 +94,9 @@ public final class InteractiveScene: RSAScene  {
 	public override func sceneDidLoad() {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
+        [aliceCharacter, bobCharacter, eveCharacter].forEach {
+            self.addChild($0)
+        }
 		self.addChild(messageNode)
 	}
 	
