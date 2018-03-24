@@ -98,6 +98,12 @@ public final class InteractiveScene: RSAScene  {
     private lazy var allKeys:[KeySprite] = {
         return [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode, bobPrivateKeyNode]
     }()
+    
+    private lazy var allMoveable:[MoveableSprite] = {
+        var moveable:[MoveableSprite] = allKeys
+        moveable.append(messageNode)
+        return moveable
+    }()
 	
 	// MARK: - Setup
 	
@@ -108,12 +114,15 @@ public final class InteractiveScene: RSAScene  {
 	}
     
     private func addNodesToScene() {
+        // characters
         self.allCharacters.forEach {
             self.addChild($0)
         }
+        // keys
         self.allKeys.forEach {
             self.addChild($0)
         }
+        // the 3d message
         self.addChild(messageNode)
     }
 	
@@ -134,6 +143,8 @@ public final class InteractiveScene: RSAScene  {
             self.bobPublicKeyNode.startMoving(initialPoint: point)
         case "bobPrivateKeyNode":
             self.bobPrivateKeyNode.startMoving(initialPoint: point)
+        case "messageNode":
+            self.messageNode.startMoving(initialPoint: point)
         default:
             return
         }
@@ -145,7 +156,7 @@ public final class InteractiveScene: RSAScene  {
 	
 	override public func touchUp(atPoint point: CGPoint) {
 		super.touchUp(atPoint: point)
-        self.allKeys.forEach {
+        self.allMoveable.forEach {
             $0.stopMoving(at: point)
         }
 	}
@@ -162,11 +173,11 @@ public final class InteractiveScene: RSAScene  {
             let margin:CGFloat = 10
             if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
                 // stop moving keys if the touch is outside the margin
-                self.allKeys.forEach {
+                self.allMoveable.forEach {
                     $0.stopMoving(at: point)
                 }
             } else {
-                self.allKeys.forEach {
+                self.allMoveable.forEach {
                     $0.updatePositionIfNeeded(to: point)
                 }
             }

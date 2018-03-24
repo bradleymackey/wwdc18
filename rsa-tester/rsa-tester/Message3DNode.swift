@@ -11,7 +11,7 @@ import SpriteKit
 import SceneKit
 
 /// the spritekit node that contains the 3D scene with the message object in
-public final class Message3DNode: SK3DNode {
+public final class Message3DNode: SK3DNode, MoveableSprite {
 	
 	// MARK: Constants
 	public static let timeForPaperRotation: TimeInterval = 2.1
@@ -25,6 +25,9 @@ public final class Message3DNode: SK3DNode {
 	private var isBeingRotated = false
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
+    
+    /// if the message node is currently being moved
+    private var isBeingMoved = false
 	
 	// MARK: Lifecycle
 	
@@ -78,7 +81,7 @@ public final class Message3DNode: SK3DNode {
 		return cameraNode
 	}
 	
-	// MARK: Rotation
+	// MARK: Rotation (Intro Scene)
 	
 	/// rotation of the message/cube object has began
 	public func startRotating(at point:CGPoint) {
@@ -101,5 +104,26 @@ public final class Message3DNode: SK3DNode {
 	public func finishedRotating() {
 		isBeingRotated = false
 	}
+    
+    // MARK: Moving (Interactive Scene)
+    
+    public func startMoving(initialPoint:CGPoint) {
+        self.isBeingMoved = true
+        self.removeAllActions()
+        let moveAnimation = SKAction.move(to: initialPoint, duration: 0.04)
+        self.run(moveAnimation)
+    }
+    
+    public func updatePositionIfNeeded(to point: CGPoint) {
+        guard isBeingMoved else { return }
+        let moveAnimation = SKAction.move(to: point, duration: 0.02)
+        self.run(moveAnimation)
+    }
+    
+    public func stopMoving(at lastPoint:CGPoint) {
+        defer { self.isBeingMoved = false }
+        guard isBeingMoved else { return }
+        self.removeAllActions()
+    }
 	
 }

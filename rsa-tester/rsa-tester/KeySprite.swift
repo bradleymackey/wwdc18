@@ -10,7 +10,7 @@
 import Foundation
 import SpriteKit
 
-public final class KeySprite: SKSpriteNode {
+public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
 	public enum KeyType {
 		case pub
