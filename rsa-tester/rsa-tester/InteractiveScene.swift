@@ -33,7 +33,7 @@ public final class InteractiveScene: RSAScene  {
 	public static var paperScene = Message3DScene(message: "Another message. Go ahead and encrypt me.")
 	
 	private lazy var messageNode:Message3DNode = {
-		let sceneSize = CGSize(width: 170, height: 170)
+		let sceneSize = CGSize(width: 150, height: 150)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
 		sceneNode.name = "messageNode"
@@ -41,21 +41,21 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var aliceCharacter:CharacterSprite = {
-        let alice = CharacterSprite(characterName: "Alice", waiting: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
+        let alice = CharacterSprite(characterName: "Alice", waiting: "💁🏽‍♀️", inRange: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
 		alice.name = "aliceCharacter"
         alice.position = CGPoint(x: self.size.width/4, y: 40)
 		return alice
 	}()
 	
 	private lazy var bobCharacter:CharacterSprite = {
-		let bob = CharacterSprite(characterName: "Bob", waiting: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
+        let bob = CharacterSprite(characterName: "Bob", waiting: "💁🏼‍♂️", inRange: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
 		bob.name = "bobCharacter"
         bob.position = CGPoint(x: 3*self.size.width/4, y: 40)
 		return bob
 	}()
 	
 	private lazy var eveCharacter:CharacterSprite = {
-		let eve = CharacterSprite(characterName: "Eve", waiting: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
+        let eve = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
 		eve.name = "eveCharacter"
         eve.position = CGPoint(x: 2*self.size.width/4, y: 2*self.size.height/3)
 		return eve
@@ -64,28 +64,28 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var alicePublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .pub)
 		keySprite.name = "alicePublicKeyNode"
-		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (self.size.width/4)+20, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .priv)
 		keySprite.name = "alicePrivateKeyNode"
-		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (self.size.width/4)-20, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .pub)
 		keySprite.name = "bobPublicKeyNode"
-		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (3*self.size.width/4)-20, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .priv)
 		keySprite.name = "bobPrivateKeyNode"
-		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (3*self.size.width/4)+20, y: self.size.height/4)
 		return keySprite
 	}()
     

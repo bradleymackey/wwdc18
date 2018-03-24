@@ -15,6 +15,7 @@ public final class CharacterSprite: SKLabelNode {
 	/// the possible states that a character can be in
 	public enum State {
 		case waiting
+        case inRange
 		case success
 		case fail
 	}
@@ -23,11 +24,22 @@ public final class CharacterSprite: SKLabelNode {
 	
 	/// the state that the character is currently in
 	/// - note: we are initially waiting
-	public var currentState = State.waiting
+    public var currentState:State {
+        get {
+            return _currentState
+        }
+        set {
+            self.text = self.textForCurrentState
+            _currentState = newValue
+        }
+    }
+    private var _currentState = State.waiting
     /// the name of the character
     public let characterName:String
 	/// the expression the character gives when waiting
 	private let waiting:String
+    /// the expression when the message is in range of a character
+    private let inRange:String
 	/// the expression after a success event
 	private let success:String
 	/// the expression after a fail event
@@ -37,6 +49,8 @@ public final class CharacterSprite: SKLabelNode {
 		switch self.currentState {
 		case .waiting:
 			return self.waiting
+        case .inRange:
+            return self.inRange
 		case .success:
 			return self.success
 		case .fail:
@@ -46,13 +60,14 @@ public final class CharacterSprite: SKLabelNode {
 	
 	// MARK: - Setup
 	
-    public init(characterName:String, waiting:String, success:String, fail:String) {
+    public init(characterName:String, waiting:String, inRange:String, success:String, fail:String) {
         self.characterName = characterName
 		self.waiting = waiting
+        self.inRange = inRange
 		self.success = success
 		self.fail = fail
-		super.init() // font does not matter, we are using emoji
-		self.setup()
+		super.init()
+		self.setup() // perform the setup of the character
 	}
 	
 	required public init?(coder aDecoder: NSCoder) {
@@ -66,7 +81,6 @@ public final class CharacterSprite: SKLabelNode {
         self.setupLabelProperties()
         self.physicsBody = CharacterSprite.physicsBody(ofRadius: 2*self.frame.size.width/3)
         self.addNameAboveCharacter()
-        self.startToCycle()
     }
 	
     private class func physicsBody(ofRadius radius:CGFloat) -> SKPhysicsBody {
@@ -96,26 +110,5 @@ public final class CharacterSprite: SKLabelNode {
 		self.horizontalAlignmentMode = .center
 		self.verticalAlignmentMode = .center
 	}
-	
-	public func setState(to state:State) {
-		self.currentState = state
-		self.text = self.textForCurrentState
-	}
-    
-    private func startToCycle() {
-        let waitingAction = SKAction.customAction(withDuration: 0) { (_, _) in
-            self.text = self.waiting
-        }
-        let successAction = SKAction.customAction(withDuration: 0) { (_, _) in
-            self.text = self.success
-        }
-        let failAction = SKAction.customAction(withDuration: 0) { (_, _) in
-            self.text = self.fail
-        }
-        let wait = SKAction.wait(forDuration: 0.6)
-        let seq = SKAction.sequence([waitingAction,wait,successAction,wait,failAction,wait])
-        let forever = SKAction.repeatForever(seq)
-        self.run(forever)
-    }
 	
 }
