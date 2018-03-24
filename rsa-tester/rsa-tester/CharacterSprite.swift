@@ -65,12 +65,15 @@ public final class CharacterSprite: SKLabelNode {
 	
 	// MARK: - Methods
 	
+	private class func physicsBody() -> SKPhysicsBody {
+		let body = SKPhysicsBody
+	}
+	
 	/// sets up properties of the label
 	private func setupLabelProperties() {
 		self.fontSize = 30
 		self.horizontalAlignmentMode = .center
 		self.verticalAlignmentMode = .center
-		
 	}
 	
 	public func setState(to state:State) {

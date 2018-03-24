@@ -82,7 +82,6 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			
 			scene = InteractiveScene(size: view.bounds.size)
 			
-			
 			// Set the scale mode to scale to fit the window
 			scene.scaleMode = .aspectFill
 			
