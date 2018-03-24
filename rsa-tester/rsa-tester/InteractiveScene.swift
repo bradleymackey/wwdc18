@@ -24,7 +24,11 @@ public final class InteractiveScene: RSAScene  {
 	// MARK: Constants
     
     public static var fadedDown:CGFloat = 0.15
-    public static var fadeTime:TimeInterval = 0.1
+    public static var fadeTime:TimeInterval = 0.2
+    
+    public static var aliceMessage = "Hello world."
+    public static var bobMessage = "This is a test."
+    public static var eveMessage = "I am a 1337 hacker!!"
 	
 	// MARK: Instance Variables
 	
@@ -102,15 +106,26 @@ public final class InteractiveScene: RSAScene  {
 	}()
     
     private lazy var alicePublicLabel:SKLabelNode = {
-        let label = SKLabelNode(fontNamed: "SanFransico")
-        label.text = "Alice Public"
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
-        label.fontColor = .black
-        label.fontSize = 15
-        label.horizontalAlignmentMode = .center
-        label.verticalAlignmentMode = .center
+        let label = InteractiveScene.keyLabel(text: "Alice\nPublic")
         label.position = CGPoint(x: alicePublicKeyNode.position.x, y: alicePublicKeyNode.position.y + 40)
+        return label
+    }()
+    
+    private lazy var alicePrivateLabel:SKLabelNode = {
+        let label = InteractiveScene.keyLabel(text: "Alice\nPrivate")
+        label.position = CGPoint(x: alicePrivateKeyNode.position.x, y: alicePrivateKeyNode.position.y + 40)
+        return label
+    }()
+    
+    private lazy var bobPublicLabel:SKLabelNode = {
+        let label = InteractiveScene.keyLabel(text: "Bob\nPublic")
+        label.position = CGPoint(x: bobPublicKeyNode.position.x, y: bobPublicKeyNode.position.y + 40)
+        return label
+    }()
+    
+    private lazy var bobPrivateLabel:SKLabelNode = {
+        let label = InteractiveScene.keyLabel(text: "Bob\nPrivate")
+        label.position = CGPoint(x: bobPrivateKeyNode.position.x, y: bobPrivateKeyNode.position.y + 40)
         return label
     }()
     
@@ -130,6 +145,10 @@ public final class InteractiveScene: RSAScene  {
         return moveable
     }()
     
+    private lazy var keyToKeyLabel:[KeySprite:SKLabelNode] = {
+        return [alicePublicKeyNode:alicePublicLabel, alicePrivateKeyNode:alicePrivateLabel, bobPublicKeyNode:bobPublicLabel, bobPrivateKeyNode:bobPrivateLabel]
+    }()
+    
     /// the character that is currently in range of the message
     private weak var characterInRange:CharacterSprite?
 	
@@ -147,16 +166,30 @@ public final class InteractiveScene: RSAScene  {
         // the 3d message
         self.addChild(messageNode)
         // characters
-        self.allCharacters.forEach {
-            self.addChild($0)
+        for character in allCharacters {
+            self.addChild(character)
         }
-        // keys
-        self.allKeys.forEach {
-            self.addChild($0)
+        // keys and labels
+        for (key,keyLabel) in keyToKeyLabel {
+            // add the key before the label so it can be positioned above it
+            self.addChild(key)
+            self.addChild(keyLabel)
         }
     }
 	
 	// MARK: - Methods
+    
+    private class func keyLabel(text:String) -> SKLabelNode {
+        let label = SKLabelNode(fontNamed: "SanFransico")
+        label.text = text
+        label.lineBreakMode = .byWordWrapping
+        label.numberOfLines = 2
+        label.fontColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        label.fontSize = 12
+        label.horizontalAlignmentMode = .center
+        label.verticalAlignmentMode = .center
+        return label
+    }
 	
 	override public func touchDown(atPoint point: CGPoint) {
 		super.touchDown(atPoint: point)
@@ -186,8 +219,8 @@ public final class InteractiveScene: RSAScene  {
 	
 	override public func touchUp(atPoint point: CGPoint) {
 		super.touchUp(atPoint: point)
-        self.allMoveable.forEach {
-            $0.stopMoving(at: point)
+        for moveable in allMoveable {
+            moveable.stopMoving(at: point)
         }
 	}
 	
@@ -197,6 +230,10 @@ public final class InteractiveScene: RSAScene  {
     
     public override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
+        // position key labels above the keys
+        for (key,keyLabel) in keyToKeyLabel {
+            updatePosition(forNode: keyLabel, aboveNode: key)
+        }
         // update finger position or exit
         guard let point = currentFingerPosition else { return }
         // determine which character is in range of message
@@ -205,14 +242,18 @@ public final class InteractiveScene: RSAScene  {
         let margin:CGFloat = 10
         if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
             // stop moving keys if the touch is outside the margin
-            self.allMoveable.forEach {
-                $0.stopMoving(at: point)
+            for moveable in allMoveable {
+                moveable.stopMoving(at: point)
             }
         } else {
-            self.allMoveable.forEach {
-                $0.updatePositionIfNeeded(to: point)
+            for movable in allMoveable {
+                movable.updatePositionIfNeeded(to: point)
             }
         }
+    }
+    
+    private func updatePosition(forNode node:SKNode, aboveNode mainNode:SKNode) {
+        node.position = CGPoint(x: mainNode.position.x, y: mainNode.position.y + 40)
     }
     
     private func determineCharacterInRangeOfMessage() {
@@ -228,6 +269,7 @@ public final class InteractiveScene: RSAScene  {
                 return
             }
         }
+        // we are not near a character, set none in focus
         self.setNoCharacterFocus()
         self.setNoKeyFocus()
     }
@@ -236,6 +278,11 @@ public final class InteractiveScene: RSAScene  {
     private func setCharacterFocus(character:CharacterSprite) {
         guard let nodeName = character.name else { return }
         guard let character = SceneCharacters(rawValue: nodeName) else { return }
+        // update the message shown on the paper (if unencrypted)
+        DispatchQueue.global(qos: .background).async {
+            InteractiveScene.paperScene.updateMessageIfUnencrypted(toPerson: character)
+        }
+        // set the correct focus on the character and keys
         switch character {
         case .alice:
             self.focus(character: aliceCharacter, defocus: [bobCharacter, eveCharacter])
@@ -246,6 +293,7 @@ public final class InteractiveScene: RSAScene  {
         case .eve:
             self.focus(character: eveCharacter, defocus: [aliceCharacter, bobCharacter])
             self.focus(keys: [alicePublicKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode, bobPrivateKeyNode])
+           
         }
     }
     
@@ -264,29 +312,35 @@ public final class InteractiveScene: RSAScene  {
     private func focus(keys:[KeySprite], defocus:[KeySprite]) {
         for key in keys {
             key.run(fadeUp)
+            if let label = keyToKeyLabel[key] {
+                label.run(fadeUp)
+            }
             key.isUserInteractionEnabled = false
         }
         for key in defocus {
-            key.removeAllActions()
             key.run(fadeDown)
+            if let label = keyToKeyLabel[key] {
+                label.run(fadeDown)
+            }
             key.isUserInteractionEnabled = true
         }
     }
     
     private func setNoCharacterFocus() {
         // no characters in range, set all waiting with full alpha
-        self.allCharacters.forEach {
-            if $0.currentState != .waiting {
-                $0.currentState = .waiting
+        for character in allCharacters {
+            if character.currentState != .waiting {
+                character.currentState = .waiting
             }
-            $0.run(fadeUp)
+            character.run(fadeUp)
         }
     }
     
     private func setNoKeyFocus() {
-        self.allKeys.forEach {
-            $0.run(fadeDown)
-            $0.isUserInteractionEnabled = true
+        for (keyLabel,key) in keyToKeyLabel {
+            key.run(fadeDown)
+            keyLabel.run(fadeDown)
+            key.isUserInteractionEnabled = true
         }
     }
 	

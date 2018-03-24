@@ -47,9 +47,12 @@ public final class Message3DScene: SCNScene {
 	// MARK: Properties
 	
 	/// the message that will appear on the 3D message
-	public let message: String
+	public var message: String
 	/// the current state of the paper
 	public var paperState = PaperState.unencrypted
+    
+    /// for the interactive scene, this is the person's message we are currently showing
+    public var currentlyDisplayingMessage:InteractiveScene.SceneCharacters = .alice
 	
 	/// the paper/encrypted box object
 	private lazy var paper: SCNNode = {
@@ -79,17 +82,20 @@ public final class Message3DScene: SCNScene {
 	/// the regular text surface on the unencrypted box
 	/// - note: must be lazy so that we are able to know what the message is after initilisation
 	private lazy var messageMaterial: SCNMaterial = {
-		// create the surface image
-		let paperSize = CGSize(width: 150, height: 225)
-		let textColor = Message3DScene.paperColors.text
-		let backgroundColor = Message3DScene.paperColors.background
-		let surfaceImage = Message3DScene.renderedTextImage(message: self.message, size: paperSize, textColor: textColor, backgroundColor: backgroundColor)
-		// create the material
-		let textMaterial = SCNMaterial()
-		textMaterial.diffuse.contents = surfaceImage
-		textMaterial.locksAmbientWithDiffuse = true
-		return textMaterial
+		return Message3DScene.messageMaterial(forText: self.message)
 	}()
+    
+    private let aliceMaterial: SCNMaterial = {
+        return Message3DScene.messageMaterial(forText: InteractiveScene.aliceMessage)
+    }()
+    
+    private let bobMaterial: SCNMaterial = {
+        return Message3DScene.messageMaterial(forText: InteractiveScene.bobMessage)
+    }()
+    
+    private let eveMaterial: SCNMaterial = {
+        return Message3DScene.messageMaterial(forText: InteractiveScene.eveMessage)
+    }()
 	
 	/// the encrypted text on the ciper block (same material all sides)
 	private let encryptedMaterial: SCNMaterial = {
@@ -136,6 +142,19 @@ public final class Message3DScene: SCNScene {
 	}
 	
 	// MARK: Methods
+    
+    private class func messageMaterial(forText text:String) -> SCNMaterial {
+        // create the surface image
+        let paperSize = CGSize(width: 150, height: 225)
+        let textColor = Message3DScene.paperColors.text
+        let backgroundColor = Message3DScene.paperColors.background
+        let surfaceImage = Message3DScene.renderedTextImage(message: text, size: paperSize, textColor: textColor, backgroundColor: backgroundColor)
+        // create the material
+        let textMaterial = SCNMaterial()
+        textMaterial.diffuse.contents = surfaceImage
+        textMaterial.locksAmbientWithDiffuse = true
+        return textMaterial
+    }
 	
     private class func renderedTextImage(message:String, size:CGSize, textColor:UIColor, backgroundColor:UIColor, superLarge:Bool = false) -> UIImage? {
 		let layer = CALayer()
@@ -198,6 +217,22 @@ public final class Message3DScene: SCNScene {
 		let rotate = SCNAction.rotateBy(x: dx, y: dy, z: 0, duration: 0.03)
 		paper.runAction(rotate)
 	}
+    
+    /// - note: call from background thread for improved performance
+    public func updateMessageIfUnencrypted(toPerson person:InteractiveScene.SceneCharacters) {
+        guard paperState == .unencrypted else { return }
+        // only change the message if it is different
+        guard self.currentlyDisplayingMessage != person else { return }
+        self.currentlyDisplayingMessage = person
+        switch person {
+        case .alice:
+            self.paperGeometry.materials = [aliceMaterial, whiteMaterial, aliceMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+        case .bob:
+            self.paperGeometry.materials = [bobMaterial, whiteMaterial, bobMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+        case .eve:
+            self.paperGeometry.materials = [eveMaterial, whiteMaterial, eveMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+        }
+    }
 	
 }
 
