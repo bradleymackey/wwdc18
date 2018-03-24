@@ -25,6 +25,8 @@ public final class CharacterSprite: SKLabelNode {
 	/// the state that the character is currently in
 	/// - note: we are initially waiting
 	public var currentState = State.waiting
+    /// the name of the character
+    public let characterName:String
 	/// the expression the character gives when waiting
 	private let waiting:String
 	/// the expression the character gives when encrypting a message or reading
@@ -49,16 +51,14 @@ public final class CharacterSprite: SKLabelNode {
 	
 	// MARK: - Setup
 	
-	public init(waiting:String, acting:String, success:String, fail:String) {
+    public init(characterName:String, waiting:String, acting:String, success:String, fail:String) {
+        self.characterName = characterName
 		self.waiting = waiting
 		self.acting = acting
 		self.success = success
 		self.fail = fail
 		super.init() // font does not matter, we are using emoji
-		self.text = self.waiting // we are initially waiting
-		self.setupLabelProperties()
-        // add the physics body
-        self.physicsBody = CharacterSprite.physicsBody(ofSize: self.frame.size)
+		self.setup()
 	}
 	
 	required public init?(coder aDecoder: NSCoder) {
@@ -66,9 +66,17 @@ public final class CharacterSprite: SKLabelNode {
 	}
 	
 	// MARK: - Methods
+    
+    private func setup() {
+        self.text = self.waiting // we are initially waiting
+        self.setupLabelProperties()
+        self.physicsBody = CharacterSprite.physicsBody(ofRadius: self.frame.size.width/2)
+        self.addNameAboveCharacter()
+        self.startToCycle()
+    }
 	
-    private class func physicsBody(ofSize size:CGSize) -> SKPhysicsBody {
-		let body = SKPhysicsBody(rectangleOf: size)
+    private class func physicsBody(ofRadius radius:CGFloat) -> SKPhysicsBody {
+		let body = SKPhysicsBody(circleOfRadius: radius)
         body.categoryBitMask = PhysicsCategory.character
         body.contactTestBitMask = PhysicsCategory.none
         body.collisionBitMask = PhysicsCategory.all
@@ -76,6 +84,17 @@ public final class CharacterSprite: SKLabelNode {
         body.pinned = true // the character is fixed to the canvas
         return body
 	}
+    
+    private func addNameAboveCharacter() {
+        let nameLabel = SKLabelNode(fontNamed: "SanFranciscoText-Regular")
+        nameLabel.text = self.characterName
+        nameLabel.fontSize = 17
+        nameLabel.fontColor = .black
+        nameLabel.position = CGPoint(x: 0, y: 60)
+        nameLabel.horizontalAlignmentMode = .center
+        nameLabel.verticalAlignmentMode = .center
+        self.addChild(nameLabel)
+    }
 	
 	/// sets up properties of the label
 	private func setupLabelProperties() {
@@ -88,5 +107,24 @@ public final class CharacterSprite: SKLabelNode {
 		self.currentState = state
 		self.text = self.textForCurrentState
 	}
+    
+    private func startToCycle() {
+        let waitingAction = SKAction.customAction(withDuration: 0) { (_, _) in
+            self.text = self.waiting
+        }
+        let actingAction = SKAction.customAction(withDuration: 0) { (_, _) in
+            self.text = self.acting
+        }
+        let successAction = SKAction.customAction(withDuration: 0) { (_, _) in
+            self.text = self.success
+        }
+        let failAction = SKAction.customAction(withDuration: 0) { (_, _) in
+            self.text = self.fail
+        }
+        let wait = SKAction.wait(forDuration: 0.2)
+        let seq = SKAction.sequence([waitingAction,wait,actingAction,wait,successAction,wait,failAction,wait])
+        let forever = SKAction.repeatForever(seq)
+        self.run(forever)
+    }
 	
 }
