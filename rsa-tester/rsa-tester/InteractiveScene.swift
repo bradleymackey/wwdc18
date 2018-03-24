@@ -261,9 +261,11 @@ public final class InteractiveScene: RSAScene  {
             DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
                 self.currentlyAnimating = false
             }
+            self.characterInRange?.successAnimation()
         case .encrypted:
             // do the question mark animation
             self.invalidContactAnimation(forState: .encrypted)
+            self.characterInRange?.failAnimation()
         }
     }
     
@@ -275,10 +277,12 @@ public final class InteractiveScene: RSAScene  {
         case .unencrypted:
             // do the question mark animation
             self.invalidContactAnimation(forState: .unencrypted)
+            self.characterInRange?.failAnimation()
         case .encrypted:
             // the decryptor key must be owned by same as encryptor
             guard owner == encryptor else {
                 self.invalidContactAnimation(forState: .encrypted)
+                self.characterInRange?.failAnimation()
                 return
             }
             // mark the new state
@@ -289,6 +293,7 @@ public final class InteractiveScene: RSAScene  {
             DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
                 self.currentlyAnimating = false
             }
+            self.characterInRange?.successAnimation()
         }
     }
 
@@ -357,6 +362,10 @@ public final class InteractiveScene: RSAScene  {
     /// sets the focus on a single character, and focuses the possible keys that can be used by them
     private func setCharacterFocus(character:CharacterSprite) {
         guard let nodeName = character.name else { return }
+        if let existingFocus = characterInRange {
+            guard let existingName = existingFocus.name else { return }
+            guard existingName != nodeName else { return }
+        }
         guard let character = SceneCharacters(rawValue: nodeName) else { return }
         // update the message shown on the paper (if unencrypted)
         DispatchQueue.global(qos: .background).async {
@@ -407,6 +416,8 @@ public final class InteractiveScene: RSAScene  {
     }
     
     private func setNoCharacterFocus() {
+        // set our local variable to be nil
+        self.characterInRange = nil
         // no characters in range, set all waiting with full alpha
         for character in allCharacters {
             if character.currentState != .waiting {

@@ -21,6 +21,12 @@ public final class CharacterSprite: SKLabelNode {
 	}
 	
 	// MARK: - Properties
+    
+    // MARK: Constants
+    
+    public static var changeAnimationPauseTime:TimeInterval = 1.2
+    
+    // MARK: Instance
 	
 	/// the state that the character is currently in
 	/// - note: we are initially waiting
@@ -110,5 +116,25 @@ public final class CharacterSprite: SKLabelNode {
 		self.horizontalAlignmentMode = .center
 		self.verticalAlignmentMode = .center
 	}
+    
+    public func successAnimation() {
+        self.changeAnimation(to: self.success)
+    }
+    
+    public func failAnimation() {
+        self.changeAnimation(to: self.fail)
+    }
+    
+    private func changeAnimation(to text:String) {
+        let change = SKAction.customAction(withDuration: 0) { (_, _) in
+            self.text = text
+        }
+        let wait = SKAction.wait(forDuration: CharacterSprite.changeAnimationPauseTime)
+        let changeToInRange = SKAction.customAction(withDuration: 0) { (_, _) in
+            self.text = self.inRange
+        }
+        let sequence = SKAction.sequence([change,wait,changeToInRange])
+        self.run(sequence)
+    }
 	
 }
