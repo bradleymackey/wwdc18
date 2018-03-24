@@ -250,9 +250,10 @@ public final class InteractiveScene: RSAScene  {
     private func publicKeyContact(owner: KeyOwner) {
         guard !currentlyAnimating else { return }
         currentlyAnimating = true
-        InteractiveScene.paperScene.encryptedBy = owner
         switch (InteractiveScene.paperScene.paperState) {
         case .unencrypted:
+            // mark who has encrypted this
+            InteractiveScene.paperScene.encryptedBy = owner
             // mark the new state
             InteractiveScene.paperScene.paperState = .encrypted
             // perform the maths animation if enabled, otherwise just morph
