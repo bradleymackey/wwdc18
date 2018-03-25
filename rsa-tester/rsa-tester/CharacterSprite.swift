@@ -29,6 +29,14 @@ public final class CharacterSprite: SKLabelNode {
     
     // MARK: Instance
 	
+	public var labelForMessage:String {
+		return characterName + "'s Message"
+	}
+	
+	public var lockedByMessage:String {
+		return "🔒 with " + characterName + "'s Key"
+	}
+	
 	/// the state that the character is currently in
 	/// - note: updates the state of the character and the label text
     public var currentState:State {

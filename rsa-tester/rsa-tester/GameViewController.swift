@@ -79,7 +79,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			
 //            scene = IntroScene(size: view.bounds.size)
 //            scene.informationDelegate = self
-//
+
             scene = InteractiveScene(size: view.bounds.size)
 			
 			// Set the scale mode to scale to fit the window
@@ -104,12 +104,8 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
-    }
+        return UIInterfaceOrientationMask.landscape
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

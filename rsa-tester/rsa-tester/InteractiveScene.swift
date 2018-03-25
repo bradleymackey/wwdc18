@@ -51,9 +51,9 @@ public final class InteractiveScene: RSAScene  {
     }()
 	
 	private lazy var messageNode:Message3DNode = {
-		let sceneSize = CGSize(width: 150, height: 150)
+		let sceneSize = CGSize(width: 120, height: 120)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
-		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/3)
+		sceneNode.position = CGPoint(x: aliceCharacter.position.x, y: aliceCharacter.position.y + 140)
 		sceneNode.name = "messageNode"
 		return sceneNode
 	}()
@@ -82,28 +82,28 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var alicePublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`)
 		keySprite.name = "alicePublicKeyNode"
-		keySprite.position = CGPoint(x: (self.size.width/4)+20, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (self.size.width/2)-20, y: (self.size.height/5)+10)
 		return keySprite
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`)
 		keySprite.name = "alicePrivateKeyNode"
-		keySprite.position = CGPoint(x: (self.size.width/4)-20, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (self.size.width/2)-20, y: (self.size.height/5)-10)
 		return keySprite
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .`public`)
 		keySprite.name = "bobPublicKeyNode"
-		keySprite.position = CGPoint(x: (3*self.size.width/4)-20, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (self.size.width/2)+20, y: (self.size.height/5)+10)
 		return keySprite
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .`private`)
 		keySprite.name = "bobPrivateKeyNode"
-		keySprite.position = CGPoint(x: (3*self.size.width/4)+20, y: self.size.height/4)
+		keySprite.position = CGPoint(x: (self.size.width/2)+20, y: (self.size.height/5)-10)
 		return keySprite
 	}()
     
@@ -132,8 +132,11 @@ public final class InteractiveScene: RSAScene  {
     }()
 	
 	private lazy var messageLabel:SKLabelNode = {
-		let label = InteractiveScene.keyLabel(text: "Message")
-		self.updatePosition(forNode: label, aboveNode: messageNode)
+		let label = InteractiveScene.keyLabel(text: "Alice's Message")
+		label.fontSize = 10
+		label.numberOfLines = 2
+		label.lineBreakMode = .byWordWrapping
+		self.updatePosition(forNode: label, aboveNode: messageNode, by: 45.0)
 		return label
 	}()
     
@@ -161,6 +164,8 @@ public final class InteractiveScene: RSAScene  {
     private weak var characterInRange:CharacterSprite?
     /// whether the box animation is currently taking place
     private var currentlyAnimating = false
+	/// the label that says whos message this was before it gets locked
+	private var previousLockedMessage:String?
 	
 	// MARK: - Setup
 	
@@ -170,6 +175,7 @@ public final class InteractiveScene: RSAScene  {
         self.addNodesToScene()
         self.setNoCharacterFocus()
         self.setNoKeyFocus()
+		self.setCharacterFocus(character: aliceCharacter)
 	}
     
     private func addNodesToScene() {
@@ -268,7 +274,15 @@ public final class InteractiveScene: RSAScene  {
             DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
                 self.currentlyAnimating = false
             }
+			// the character success animation
             self.characterInRange?.successAnimation()
+			// update the label above the message
+			if let messageText = self.messageLabel.text {
+				let lockedMessage = keyOwner == .alice ? aliceCharacter.lockedByMessage : bobCharacter.lockedByMessage
+				self.messageLabel.text = messageText + "\n" + lockedMessage
+				// the previous message before we lock the message
+				self.previousLockedMessage = messageText
+			}
         case .encrypted:
             // do the question mark animation
             self.invalidContactAnimation(forState: .encrypted)
@@ -300,6 +314,10 @@ public final class InteractiveScene: RSAScene  {
                 self.currentlyAnimating = false
             }
             self.characterInRange?.successAnimation()
+			// set the label above the message back to before it was encrypted
+			if let message = self.previousLockedMessage {
+				self.messageLabel.text = message
+			}
         }
     }
 
@@ -326,7 +344,7 @@ public final class InteractiveScene: RSAScene  {
         for (key,keyLabel) in keyToKeyLabel {
             updatePosition(forNode: keyLabel, aboveNode: key)
         }
-		updatePosition(forNode: messageLabel, aboveNode: messageNode)
+		updatePosition(forNode: messageLabel, aboveNode: messageNode, by: 45.0)
         // update finger position or exit
         guard let point = currentFingerPosition else { return }
         // determine which character is in range of message
@@ -345,8 +363,8 @@ public final class InteractiveScene: RSAScene  {
         }
     }
     
-    private func updatePosition(forNode node:SKNode, aboveNode mainNode:SKNode) {
-        node.position = CGPoint(x: mainNode.position.x, y: mainNode.position.y + 30)
+	private func updatePosition(forNode node:SKNode, aboveNode mainNode:SKNode, by amount:CGFloat=30.0) {
+        node.position = CGPoint(x: mainNode.position.x, y: mainNode.position.y + amount)
     }
     
     private func determineCharacterInRangeOfMessage() {
@@ -374,13 +392,15 @@ public final class InteractiveScene: RSAScene  {
             guard let existingName = existingFocus.name else { return }
             guard existingName != nodeName else { return }
         }
-        guard let character = SceneCharacters(rawValue: nodeName) else { return }
-        // update the message shown on the paper (if unencrypted)
-        DispatchQueue.global(qos: .background).async {
-            InteractiveScene.paperScene.updateMessageIfUnencrypted(toPerson: character)
-        }
+        guard let characterType = SceneCharacters(rawValue: nodeName) else { return }
+		if InteractiveScene.paperScene.paperState == .unencrypted {
+			// update the message shown on the paper (if unencrypted)
+			InteractiveScene.paperScene.updateMessageIfUnencrypted(toPerson: characterType)
+			// update the text above the message if unencrypted
+			self.messageLabel.text = character.labelForMessage
+		}
         // set the correct focus on the character and keys
-        switch character {
+        switch characterType {
         case .alice:
             self.focus(character: aliceCharacter, defocus: [bobCharacter, eveCharacter])
             self.focus(keys: [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode], defocus: [bobPrivateKeyNode])
@@ -390,7 +410,6 @@ public final class InteractiveScene: RSAScene  {
         case .eve:
             self.focus(character: eveCharacter, defocus: [aliceCharacter, bobCharacter])
             self.focus(keys: [alicePublicKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode, bobPrivateKeyNode])
-           
         }
     }
     
