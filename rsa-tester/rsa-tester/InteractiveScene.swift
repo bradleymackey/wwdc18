@@ -270,7 +270,6 @@ public final class InteractiveScene: RSAScene  {
     
     private func privateKeyContact(owner: KeyOwner) {
         guard !currentlyAnimating else { return }
-        guard let encryptor = InteractiveScene.paperScene.encryptedBy else { return }
         currentlyAnimating = true
         switch (InteractiveScene.paperScene.paperState) {
         case .unencrypted:
@@ -279,7 +278,7 @@ public final class InteractiveScene: RSAScene  {
             self.characterInRange?.failAnimation()
         case .encrypted:
             // the decryptor key must be owned by same as encryptor
-            guard owner == encryptor else {
+            guard let encryptor = InteractiveScene.paperScene.encryptedBy, owner == encryptor else {
                 self.invalidContactAnimation(forState: .encrypted)
                 self.characterInRange?.failAnimation()
                 return

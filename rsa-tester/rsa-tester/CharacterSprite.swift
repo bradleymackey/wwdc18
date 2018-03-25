@@ -127,6 +127,8 @@ public final class CharacterSprite: SKLabelNode {
     }
     
     private func changeAnimation(to text:String) {
+		// only perform animation if we are not currently animating
+		guard !self.hasActions() else { return }
         let change = SKAction.customAction(withDuration: 0) { (_, _) in
             self.text = text
         }
