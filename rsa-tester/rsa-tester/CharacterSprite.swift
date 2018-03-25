@@ -35,8 +35,8 @@ public final class CharacterSprite: SKLabelNode {
         get {
             return _currentState
         }
-        set {
-            _currentState = newValue
+        set(newState) {
+            _currentState = newState
             self.text = self.textForCurrentState
         }
     }
@@ -74,7 +74,7 @@ public final class CharacterSprite: SKLabelNode {
 		self.success = success
 		self.fail = fail
 		super.init()
-		self.setup() // perform the setup of the character
+		self.setup()
 	}
 	
 	required public init?(coder aDecoder: NSCoder) {
@@ -117,27 +117,28 @@ public final class CharacterSprite: SKLabelNode {
 		self.horizontalAlignmentMode = .center
 		self.verticalAlignmentMode = .center
 	}
+	
+	private func changeAnimationIfIdle(brieflyTo text:String) {
+		// only perform animation if we are not currently animating
+		// only perform animation if we are in the 'inRange' state
+		guard !self.hasActions(), self.text == self.inRange else { return }
+		let change = SKAction.customAction(withDuration: 0) { (_, _) in
+			self.text = text
+		}
+		let wait = SKAction.wait(forDuration: CharacterSprite.changeAnimationPauseTime)
+		let changeToInRange = SKAction.customAction(withDuration: 0) { (_, _) in
+			self.text = self.inRange
+		}
+		let sequence = SKAction.sequence([change,wait,changeToInRange])
+		self.run(sequence)
+	}
     
     public func successAnimation() {
-        self.changeAnimation(to: self.success)
+        self.changeAnimationIfIdle(brieflyTo: self.success)
     }
     
     public func failAnimation() {
-        self.changeAnimation(to: self.fail)
+        self.changeAnimationIfIdle(brieflyTo: self.fail)
     }
     
-    private func changeAnimation(to text:String) {
-		// only perform animation if we are not currently animating
-		guard !self.hasActions() else { return }
-        let change = SKAction.customAction(withDuration: 0) { (_, _) in
-            self.text = text
-        }
-        let wait = SKAction.wait(forDuration: CharacterSprite.changeAnimationPauseTime)
-        let changeToInRange = SKAction.customAction(withDuration: 0) { (_, _) in
-            self.text = self.inRange
-        }
-        let sequence = SKAction.sequence([change,wait,changeToInRange])
-        self.run(sequence)
-    }
-	
 }

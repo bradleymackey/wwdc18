@@ -63,7 +63,7 @@ public final class IntroScene: RSAScene {
 		let sceneSize = CGSize(width: 220, height: 220)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
-		sceneNode.name = "3dnode"
+		sceneNode.name = "messageNode"
 		return sceneNode
 	}()
 	
@@ -203,7 +203,7 @@ public final class IntroScene: RSAScene {
 			self.publicKeyNode.startMoving(initialPoint: point)
 		case "privateKeyNode":
 			self.privateKeyNode.startMoving(initialPoint: point)
-		case "3dnode":
+		case "messageNode":
 			self.messageSceneNode.startRotating(at: point)
 		default:
 			return

@@ -221,6 +221,7 @@ public final class InteractiveScene: RSAScene  {
 	
 	override public func touchUp(atPoint point: CGPoint) {
 		super.touchUp(atPoint: point)
+		// mark that all moveables are no longer being moved by the user
         for moveable in allMoveable {
             moveable.stopMoving(at: point)
         }
@@ -233,25 +234,25 @@ public final class InteractiveScene: RSAScene  {
         // determine which item collided with the box
         switch firstBody.categoryBitMask {
         case PhysicsCategory.publicKeyA:
-            self.publicKeyContact(owner: .alice)
+            self.publicKeyContact(keyOwner: .alice)
         case PhysicsCategory.privateKeyA:
-            self.privateKeyContact(owner: .alice)
+            self.privateKeyContact(keyOwner: .alice)
         case PhysicsCategory.publicKeyB:
-            self.publicKeyContact(owner: .bob)
+            self.publicKeyContact(keyOwner: .bob)
         case PhysicsCategory.privateKeyB:
-            self.privateKeyContact(owner: .bob)
+            self.privateKeyContact(keyOwner: .bob)
         default:
             return
         }
 	}
     
-    private func publicKeyContact(owner: KeyOwner) {
+    private func publicKeyContact(keyOwner: KeyOwner) {
         guard !currentlyAnimating else { return }
         currentlyAnimating = true
         switch (InteractiveScene.paperScene.paperState) {
         case .unencrypted:
             // mark who has encrypted this
-            InteractiveScene.paperScene.encryptedBy = owner
+            InteractiveScene.paperScene.encryptedBy = keyOwner
             // mark the new state
             InteractiveScene.paperScene.paperState = .encrypted
             // perform the maths animation if enabled, otherwise just morph
@@ -268,7 +269,7 @@ public final class InteractiveScene: RSAScene  {
         }
     }
     
-    private func privateKeyContact(owner: KeyOwner) {
+    private func privateKeyContact(keyOwner: KeyOwner) {
         guard !currentlyAnimating else { return }
         currentlyAnimating = true
         switch (InteractiveScene.paperScene.paperState) {
@@ -278,7 +279,7 @@ public final class InteractiveScene: RSAScene  {
             self.characterInRange?.failAnimation()
         case .encrypted:
             // the decryptor key must be owned by same as encryptor
-            guard let encryptor = InteractiveScene.paperScene.encryptedBy, owner == encryptor else {
+            guard let encryptor = InteractiveScene.paperScene.encryptedBy, keyOwner == encryptor else {
                 self.invalidContactAnimation(forState: .encrypted)
                 self.characterInRange?.failAnimation()
                 return
@@ -297,6 +298,7 @@ public final class InteractiveScene: RSAScene  {
 
     /// the animation that should run when the incorrect key is brought to the box
     private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
+		guard !currentlyAnimating else { return }
         let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
         let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
             InteractiveScene.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
