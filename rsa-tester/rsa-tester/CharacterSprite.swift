@@ -23,13 +23,14 @@ public final class CharacterSprite: SKLabelNode {
 	// MARK: - Properties
     
     // MARK: Constants
-    
-    public static var changeAnimationPauseTime:TimeInterval = 1.2
+	
+	/// the amount of time that we pause on the character when they do an animation
+    public static var changeAnimationPauseTime:TimeInterval = 1.1
     
     // MARK: Instance
 	
 	/// the state that the character is currently in
-	/// - note: we are initially waiting
+	/// - note: updates the state of the character and the label text
     public var currentState:State {
         get {
             return _currentState

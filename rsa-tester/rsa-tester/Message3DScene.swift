@@ -76,8 +76,7 @@ public final class Message3DScene: SCNScene {
     /// the materials that were used prior to encryption
     /// - important: this is needed because any of the characters in the interactive scene can change the message, so we need to know what is was before we encrypt it
     private var priorMaterials:[SCNMaterial]?
-    /// a variable that keeps track of if the previous state was a question mark state, so we don't accidently set the prior material to be the question mark
-    private var priorWasQuestionMark = false
+	
 	
 	/// blank white material to show on sides of the paper without text
 	private let whiteMaterial: SCNMaterial = {
@@ -186,11 +185,6 @@ public final class Message3DScene: SCNScene {
 	}
 	
 	public func morphToCrypto(duration:TimeInterval) {
-        // set the prior materials, so we know what to morph back to when decrypting
-        if priorWasQuestionMark == false {
-            self.priorMaterials = self.paperGeometry.materials
-        }
-        priorWasQuestionMark = false
 		// update the surface materials
 		self.paperGeometry.materials = [encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial, encryptedMaterial]
 		// animate to new size
@@ -204,12 +198,12 @@ public final class Message3DScene: SCNScene {
 	
 	public func morphToPaper(duration:TimeInterval) {
 		// update the surface materials
+		// if we have prior materials use that, otherwise use the default texture
         if let prior = self.priorMaterials {
              self.paperGeometry.materials = prior
         } else {
             self.paperGeometry.materials = [messageMaterial, whiteMaterial, messageMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
         }
-        priorWasQuestionMark = false
 		// animate to new size
 		SCNTransaction.begin()
 		SCNTransaction.animationDuration = duration
@@ -220,7 +214,6 @@ public final class Message3DScene: SCNScene {
 	}
     
     public func morphToQuestionMark(duration:TimeInterval) {
-        priorWasQuestionMark = true
         // update the surface materials
         self.paperGeometry.materials = [questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial, questionMarkMaterial]
         // animate to new size
@@ -243,14 +236,19 @@ public final class Message3DScene: SCNScene {
         // only change the message if it is different
         guard self.currentlyDisplayingMessage != person else { return }
         self.currentlyDisplayingMessage = person
+		// determine the new paper material for this new person
+		var newMaterialsToUse: [SCNMaterial]
         switch person {
         case .alice:
-            self.paperGeometry.materials = [aliceMaterial, whiteMaterial, aliceMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+			newMaterialsToUse = [aliceMaterial, whiteMaterial, aliceMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
         case .bob:
-            self.paperGeometry.materials = [bobMaterial, whiteMaterial, bobMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+			newMaterialsToUse = [bobMaterial, whiteMaterial, bobMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
         case .eve:
-            self.paperGeometry.materials = [eveMaterial, whiteMaterial, eveMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
+			newMaterialsToUse = [eveMaterial, whiteMaterial, eveMaterial, whiteMaterial, whiteMaterial, whiteMaterial]
         }
+		// set the current material and the prior material, so we know what the decryption should be
+		self.paperGeometry.materials = newMaterialsToUse
+		self.priorMaterials = newMaterialsToUse
     }
 	
 }
