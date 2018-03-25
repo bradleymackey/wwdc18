@@ -65,6 +65,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 		body.collisionBitMask = PhysicsCategory.box | PhysicsCategory.boundry | PhysicsCategory.character
 		body.affectedByGravity = false
 		body.allowsRotation = false // we do not allow rotation, otherwise we will get nosense looking things
+		body.pinned = true // pinned so we don't move, will be toggled when we move it around
 		return body
 	}
 	
@@ -109,6 +110,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
     
     public func startMoving(initialPoint:CGPoint) {
         self.isBeingMoved = true
+		self.physicsBody?.pinned = false
         let moveAnimation = SKAction.move(to: initialPoint, duration: 0.04)
         self.run(moveAnimation)
     }
@@ -121,6 +123,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
     
     public func stopMoving(at lastPoint:CGPoint) {
         self.isBeingMoved = false
+		self.physicsBody?.pinned = true
     }
 	
 }
