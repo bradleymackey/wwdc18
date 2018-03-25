@@ -247,12 +247,16 @@ public final class InteractiveScene: RSAScene  {
         // determine which item collided with the box
         switch firstBody.categoryBitMask {
         case PhysicsCategory.publicKeyA:
-            self.publicKeyContact(keyOwner: .alice)
+			guard alicePublicKeyNode.isBeingMoved else { return }
+			self.publicKeyContact(keyOwner: .alice)
         case PhysicsCategory.privateKeyA:
+			guard alicePrivateKeyNode.isBeingMoved else { return }
             self.privateKeyContact(keyOwner: .alice)
         case PhysicsCategory.publicKeyB:
+			guard bobPublicKeyNode.isBeingMoved else { return }
             self.publicKeyContact(keyOwner: .bob)
         case PhysicsCategory.privateKeyB:
+			guard bobPrivateKeyNode.isBeingMoved else { return }
             self.privateKeyContact(keyOwner: .bob)
         default:
             return
