@@ -140,5 +140,5 @@ public final class CharacterSprite: SKLabelNode {
     public func failAnimation() {
         self.changeAnimationIfIdle(brieflyTo: self.fail)
     }
-    
+	
 }

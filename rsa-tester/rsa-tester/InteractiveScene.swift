@@ -298,7 +298,6 @@ public final class InteractiveScene: RSAScene  {
 
     /// the animation that should run when the incorrect key is brought to the box
     private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
-		guard !currentlyAnimating else { return }
         let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
         let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
             InteractiveScene.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
