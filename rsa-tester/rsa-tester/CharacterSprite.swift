@@ -85,7 +85,7 @@ public final class CharacterSprite: SKLabelNode {
     private func setup() {
         self.text = self.waiting // we are initially waiting
         self.setupLabelProperties()
-        self.physicsBody = CharacterSprite.physicsBody(ofRadius: 2*self.frame.size.width/3)
+        self.physicsBody = CharacterSprite.physicsBody(ofRadius: self.frame.size.width/2)
         self.addNameAboveCharacter()
     }
 	

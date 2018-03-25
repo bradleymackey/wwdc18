@@ -108,26 +108,26 @@ public final class InteractiveScene: RSAScene  {
 	}()
     
     private lazy var alicePublicLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Alice\nPublic")
-        label.position = CGPoint(x: alicePublicKeyNode.position.x, y: alicePublicKeyNode.position.y + 40)
+        let label = InteractiveScene.keyLabel(text: "Alice")
+        self.updatePosition(forNode: label, aboveNode: alicePublicKeyNode)
         return label
     }()
     
     private lazy var alicePrivateLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Alice\nPrivate")
-        label.position = CGPoint(x: alicePrivateKeyNode.position.x, y: alicePrivateKeyNode.position.y + 40)
+        let label = InteractiveScene.keyLabel(text: "Alice")
+        self.updatePosition(forNode: label, aboveNode: alicePrivateKeyNode)
         return label
     }()
     
     private lazy var bobPublicLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Bob\nPublic")
-        label.position = CGPoint(x: bobPublicKeyNode.position.x, y: bobPublicKeyNode.position.y + 40)
+        let label = InteractiveScene.keyLabel(text: "Bob")
+		self.updatePosition(forNode: label, aboveNode: bobPublicKeyNode)
         return label
     }()
     
     private lazy var bobPrivateLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Bob\nPrivate")
-        label.position = CGPoint(x: bobPrivateKeyNode.position.x, y: bobPrivateKeyNode.position.y + 40)
+        let label = InteractiveScene.keyLabel(text: "Bob")
+		self.updatePosition(forNode: label, aboveNode: bobPrivateKeyNode)
         return label
     }()
     
@@ -186,8 +186,6 @@ public final class InteractiveScene: RSAScene  {
     private class func keyLabel(text:String) -> SKLabelNode {
         let label = SKLabelNode(fontNamed: "SanFransico")
         label.text = text
-        label.lineBreakMode = .byWordWrapping
-        label.numberOfLines = 2
         label.fontColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         label.fontSize = 12
         label.horizontalAlignmentMode = .center
@@ -339,7 +337,7 @@ public final class InteractiveScene: RSAScene  {
     }
     
     private func updatePosition(forNode node:SKNode, aboveNode mainNode:SKNode) {
-        node.position = CGPoint(x: mainNode.position.x, y: mainNode.position.y + 40)
+        node.position = CGPoint(x: mainNode.position.x, y: mainNode.position.y + 30)
     }
     
     private func determineCharacterInRangeOfMessage() {
