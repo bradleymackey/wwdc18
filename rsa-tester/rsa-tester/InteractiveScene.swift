@@ -422,6 +422,7 @@ public final class InteractiveScene: RSAScene  {
         character.currentState = .inRange
         character.run(fadeUp)
         for other in defocus {
+			other.removeAllActions() // remove actions so we don't accidently go back to inrange
             if other.currentState != .waiting {
                 other.currentState = .waiting
             }
@@ -451,6 +452,7 @@ public final class InteractiveScene: RSAScene  {
         self.characterInRange = nil
         // no characters in range, set all waiting with full alpha
         for character in allCharacters {
+			character.removeAllActions() // remove actions so we don't accidently go back to inrange
             if character.currentState != .waiting {
                 character.currentState = .waiting
             }
