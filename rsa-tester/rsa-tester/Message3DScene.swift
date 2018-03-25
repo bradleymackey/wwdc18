@@ -225,9 +225,14 @@ public final class Message3DScene: SCNScene {
         SCNTransaction.commit()
     }
 	
+	
+	
 	public func rotatePaper(dx: CGFloat, dy: CGFloat) {
-		let rotate = SCNAction.rotateBy(x: dx, y: dy, z: 0, duration: 0.03)
-		paper.runAction(rotate)
+		SCNTransaction.begin()
+		SCNTransaction.animationDuration = 0.03
+		paper.eulerAngles.x += Float(dx)
+		paper.eulerAngles.y += Float(dy)
+		SCNTransaction.commit()
 	}
     
     /// - note: call from background thread for improved performance

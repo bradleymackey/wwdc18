@@ -76,7 +76,7 @@ public final class IntroScene: RSAScene {
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 60, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		label.name = "mLabel"
 		return label
@@ -122,7 +122,7 @@ public final class IntroScene: RSAScene {
 		// encrypt the message using the encryptor
 		let encryptedMessage = IntroScene.encryptor.encryption(forMessage: IntroScene.message)
 		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 60, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
 		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
 		label.name = "cLabel"
 		label.alpha = 0
@@ -190,6 +190,8 @@ public final class IntroScene: RSAScene {
 	
 	// MARK: Methods
 	
+	var shouldRotateCube = false
+	
 	override public func touchDown(atPoint point: CGPoint) {
 		// call the implementation in RSAScene
 		super.touchDown(atPoint: point)
@@ -237,8 +239,8 @@ public final class IntroScene: RSAScene {
 		// stop moving keys if they were being moved
 		self.privateKeyNode.stopMoving(at: point)
 		self.publicKeyNode.stopMoving(at: point)
-		// stop rotating the message if it was being rotated
-		self.messageNode.finishedRotating()
+		// stop the cube rotation
+		self.messageNode.endRotation()
 	}
 	
 	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {

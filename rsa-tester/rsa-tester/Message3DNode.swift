@@ -20,9 +20,9 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	
 	/// the scene that is presented inside of the node
 	public let messageScene:Message3DScene
-	
-	/// if we are rotating the message cube currently
+	/// whether or not the cube is being rotated
 	private var isBeingRotated = false
+	
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
     
@@ -53,7 +53,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 		// rotate the root node of the scene forever
 		let rotate = SCNAction.rotate(by: .pi, around: SCNVector3(x: 0, y: .pi*2, z: 0), duration: Message3DNode.timeForPaperRotation)
 		let rotateForever = SCNAction.repeatForever(rotate)
-		messageScene.rootNode.runAction(rotateForever)
+		messageScene.rootNode.runAction(rotateForever, forKey: "constantRotate")
 	}
 	
 	// MARK: Methods
@@ -84,15 +84,14 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	
 	// MARK: Rotation (Intro Scene)
 	
-	/// rotation of the message/cube object has began
 	public func startRotating(at point:CGPoint) {
-		isBeingRotated = true
+		self.isBeingRotated = true
 		lastRotationPoint = point
 	}
 	
 	/// updating the angle of the rotating
 	public func updateRotationIfRotating(newPoint point:CGPoint) {
-		guard isBeingRotated else { return }
+		guard self.isBeingRotated else { return }
 		// rotate the paper
 		if let lastPoint = lastRotationPoint {
 			messageScene.rotatePaper(dx: (lastPoint.y - point.y)/80, dy: (point.x - lastPoint.x)/80)
@@ -101,10 +100,11 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 		lastRotationPoint = point
 	}
 	
-	/// mark the rotation as complete
-	public func finishedRotating() {
-		isBeingRotated = false
+	public func endRotation() {
+		self.isBeingRotated = false
+		lastRotationPoint = nil
 	}
+	
     
     // MARK: Moving (Interactive Scene)
     
