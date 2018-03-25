@@ -6,6 +6,12 @@
 //  Copyright © 2018 Bradley Mackey. All rights reserved.
 //
 
+/*
+SOUNDS:
+https://freesound.org/people/marcello777/
+https://freesound.org/people/AderuMoro
+*/
+
 import Foundation
 import SpriteKit
 
@@ -35,6 +41,14 @@ public final class InteractiveScene: RSAScene  {
 	// MARK: Instance Variables
 	
 	public static var paperScene = Message3DScene(message: "Another message. Go ahead and encrypt me.")
+	
+	private let aliceSound = SKAction.playSoundFileNamed("hellolady1.caf", waitForCompletion: false)
+	private let bobSound = SKAction.playSoundFileNamed("helloman.caf", waitForCompletion: false)
+	private let eveSound = SKAction.playSoundFileNamed("hellolady2.caf", waitForCompletion: false)
+	private let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
+	private let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
+	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
+
     
     /// for fading items up that come into focus
     private let fadeUp:SKAction = {
@@ -287,10 +301,14 @@ public final class InteractiveScene: RSAScene  {
 				// the previous message before we lock the message
 				self.previousLockedMessage = messageText
 			}
+			// play the ecnrypt sound
+			self.messageNode.run(encryptSound)
         case .encrypted:
             // do the question mark animation
             self.invalidContactAnimation(forState: .encrypted)
             self.characterInRange?.failAnimation()
+			// play the fail sound
+			self.messageNode.run(failSound)
         }
     }
     
@@ -302,11 +320,15 @@ public final class InteractiveScene: RSAScene  {
             // do the question mark animation
             self.invalidContactAnimation(forState: .unencrypted)
             self.characterInRange?.failAnimation()
+			// play the fail sound
+			self.messageNode.run(failSound)
         case .encrypted:
             // the decryptor key must be owned by same as encryptor
             guard let encryptor = InteractiveScene.paperScene.encryptedBy, keyOwner == encryptor else {
                 self.invalidContactAnimation(forState: .encrypted)
                 self.characterInRange?.failAnimation()
+				// play the fail sound
+				self.messageNode.run(failSound)
                 return
             }
             // mark the new state
@@ -322,6 +344,8 @@ public final class InteractiveScene: RSAScene  {
 			if let message = self.previousLockedMessage {
 				self.messageLabel.text = message
 			}
+			// play the decrypt sound
+			self.messageNode.run(decryptSound)
         }
     }
 
@@ -408,12 +432,15 @@ public final class InteractiveScene: RSAScene  {
         case .alice:
             self.focus(character: aliceCharacter, defocus: [bobCharacter, eveCharacter])
             self.focus(keys: [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode], defocus: [bobPrivateKeyNode])
+			aliceCharacter.run(aliceSound)
         case .bob:
             self.focus(character: bobCharacter, defocus: [aliceCharacter, eveCharacter])
             self.focus(keys: [alicePublicKeyNode, bobPrivateKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode])
+			bobCharacter.run(bobSound)
         case .eve:
             self.focus(character: eveCharacter, defocus: [aliceCharacter, bobCharacter])
             self.focus(keys: [alicePublicKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode, bobPrivateKeyNode])
+			eveCharacter.run(eveSound)
         }
     }
     

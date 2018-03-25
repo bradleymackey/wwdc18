@@ -14,6 +14,9 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
 	// MARK: Properties
 	
+	private let pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
+	private let dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
+	
 	/// whether the user is dragging this key around or not
 	public var isBeingMoved = false
 	/// the previous point that the key was at
@@ -109,6 +112,8 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		self.run(moveAnimation)
 		self.physicsBody?.affectedByGravity = false
 		self.lastPoint = initialPoint
+		// play the pickup sound
+		self.run(pickupKeySound)
 	}
 	
 	public func updatePositionIfNeeded(to point: CGPoint) {
@@ -132,6 +137,8 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		// fling the key based on the last 2 movement points
 		let fling = SKAction.applyImpulse(vec, duration: 0.005)
 		self.run(fling)
+		// play the drop sound
+		self.run(dropKeySound)
 	}
 	
 }
