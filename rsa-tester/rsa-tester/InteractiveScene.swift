@@ -130,6 +130,12 @@ public final class InteractiveScene: RSAScene  {
 		self.updatePosition(forNode: label, aboveNode: bobPrivateKeyNode)
         return label
     }()
+	
+	private lazy var messageLabel:SKLabelNode = {
+		let label = InteractiveScene.keyLabel(text: "Message")
+		self.updatePosition(forNode: label, aboveNode: messageNode)
+		return label
+	}()
     
     /// convenience property to get all characters
     private lazy var allCharacters:[CharacterSprite] = {
@@ -173,6 +179,7 @@ public final class InteractiveScene: RSAScene  {
         }
         // the 3d message
         self.addChild(messageNode)
+		self.addChild(messageLabel)
         // keys and labels
         for (key,keyLabel) in keyToKeyLabel {
             // add the key before the label so it can be positioned above it
@@ -319,6 +326,7 @@ public final class InteractiveScene: RSAScene  {
         for (key,keyLabel) in keyToKeyLabel {
             updatePosition(forNode: keyLabel, aboveNode: key)
         }
+		updatePosition(forNode: messageLabel, aboveNode: messageNode)
         // update finger position or exit
         guard let point = currentFingerPosition else { return }
         // determine which character is in range of message

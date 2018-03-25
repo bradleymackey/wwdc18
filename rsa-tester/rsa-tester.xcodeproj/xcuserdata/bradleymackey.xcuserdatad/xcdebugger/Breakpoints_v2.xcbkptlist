@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "rsa-tester/InteractiveScene.swift"
-            timestampString = "543672606.449295"
+            timestampString = "543673198.227402"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
             landmarkName = "bodyContact(firstBody:secondBody:)"
             landmarkType = "7">
          </BreakpointContent>
