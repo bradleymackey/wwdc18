@@ -244,8 +244,10 @@ public final class IntroScene: RSAScene {
         // determine the first body
         switch firstBody.categoryBitMask {
         case PhysicsCategory.publicKeyA:
+			guard publicKeyNode.isBeingMoved else { return }
             self.publicKeyContact()
         case PhysicsCategory.privateKeyA:
+			guard privateKeyNode.isBeingMoved else { return }
             self.privateKeyContact()
         default:
             return
