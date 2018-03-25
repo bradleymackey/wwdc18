@@ -32,6 +32,10 @@ public final class IntroScene: RSAScene {
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
+	private let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
+	private let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
+	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
+	
 	// MARK: Delegate
 	/// for delegating an information message for a UIView to present
 	public weak var informationDelegate:IntroSceneInformationDelegate?
@@ -59,7 +63,7 @@ public final class IntroScene: RSAScene {
 		return keySprite
 	}()
 	
-	private lazy var messageSceneNode:Message3DNode = {
+	private lazy var messageNode:Message3DNode = {
 		let sceneSize = CGSize(width: 220, height: 220)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
@@ -163,7 +167,7 @@ public final class IntroScene: RSAScene {
 	}
 
 	private func addMessageSceneNode() {
-		self.addChild(messageSceneNode)
+		self.addChild(messageNode)
 	}
 	
 	private func addKeySprites() {
@@ -204,7 +208,7 @@ public final class IntroScene: RSAScene {
 		case "privateKeyNode":
 			self.privateKeyNode.startMoving(initialPoint: point)
 		case "messageNode":
-			self.messageSceneNode.startRotating(at: point)
+			self.messageNode.startRotating(at: point)
 		default:
 			return
 		}
@@ -214,7 +218,7 @@ public final class IntroScene: RSAScene {
 		// call the implementation in RSAScene
 		super.touchMoved(toPoint: point)
 		// update objects if we need to
-		self.messageSceneNode.updateRotationIfRotating(newPoint: point)
+		self.messageNode.updateRotationIfRotating(newPoint: point)
 	}
 	
 	override public func touchUp(atPoint point: CGPoint) {
@@ -234,7 +238,7 @@ public final class IntroScene: RSAScene {
 		self.privateKeyNode.stopMoving(at: point)
 		self.publicKeyNode.stopMoving(at: point)
 		// stop rotating the message if it was being rotated
-		self.messageSceneNode.finishedRotating()
+		self.messageNode.finishedRotating()
 	}
 	
 	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
@@ -269,12 +273,16 @@ public final class IntroScene: RSAScene {
                 DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
                     self.currentlyAnimating = false
                 }
+				// play the encrypt sound
+				self.messageNode.run(encryptSound)
                 return
             }
             self.performMathsAnimation(transformToState: .encrypted)
         case .encrypted:
 			// do the question mark animation
             self.invalidContactAnimation(forState: .encrypted)
+			// play the fail sound
+			self.messageNode.run(failSound)
         }
     }
     
@@ -286,6 +294,8 @@ public final class IntroScene: RSAScene {
         case .unencrypted:
 			// do the question mark animation
 			self.invalidContactAnimation(forState: .unencrypted)
+			// play the fail sound
+			self.messageNode.run(failSound)
         case .encrypted:
             // mark the new state
             IntroScene.paperScene.paperState = .unencrypted
@@ -296,6 +306,8 @@ public final class IntroScene: RSAScene {
                 DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
                     self.currentlyAnimating = false
                 }
+				// play the decrypt sound
+				self.messageNode.run(decryptSound)
                 return
             }
             self.performMathsAnimation(transformToState: .unencrypted)
@@ -315,7 +327,7 @@ public final class IntroScene: RSAScene {
 			self.currentlyAnimating = false
 		}
 		let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
-		self.messageSceneNode.run(invalidContactSequence)
+		self.messageNode.run(invalidContactSequence)
 	}
     
     /// animates the maths labels when the key is brought to the message label/crypto box
@@ -360,7 +372,13 @@ public final class IntroScene: RSAScene {
         
         let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
         let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
-            encrypting ? IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime) : IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+			if encrypting {
+				IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
+				self.messageNode.run(self.encryptSound)
+			} else {
+				IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+				self.messageNode.run(self.decryptSound)
+			}
         }
         let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
             self.currentlyAnimating = false
