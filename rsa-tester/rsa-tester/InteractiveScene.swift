@@ -34,13 +34,13 @@ public final class InteractiveScene: RSAScene  {
     public static var invalidPulseTime:TimeInterval = 0.2
     public static var cubeChangeTime:TimeInterval = 0.5
     
-    public static var aliceMessage = "Hello world."
+    public static var aliceMessage = "Hello world. This is a really long message just to test how thingsk sdf sdf skjdf ksjd fkshdf ksjdhfksjhdfsk jfskjdfhskjd fksd fksjhdf ksjdfhks dfkshdf ksfhskfhkh."
     public static var bobMessage = "This is a test."
     public static var eveMessage = "I am a 1337 hacker!!"
 	
 	// MARK: Instance Variables
 	
-	public static var paperScene = Message3DScene(message: "Another message. Go ahead and encrypt me.")
+	public static var paperScene = Message3DScene(message: InteractiveScene.aliceMessage)
 	
 	private let aliceSound = SKAction.playSoundFileNamed("hellolady1.caf", waitForCompletion: false)
 	private let bobSound = SKAction.playSoundFileNamed("helloman.caf", waitForCompletion: false)
