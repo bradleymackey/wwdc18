@@ -7,7 +7,7 @@
 //
 
 /*
-SOUNDS:
+PEOPLE SOUNDS:
 https://freesound.org/people/marcello777/
 https://freesound.org/people/AderuMoro
 */
@@ -193,7 +193,7 @@ public final class InteractiveScene: RSAScene  {
         self.addNodesToScene()
         self.setNoCharacterFocusIfNeeded()
         self.setNoKeyFocusIfNeeded()
-		self.setCharacterFocus(character: aliceCharacter)
+		self.setCharacterFocusIfNeeded(character: aliceCharacter)
 	}
     
     private func addNodesToScene() {
@@ -407,7 +407,7 @@ public final class InteractiveScene: RSAScene  {
             let y = messageNode.position.y - char.position.y
             let dist = sqrt(x*x + y*y)
             if dist < 170 {
-                self.setCharacterFocus(character: char)
+                self.setCharacterFocusIfNeeded(character: char)
                 // exit after this
                 return
             }
@@ -418,10 +418,11 @@ public final class InteractiveScene: RSAScene  {
     }
     
     /// sets the focus on a single character, and focuses the possible keys that can be used by them
-    private func setCharacterFocus(character:CharacterSprite) {
+    private func setCharacterFocusIfNeeded(character:CharacterSprite) {
         guard let nodeName = character.name else { return }
         if let existingFocus = characterInRange {
             guard let existingName = existingFocus.name else { return }
+			// only focus on this new character if we are not already focused on them
             guard existingName != nodeName else { return }
         }
         guard let characterType = SceneCharacters(rawValue: nodeName) else { return }
