@@ -180,6 +180,10 @@ public final class InteractiveScene: RSAScene  {
     private var currentlyAnimating = false
 	/// the label that says whos message this was before it gets locked
 	private var previousLockedMessage:String?
+	/// keeps track of if no characters are currently focused (for efficiency)
+	private var noCharactersFocused = false
+	/// keeps track of if no keys are currently focused (for efficiency)
+	private var noKeysFocused = false
 	
 	// MARK: - Setup
 	
@@ -187,8 +191,8 @@ public final class InteractiveScene: RSAScene  {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
         self.addNodesToScene()
-        self.setNoCharacterFocus()
-        self.setNoKeyFocus()
+        self.setNoCharacterFocusIfNeeded()
+        self.setNoKeyFocusIfNeeded()
 		self.setCharacterFocus(character: aliceCharacter)
 	}
     
@@ -409,8 +413,8 @@ public final class InteractiveScene: RSAScene  {
             }
         }
         // we are not near a character, set none in focus
-        self.setNoCharacterFocus()
-        self.setNoKeyFocus()
+        self.setNoCharacterFocusIfNeeded()
+        self.setNoKeyFocusIfNeeded()
     }
     
     /// sets the focus on a single character, and focuses the possible keys that can be used by them
@@ -445,6 +449,7 @@ public final class InteractiveScene: RSAScene  {
     }
     
     private func focus(character:CharacterSprite, defocus:[CharacterSprite]) {
+		self.noCharactersFocused = false // we are now focused on a character
         self.characterInRange = character
         character.currentState = .inRange
         character.run(fadeUp)
@@ -458,6 +463,7 @@ public final class InteractiveScene: RSAScene  {
     }
     
     private func focus(keys:[KeySprite], defocus:[KeySprite]) {
+		self.noKeysFocused = false // we are now focused on a certain key
         for key in keys {
             key.run(fadeUp)
             if let label = keyToKeyLabel[key] {
@@ -474,7 +480,10 @@ public final class InteractiveScene: RSAScene  {
         }
     }
     
-    private func setNoCharacterFocus() {
+    private func setNoCharacterFocusIfNeeded() {
+		// check that we are not already defocused from all characters (for efficiency)
+		guard !self.noCharactersFocused else { return }
+		self.noCharactersFocused = true // we are now not focused on a character
         // set our local variable to be nil
         self.characterInRange = nil
         // no characters in range, set all waiting with full alpha
@@ -487,7 +496,11 @@ public final class InteractiveScene: RSAScene  {
         }
     }
     
-    private func setNoKeyFocus() {
+    private func setNoKeyFocusIfNeeded() {
+		// check that we are not already defocused from all keys (for efficiency)
+		guard !self.noKeysFocused else { return }
+		self.noKeysFocused = true
+		// defocus all the keys if we need to
         for (key,keyLabel) in keyToKeyLabel {
             key.run(fadeDown)
             keyLabel.run(fadeDown)
