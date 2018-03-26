@@ -173,6 +173,8 @@ public final class InteractiveScene: RSAScene  {
     private lazy var keyToKeyLabel:[KeySprite:SKLabelNode] = {
         return [alicePublicKeyNode:alicePublicLabel, alicePrivateKeyNode:alicePrivateLabel, bobPublicKeyNode:bobPublicLabel, bobPrivateKeyNode:bobPrivateLabel]
     }()
+	
+	// MARK: Tracking variables
     
     /// the character that is currently in range of the message
     private weak var characterInRange:CharacterSprite?
@@ -210,6 +212,10 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(key)
             self.addChild(keyLabel)
         }
+		let point = CGPoint(x: 3*self.size.width/4, y: self.size.height)
+		let rope = RopeSprite(attachmentPoint: point, attachedObject: bobPrivateKeyNode, ropeLength: 20)
+		self.addChild(rope)
+		rope.addRopeToScene()
     }
 	
 	// MARK: - Methods
