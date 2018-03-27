@@ -38,9 +38,9 @@ In Swift (and many other programming languages) the modulo operator is represent
 ### Preparing to encrypt
 Simply put, RSA works by performing a number of maths operations on a message.
 
-This means that to encrypt a message, it firstly has to be converted into a number (it doesn't matter what technique we use to do this, as long as it's the same when we encrypt and decrypt). We will call the message that we will encrypt '`M`'.
+This means that to encrypt a message, it firstly has to be converted into a number (it doesn't matter what technique we use, as long as it's the same when we encrypt and decrypt). We will call the message that we will encrypt '`M`'.
 
-At the heart of the encryption is a number called the *public modulus*, '`N`' (we'll explain how we got this in a minute).
+At the heart of the encryption is a number called the *public modulus*, '`N`'.
 
 ### Have a look!
 Go ahead and turn on `viewMaths` to see the calculations that are done as we encrypt and decrypt!
