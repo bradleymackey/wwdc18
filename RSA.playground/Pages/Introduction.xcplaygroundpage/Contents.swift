@@ -39,7 +39,7 @@ If the message is big, the number will also be big.
 
 We now need to generate the keys so we know how to encrypt and decrypt the message.
 
-1. We pick 2 prime numbers, `p` and `q`. The bigger that the numbers are, the more secure our message will be.
+1. We pick 2 different prime numbers, `p` and `q`. The bigger that the numbers are, the more secure our message will be.
 2. We then calculate `N = p*q`. This number is called the *public modulus* and is used both when we encrypt and decrypt the message.
 3. Then we pick some number `e`, which must be *co-prime* to `(p-1)*(q-1)` (the only factor that they share is 1). This number is called the *public exponent*.
 4. Then we calculate `d`, which is the **unique** integer such that `e*d = 1 mod (p-1)*(q-1)` (there's only 1 possible value that `d` can be to make this equation work).
@@ -74,7 +74,7 @@ Turn on `useRealValues` to see it in action with some real numbers.
 ## Customise it!
 Change some of the numbers to see how the message gets encrypted differently!
 
-*For our example, make sure `p`, `q` and the message are numbers less than 18, otherwise the numbers will be way too big!*
+*For our example, make sure `p`, `q` and the message are numbers 23 or less, otherwise the numbers will be way too big!*
 
 *Note that because the numbers we are using are really small, some numbers you pick may mean that the public and private keys have the same value - this wouldn't happen in the real world because the numbers are much bigger! It may also be the case that the message after it's encrypted is the same as the original message. Again, this wouldn't happen in the real world when we are using massive numbers!*
 */

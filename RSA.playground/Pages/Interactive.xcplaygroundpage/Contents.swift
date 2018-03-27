@@ -13,7 +13,7 @@ Go ahead and turn on `snoopingEnabled` to see that RSA is secure and say hello t
 ## How do we know it's secure?
 We don't. Well... sort of.
 
-touch on P = NP VERY SLIGHTLY, touch on modulo easy one way but hard to reverse
+touch on P = NP VERY SLIGHTLY, touch on modulo easy one way but hard to reverse and multiplication easy but factorisation hard
 
 ### Phew, enough maths for one day...
 Go ahead and customise the scene by changing the variables below and have a play!
@@ -24,11 +24,9 @@ Go ahead and customise the scene by changing the variables below and have a play
 // variable to change bob's message
 // change alice pub key color
 // change bob pub key color
-// change alice emoji
-// change bob emoji
-// change eve emoji
-
-
+// change alice emojis
+// change bob emojis
+// change eve emojis
 
 import Foundation
 import UIKit
