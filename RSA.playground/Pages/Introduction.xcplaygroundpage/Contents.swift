@@ -15,7 +15,7 @@ Let's start by going over the basics.
 ### Keys
 A "key" is used *encrypt* ("lock") and *decrypt* ("unlock") data.
 ### Asymmetric Keys
-RSA uses *asymmetric* keys to encrypt data. This means that the key used to encrypt the data is **different** from the key that is used to decrypt the data.
+RSA uses *asymmetric* keys to encrypt data. This means that the key used to encrypt the data is ***different*** from the key that is used to decrypt the data.
 
 ### Play time...
 
@@ -23,7 +23,7 @@ Go ahead and **encrypt the message** using green the *public key*.
 
 Then **decrypt the message** using the red *private key*.
 
-Notice that you can only encrypt with the public key and only decrypt with the private key.
+*Notice that you can only encrypt with the public key and only decrypt with the private key.*
 */
 
 // change color of keys here
@@ -38,14 +38,14 @@ In Swift (and many other programming languages) the modulo operator is represent
 ### Preparing to encrypt
 Simply put, RSA works by performing a number of maths operations on a message.
 
-This means that to encrypt a message, it firstly has to be converted into a number (it doesn't matter what technique we use, as long as it's the same when we encrypt and decrypt). We will call the message that we will encrypt '`M`'.
+This means that to encrypt a message, it firstly has to be converted into a number (it doesn't matter what technique we use, as long as it's the same when we encrypt and decrypt). We will call the message that we will encrypt `M`.
 
-At the heart of the encryption is a number called the *public modulus*, '`N`'.
+At the heart of RSA is a number called the *public modulus*, `N`.
 
 ### Have a look!
-Go ahead and turn on `viewMaths` to see the calculations that are done as we encrypt and decrypt!
+Go ahead and **turn on** `viewMaths` to see the calculations that are done as we encrypt and decrypt!
 
-See how the numbers `e`, `d` and `N` associated with the keys is used in the encryption and decryption calculations.
+See how the numbers `e`, `d` and `N` are used in the encryption and decryption calculations.
 
 **Tap on the labels** for a description of what they are and what they do.
 */
@@ -57,37 +57,32 @@ See how the numbers `e`, `d` and `N` associated with the keys is used in the enc
 //These are just 2 numbers that we pick. They can be anything we want with 2 simple rules:
 //- they must be *prime numbers*
 //- they must be different
+// We use these numbers to calculate the public modulus N.
 //
 //### Public Modulus, `N`
-//Calculating `N` is really easy. We just multiply `p` and `q`.
+// Calculating `N` is really easy. We just multiply `p` and `q`. This number is used both when we encrypt the message and decrypt the ciphertext.
 //
 //### Public Exponent, `e`
-//`e` is also easy to figure out. It can be any number that we want that is *co-prime* to `(p-1)*(q-1)`. This means the only factor that they have in common is 1. An easy way to get `e` is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.
+// This is used to convert the message into the encrypted message (ciphertext), along with the public modulus N. It can be any number that we want that is co-prime to (p-1)*(q-1). This means the only factor that they have in common is 1. An easy way to get `e` is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.
 //
 //### Private Exponent, `d`
-//`d` is a little trickier. It is the **unique** integer such that `e*d = 1 mod (p-1)*(q-1)` (there's only 1 possible value that `d` can be to make this equation work).
+// This is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N. It is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work).
 
 /*:
 
 ### Example time!
 Don't worry if things are still a little confusing, it can take some time to really understand the maths operations involved.
 
-Turn on `useRealValues` to see it in action with some real numbers.
-*/
+**Turn on** `useRealValues` to see it in action with some real numbers.
 
-// toggle to turn on real values
-
-/*:
-
-### Customise it!
-Go ahead and customise the example by changing the message value and choosing some different prime numbers for `p` and `q`.
+**Customise** the example by changing the message value and choosing some prime numbers for `p` and `q` (the numbers must be different from each other).
 
 **Important:** the message must be ***less than*** `N` (remember that `N=p*q`).
 
 *For our example, make sure `p` and `q` are numbers 29 or less, otherwise all the numbers will be way too big! In the real world, massive numbers are used for `p` and `q` to make their encryption really secure.*
 */
 
-
+// toggle to turn on real values
 // change the RSAEncryptor engine values
 // change the message value
 
