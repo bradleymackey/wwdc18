@@ -83,7 +83,7 @@ public final class RopeSprite: SKNode {
 		for jointNumber in 1..<ropeParts.count {
 			let nodeA = ropeParts[jointNumber-1]
 			let nodeB = ropeParts[jointNumber]
-			let anchorPoint = CGPoint(x: nodeB.frame.midX, y: nodeB.frame.minY)
+			let anchorPoint = CGPoint(x: nodeB.frame.midX, y: nodeB.frame.maxY)
 			let otherJoint = SKPhysicsJointPin.joint(withBodyA: nodeA.physicsBody!, bodyB: nodeB.physicsBody!, anchor: anchorPoint)
 			enclosingScene.physicsWorld.add(otherJoint)
 		}

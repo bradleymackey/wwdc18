@@ -214,11 +214,11 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(key)
             self.addChild(keyLabel)
         }
-		let point = CGPoint(x: self.size.width/5, y: self.size.height)
+		let point = CGPoint(x: self.size.width/7, y: self.size.height)
 		let rope = RopeSprite(attachmentPoint: point, attachedElement: alicePrivateKeyNode, ropeLength: 23)
 		self.addChild(rope)
 		rope.addRopeElementsToScene()
-		let otherPoint = CGPoint(x: 4*self.size.width/5, y: self.size.height)
+		let otherPoint = CGPoint(x: 6*self.size.width/7, y: self.size.height)
 		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobPrivateKeyNode, ropeLength: 23)
 		self.addChild(otherRope)
 		otherRope.addRopeElementsToScene()
