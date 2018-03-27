@@ -8,7 +8,9 @@ its so we lock up some data to send without having to send a key thats the same 
 
 Go ahead and turn on `snoopingEnabled` to see that RSA is secure and say hello to Eve.
 */
+
 // variable to enable snooping
+
 /*:
 ## How do we know it's secure?
 We don't. Well... sort of.

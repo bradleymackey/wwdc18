@@ -1,8 +1,13 @@
 // by Bradley Mackey
 // for WWDC 2018
+
+import UIKit
+import SpriteKit
+import PlaygroundSupport
+
 /*:
 # RSA Encryption
-[RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) is the main technique used to encrypt data sent and recieved online.
+[RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) is a method of encryption that is used widely for sending secure data online.
 
 But what makes RSA so good for use online and how does it work?
 
@@ -10,15 +15,13 @@ Let's start by going over the basics.
 ### Keys
 A "key" is used *encrypt* ("lock") and *decrypt* ("unlock") data.
 ### Asymmetric Keys
-RSA uses *asymmetric* keys to encrypt data.
-
-This means that the key used to encrypt the data is **different** from the key that is used to decrypt the data. In RSA, these keys are known as the *public key* and *private key*.
+RSA uses *asymmetric* keys to encrypt data. This means that the key used to encrypt the data is **different** from the key that is used to decrypt the data.
 
 ### Play time...
 
 Go ahead and **encrypt the message** using green the *public key*.
 
-Then use the red *private key* to **decrypt the message**.
+Then **decrypt the message** using the red *private key*.
 
 Notice that you can only encrypt with the public key and only decrypt with the private key.
 */
@@ -27,64 +30,73 @@ Notice that you can only encrypt with the public key and only decrypt with the p
 
 /*:
 ## How does it work?
-### The modulo operator
+### Preface: The modulo operator
 RSA makes use of the *modulo* (`mod`) operator in its calculations. Don't be scared of this! It just means "the remainder after dividing". For example, `5mod2 = 1` because `5/2 = 2` ***remainder 1***.
 
 In Swift (and many other programming languages) the modulo operator is represented by '`%`', so `5%2 = 1`.
 
-### The algorithm
-To encrypt a message, the text is first converted into a number (it doesn't matter what technique we use to do this, as long as it's the same when we encrypt and decrypt). This is so we can do some fancy maths operations with the number in order to make it secure.
+### Preparing to encrypt
+Simply put, RSA works by performing a number of maths operations on a message.
 
-If the message is big, the number will also be big.
+This means that to encrypt a message, it firstly has to be converted into a number (it doesn't matter what technique we use to do this, as long as it's the same when we encrypt and decrypt). We will call the message that we will encrypt '`M`'.
 
-We now need to generate the keys so we know how to encrypt and decrypt the message.
+At the heart of the encryption is a number called the *public modulus*, '`N`' (we'll explain how we got this in a minute).
 
-1. We pick 2 different prime numbers, `p` and `q`. The bigger that the numbers are, the more secure our message will be.
-2. We then calculate `N = p*q`. This number is called the *public modulus* and is used both when we encrypt and decrypt the message.
-3. Then we pick some number `e`, which must be *co-prime* to `(p-1)*(q-1)` (the only factor that they share is 1). This number is called the *public exponent*.
-4. Then we calculate `d`, which is the **unique** integer such that `e*d = 1 mod (p-1)*(q-1)` (there's only 1 possible value that `d` can be to make this equation work).
-5. The public key is made up of both `N` and `e`.
-6. The private key is made up of both `N` and `d`.
-
-To encrypt some message `M`, we calculate `C = M^e mod N`, where `C` is the encrypted message or *ciphertext*.
-
-To decrypt the ciphertext, we calculate `M = C^d mod N`, where `M` is the original message.
-
-### Try it out!
-
-Let's see it in action.
-
+### Have a look!
 Go ahead and turn on `viewMaths` to see the calculations that are done as we encrypt and decrypt!
 
-Tap on the labels for a description of what they do.
+See how the numbers `e`, `d` and `N` associated with the keys is used in the encryption and decryption calculations.
 
-To keep things simple, the `p`, `q` and the message are very small numbers, longer messages would require much longer numbers in the real world.
+**Tap on the labels** for a description of what they are and what they do.
 */
 
-// boolean to toggle the maths view to see the modulo calculation
+// view maths toggle
+
+// these should be inside the labels that we tap on.
+//### `p` and `q`
+//These are just 2 numbers that we pick. They can be anything we want with 2 simple rules:
+//- they must be *prime numbers*
+//- they must be different
+//
+//### Public Modulus, `N`
+//Calculating `N` is really easy. We just multiply `p` and `q`.
+//
+//### Public Exponent, `e`
+//`e` is also easy to figure out. It can be any number that we want that is *co-prime* to `(p-1)*(q-1)`. This means the only factor that they have in common is 1.
+//
+//An easy way to get `e` is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.
+//
+//### Private Exponent, `d`
+//`d` is a little trickier. It is the **unique** integer such that `e*d = 1 mod (p-1)*(q-1)` (there's only 1 possible value that `d` can be to make this equation work).
 
 /*:
-### A real example?
+
+### Example time!
+Don't worry if things are still a little confusing, it can take some time to really understand the maths operations involved.
+
 Turn on `useRealValues` to see it in action with some real numbers.
 */
 
 // toggle to turn on real values
 
 /*:
-## Customise it!
-Change some of the numbers to see how the message gets encrypted differently!
 
-*For our example, make sure `p`, `q` and the message are numbers 23 or less, otherwise the numbers will be way too big!*
+### Customise it!
+Go ahead and customise the example by changing the message value and choosing some different prime numbers for `p` and `q`.
 
-*Note that because the numbers we are using are really small, some numbers you pick may mean that the public and private keys have the same value - this wouldn't happen in the real world because the numbers are much bigger! It may also be the case that the message after it's encrypted is the same as the original message. Again, this wouldn't happen in the real world when we are using massive numbers!*
+*For our example, make sure `p`, `q` and the message are numbers 23 or less, otherwise all the numbers will be way too big! In the real world, massive numbers are used for `p` and `q` to make their encryption really secure.*
 */
+
 
 // change the RSAEncryptor engine values
 // change the message value
 
-import UIKit
-import SpriteKit
-import PlaygroundSupport
+/*:
+## Sweet!
+Now we understand the basics, let's go and see how it's used.
+
+[Click Here.](@next)
+*/
 
 
 //let view = SKView(frame: CGRect(x: 0, y: 0, width: 500, height: 500))
@@ -100,9 +112,4 @@ import PlaygroundSupport
 
 //PlaygroundPage.current.liveView = view
 
-/*:
-## Sweet!
-Now we understand the basics, let's go and see how it's used.
 
-[Click Here.](@next)
-*/
