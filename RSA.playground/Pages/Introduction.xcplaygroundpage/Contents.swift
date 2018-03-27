@@ -62,9 +62,7 @@ See how the numbers `e`, `d` and `N` associated with the keys is used in the enc
 //Calculating `N` is really easy. We just multiply `p` and `q`.
 //
 //### Public Exponent, `e`
-//`e` is also easy to figure out. It can be any number that we want that is *co-prime* to `(p-1)*(q-1)`. This means the only factor that they have in common is 1.
-//
-//An easy way to get `e` is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.
+//`e` is also easy to figure out. It can be any number that we want that is *co-prime* to `(p-1)*(q-1)`. This means the only factor that they have in common is 1. An easy way to get `e` is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.
 //
 //### Private Exponent, `d`
 //`d` is a little trickier. It is the **unique** integer such that `e*d = 1 mod (p-1)*(q-1)` (there's only 1 possible value that `d` can be to make this equation work).
@@ -84,7 +82,9 @@ Turn on `useRealValues` to see it in action with some real numbers.
 ### Customise it!
 Go ahead and customise the example by changing the message value and choosing some different prime numbers for `p` and `q`.
 
-*For our example, make sure `p`, `q` and the message are numbers 23 or less, otherwise all the numbers will be way too big! In the real world, massive numbers are used for `p` and `q` to make their encryption really secure.*
+**Important:** the message must be ***less than*** `N` (remember that `N=p*q`).
+
+*For our example, make sure `p` and `q` are numbers 29 or less, otherwise all the numbers will be way too big! In the real world, massive numbers are used for `p` and `q` to make their encryption really secure.*
 */
 
 
