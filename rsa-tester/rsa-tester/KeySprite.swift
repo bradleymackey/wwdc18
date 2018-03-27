@@ -97,7 +97,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		let body = SKPhysicsBody(texture: texture, size: KeySprite.dimensions)
 		body.categoryBitMask = mask // assign correct category for this specific key
 		body.affectedByGravity = true
-		body.collisionBitMask = PhysicsCategory.all ^ PhysicsCategory.box // collide with all but box
+		body.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box|PhysicsCategory.chainLink) // collide with all but box and chain link
 		body.contactTestBitMask = PhysicsCategory.box
 		body.allowsRotation = true
 		body.restitution = 0.15

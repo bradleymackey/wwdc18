@@ -13,14 +13,19 @@ public final class RopeSprite: SKNode {
 	
 	public let length:Int
 	public let attachmentPoint:CGPoint
-	public let attachedObject:SKSpriteNode
+	public let attachedElement:SKSpriteNode
 	
 	private var ropeParts = [SKSpriteNode]()
 	
-	public init(attachmentPoint:CGPoint, attachedObject:SKSpriteNode, ropeLength length:Int) {
+	/// the last element of the rope, so we know where to direct the rest of the rope
+	public var lastRopeElement:SKSpriteNode? {
+		return ropeParts.last
+	}
+	
+	public init(attachmentPoint:CGPoint, attachedElement:SKSpriteNode, ropeLength length:Int) {
 		self.length = length
-		self.attachedObject = attachedObject
 		self.attachmentPoint = attachmentPoint
+		self.attachedElement = attachedElement
 		super.init()
 		self.setRopeLength(length: length)
 	}
@@ -31,13 +36,14 @@ public final class RopeSprite: SKNode {
 	
 	private func setRopeLength(length:Int) {
 		
-		
 		let first = SKSpriteNode(imageNamed: "ring.png")
 		first.size = CGSize(width: 5, height: 5)
 		first.position = attachmentPoint
 		first.physicsBody = SKPhysicsBody(circleOfRadius: first.size.height)
+		first.physicsBody?.categoryBitMask = PhysicsCategory.chainLink
+		first.physicsBody?.collisionBitMask = PhysicsCategory.boundry
+		first.physicsBody?.contactTestBitMask = PhysicsCategory.none
 		first.physicsBody?.allowsRotation = true
-		first.physicsBody?.affectedByGravity = true
 		first.physicsBody?.isDynamic = true
 		
 		ropeParts.append(first)
@@ -45,18 +51,20 @@ public final class RopeSprite: SKNode {
 		for ropeLink in 1..<length {
 			let part = SKSpriteNode(imageNamed: "ring.png")
 			part.size = CGSize(width: 5, height: 5)
-			part.position = CGPoint(x: first.position.x, y: first.position.y-(CGFloat(ropeLink)*(part.size.height)))
+			part.position = CGPoint(x: first.position.x, y: first.position.y-(CGFloat(ropeLink)*(part.size.width)))
 			part.physicsBody = SKPhysicsBody(circleOfRadius: part.size.height)
+			part.physicsBody?.categoryBitMask = PhysicsCategory.chainLink
+			part.physicsBody?.collisionBitMask = PhysicsCategory.boundry
+			part.physicsBody?.contactTestBitMask = PhysicsCategory.none
 			part.physicsBody?.allowsRotation = true
-			part.physicsBody?.affectedByGravity = true
 			part.physicsBody?.isDynamic = true
 			
 			ropeParts.append(part)
 		}
 		
 		guard let previous = ropeParts.last else { return }
-		attachedObject.position = CGPoint(x: previous.position.x, y: previous.frame.maxY)
-		ropeParts.append(attachedObject)
+		attachedElement.position = CGPoint(x: previous.position.x, y: previous.frame.maxY)
+		ropeParts.append(attachedElement)
 	}
 	
 	public func addRopeElementsToScene() {

@@ -186,6 +186,7 @@ public final class InteractiveScene: RSAScene  {
 	private var noCharactersFocused = false
 	/// keeps track of if no keys are currently focused (for efficiency)
 	private var noKeysFocused = false
+
 	
 	// MARK: - Setup
 	
@@ -213,12 +214,12 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(key)
             self.addChild(keyLabel)
         }
-		let point = CGPoint(x: 3*self.size.width/4, y: self.size.height)
-		let rope = RopeSprite(attachmentPoint: point, attachedObject: bobPrivateKeyNode, ropeLength: 15)
+		let point = CGPoint(x: self.size.width/5, y: self.size.height)
+		let rope = RopeSprite(attachmentPoint: point, attachedElement: alicePrivateKeyNode, ropeLength: 23)
 		self.addChild(rope)
 		rope.addRopeElementsToScene()
-		let otherPoint = CGPoint(x: self.size.width/4, y: self.size.height)
-		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedObject: alicePrivateKeyNode, ropeLength: 15)
+		let otherPoint = CGPoint(x: 4*self.size.width/5, y: self.size.height)
+		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobPrivateKeyNode, ropeLength: 23)
 		self.addChild(otherRope)
 		otherRope.addRopeElementsToScene()
     }
