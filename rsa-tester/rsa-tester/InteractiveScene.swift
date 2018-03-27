@@ -195,7 +195,8 @@ public final class InteractiveScene: RSAScene  {
         self.addNodesToScene()
         self.setNoCharacterFocusIfNeeded()
         self.setNoKeyFocusIfNeeded()
-		self.setCharacterFocusIfNeeded(character: aliceCharacter)
+		// refocus on alice, our first character
+		self.setCharacterFocusIfNeeded(character: self.aliceCharacter)
 	}
     
     private func addNodesToScene() {
@@ -215,11 +216,11 @@ public final class InteractiveScene: RSAScene  {
 		let point = CGPoint(x: 3*self.size.width/4, y: self.size.height)
 		let rope = RopeSprite(attachmentPoint: point, attachedObject: bobPrivateKeyNode, ropeLength: 15)
 		self.addChild(rope)
-		rope.addRopeToScene()
+		rope.addRopeElementsToScene()
 		let otherPoint = CGPoint(x: self.size.width/4, y: self.size.height)
 		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedObject: alicePrivateKeyNode, ropeLength: 15)
 		self.addChild(otherRope)
-		otherRope.addRopeToScene()
+		otherRope.addRopeElementsToScene()
     }
 	
 	// MARK: - Methods

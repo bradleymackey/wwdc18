@@ -31,18 +31,25 @@ public final class RopeSprite: SKNode {
 	
 	private func setRopeLength(length:Int) {
 		
-		let first = SKSpriteNode(color: .black, size: CGSize(width: 5, height: 5))
+		
+		let first = SKSpriteNode(imageNamed: "ring.png")
+		first.size = CGSize(width: 5, height: 5)
 		first.position = attachmentPoint
-		first.physicsBody = SKPhysicsBody(circleOfRadius: first.size.width/2)
+		first.physicsBody = SKPhysicsBody(circleOfRadius: first.size.height)
 		first.physicsBody?.allowsRotation = true
+		first.physicsBody?.affectedByGravity = true
+		first.physicsBody?.isDynamic = true
 		
 		ropeParts.append(first)
 		
 		for ropeLink in 1..<length {
-			let part = SKSpriteNode(color: .black, size: CGSize(width: 5, height: 5))
-			part.position = CGPoint(x: first.position.x, y: first.position.y-(CGFloat(ropeLink)*part.size.height))
-			part.physicsBody = SKPhysicsBody(circleOfRadius: part.size.width/2)
+			let part = SKSpriteNode(imageNamed: "ring.png")
+			part.size = CGSize(width: 5, height: 5)
+			part.position = CGPoint(x: first.position.x, y: first.position.y-(CGFloat(ropeLink)*(part.size.height)))
+			part.physicsBody = SKPhysicsBody(circleOfRadius: part.size.height)
 			part.physicsBody?.allowsRotation = true
+			part.physicsBody?.affectedByGravity = true
+			part.physicsBody?.isDynamic = true
 			
 			ropeParts.append(part)
 		}
@@ -52,25 +59,24 @@ public final class RopeSprite: SKNode {
 		ropeParts.append(attachedObject)
 	}
 	
-	public func addRopeToScene() {
+	public func addRopeElementsToScene() {
 		
 		guard let enclosingScene = self.scene else { return }
 		
 		for part in ropeParts {
+			// only add them to the scene if they are not already in it
 			guard part.parent == nil else { continue }
 			enclosingScene.addChild(part)
 		}
 		
 		let joint = SKPhysicsJointPin.joint(withBodyA: enclosingScene.physicsBody!, bodyB: ropeParts[0].physicsBody!, anchor: attachmentPoint)
-		joint.frictionTorque = 0.2
 		enclosingScene.physicsWorld.add(joint)
 		
 		for jointNumber in 1..<ropeParts.count {
 			let nodeA = ropeParts[jointNumber-1]
 			let nodeB = ropeParts[jointNumber]
-			let position = CGPoint(x: nodeA.frame.midX, y: nodeA.frame.minY)
-			let otherJoint = SKPhysicsJointPin.joint(withBodyA: nodeA.physicsBody!, bodyB: nodeB.physicsBody!, anchor: position)
-			otherJoint.frictionTorque = 0.2
+			let anchorPoint = CGPoint(x: nodeB.frame.midX, y: nodeB.frame.minY)
+			let otherJoint = SKPhysicsJointPin.joint(withBodyA: nodeA.physicsBody!, bodyB: nodeB.physicsBody!, anchor: anchorPoint)
 			enclosingScene.physicsWorld.add(otherJoint)
 		}
 		
