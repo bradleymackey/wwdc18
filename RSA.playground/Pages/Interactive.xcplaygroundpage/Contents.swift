@@ -34,8 +34,10 @@ Go ahead and customise the scene by changing the variables below and **have a pl
 // variable to change alice's message
 // variable to change bob's message
 // variable to change eve's message
+
 // change alice pub key color
 // change bob pub key color
+
 // change alice emojis
 // change bob emojis
 // change eve emojis
