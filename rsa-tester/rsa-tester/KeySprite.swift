@@ -28,10 +28,10 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	public let type: KeyType
 	
 	/// the size of the key
-	private static let size:CGFloat = 45
+	private let keyWidth:CGFloat
 	/// dimensions of the key
-	private static var dimensions:CGSize {
-		return CGSize(width: size, height: size)
+	private var dimensions:CGSize {
+		return CGSize(width: self.keyWidth, height: self.keyWidth)
 	}
 	
 	var publicKeyAlice:Bool {
@@ -64,12 +64,13 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
 	// MARK: Lifecycle
 	
-	public init(texture: SKTexture, color: UIColor, owner: KeyOwner, type: KeyType) {
+    public init(texture: SKTexture, color: UIColor, owner: KeyOwner, type: KeyType, size:CGFloat) {
 		self.owner = owner
 		self.type = type
-		super.init(texture: texture, color: color, size: KeySprite.dimensions)
+        self.keyWidth = size
+		super.init(texture: texture, color: color, size: self.dimensions)
 		// setup the sprite
-		self.physicsBody = KeySprite.physicsBody(texture: texture, mask: categoryMask)
+		self.physicsBody = self.physicsBody(texture: texture, mask: categoryMask)
 		self.colorBlendFactor = 1
 	}
 	
@@ -93,8 +94,8 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		return texture
 	}
 	
-	private class func physicsBody(texture:SKTexture,mask:UInt32) -> SKPhysicsBody {
-		let body = SKPhysicsBody(texture: texture, size: KeySprite.dimensions)
+	private func physicsBody(texture:SKTexture,mask:UInt32) -> SKPhysicsBody {
+		let body = SKPhysicsBody(texture: texture, size: self.dimensions)
 		body.categoryBitMask = mask // assign correct category for this specific key
 		body.affectedByGravity = true
 		body.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box|PhysicsCategory.chainLink) // collide with all but box and chain link

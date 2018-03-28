@@ -24,8 +24,9 @@ public final class RSAEncryptor {
 	
 	/// public exponent
     public lazy var e:Int = {
-        let primes = [3,5,7,11,13,17]
-		let index = Int(arc4random_uniform(5))
+        let primes = [3,5,7,11,13,17,19,23,29,31]
+        let primeCount = UInt32(primes.count)
+		let index = Int(arc4random_uniform(primeCount))
         return primes[index]
     }()
 	
@@ -44,9 +45,12 @@ public final class RSAEncryptor {
     public init(p:Int, q:Int) {
         self.p = p
         self.q = q
-		if p > 17 || q > 17 {
-			fatalError("p and q must be 11 or less!")
+		if p > 29 || q > 29 {
+			fatalError("p and q must be 29 or less!")
 		}
+        if p == q {
+            fatalError("p and q must be different!")
+        }
     }
     
     // MARK: Methods

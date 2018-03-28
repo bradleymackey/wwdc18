@@ -25,9 +25,9 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = true
+	public static var useRealValues = false
 	
-	public static var message = 16
+	public static var message = 3
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
@@ -45,19 +45,19 @@ public final class IntroScene: RSAScene {
 	
 	// MARK: Encryption
 	/// the encryption engine
-	public static var encryptor = RSAEncryptor(p: 17, q: 17)
+	public static var encryptor = RSAEncryptor(p: 23, q: 13)
 	
 	// MARK: Sprites
 	
 	private lazy var publicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 55)
 		keySprite.name = "publicKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
 		return keySprite
 	}()
 	
 	private lazy var privateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`, size: 55)
 		keySprite.name = "privateKeyNode"
 		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		return keySprite
@@ -95,7 +95,7 @@ public final class IntroScene: RSAScene {
 	/// the public exponent
 	private lazy var eLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 26, color: IntroScene.publicColor, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.publicColor, bold: false)
 		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
 		label.name = "eLabel"
 		return label
@@ -104,7 +104,7 @@ public final class IntroScene: RSAScene {
 	/// the private exponent
 	private lazy var dLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 26, color: IntroScene.privateColor, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.privateColor, bold: false)
 		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
 		label.name = "dLabel"
 		return label
