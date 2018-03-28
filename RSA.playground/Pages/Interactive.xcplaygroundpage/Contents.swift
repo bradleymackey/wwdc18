@@ -16,7 +16,7 @@ Go ahead and **turn on** `snoopingEnabled` to say hello to Eve.
 
 **Send a message** from Alice to Bob (by dragging the message and keys) and see that Eve can't read it.
 
-*Because everyone can see the public keys, even Eve can send messages to Alice and Bob!*
+*Because everyone can see the public keys, even Eve can send her own messages to Alice and Bob!*
 */
 
 // variable to enable snooping

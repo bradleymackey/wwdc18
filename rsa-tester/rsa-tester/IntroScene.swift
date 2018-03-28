@@ -67,7 +67,7 @@ public final class IntroScene: RSAScene {
 	private lazy var messageNode:Message3DNode = {
 		let sceneSize = CGSize(width: 220, height: 220)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
-		sceneNode.position = CGPoint(x: self.size.width/2, y: self.size.height/2)
+		sceneNode.position = CGPoint(x: self.size.width/2, y: 2*self.size.height/5)
 		sceneNode.name = "messageNode"
 		return sceneNode
 	}()
@@ -78,7 +78,7 @@ public final class IntroScene: RSAScene {
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
-		label.position =  CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
+		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+130)
 		label.name = "mLabel"
 		return label
 	}()
@@ -86,8 +86,8 @@ public final class IntroScene: RSAScene {
 	/// the public modulus
 	private lazy var nLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: IntroScene.publicColor, bold: false)
-		label.position =  CGPoint(x: self.size.width-65, y: self.size.height-90)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: IntroScene.publicColor, bold: true)
+		label.position =  CGPoint(x: (self.size.width/2)+50, y: 3*self.size.height/4)
 		label.name = "nLabel"
 		label.zPosition = 2.0
 		return label
@@ -126,7 +126,7 @@ public final class IntroScene: RSAScene {
 		let encryptedMessage = IntroScene.encryptor.encryption(forMessage: IntroScene.message)
 		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
-		label.position = CGPoint(x: self.size.width/2, y: 2.75*self.size.height/4)
+		label.position = CGPoint(x: self.mLabel.position.x, y: self.mLabel.position.y)
 		label.name = "cLabel"
 		label.alpha = 0
 		return label
@@ -134,16 +134,16 @@ public final class IntroScene: RSAScene {
 	
 	private lazy var pLabel:SKLabelNode = {
         let pText = IntroScene.useRealValues ? "(p=\(IntroScene.encryptor.p))" : "p"
-		let label = RSAScene.mathsLabel(text: pText, fontSize: 25, color: IntroScene.privateColor, bold: false)
-		label.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+50)
+		let label = RSAScene.mathsLabel(text: pText, fontSize: 32, color: IntroScene.privateColor, bold: false)
+		label.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+70)
 		label.name = "pLabel"
 		return label
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
         let qText = IntroScene.useRealValues ? "(q=\(IntroScene.encryptor.q))" : "q"
-		let label = RSAScene.mathsLabel(text: qText, fontSize: 25, color: IntroScene.privateColor, bold: false)
-		label.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+50)
+		let label = RSAScene.mathsLabel(text: qText, fontSize: 32, color: IntroScene.privateColor, bold: false)
+		label.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+70)
 		label.name = "qLabel"
 		return label
 	}()

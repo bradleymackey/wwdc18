@@ -13,16 +13,16 @@ public final class RopeSprite: SKNode {
 	
 	public let length:Int
 	public let attachmentPoint:CGPoint
-	public let attachedElement:SKSpriteNode
+	public let attachedElement:SKNode
 	
-	private var ropeParts = [SKSpriteNode]()
+	private var ropeParts = [SKNode]()
 	
 	/// the last element of the rope, so we know where to direct the rest of the rope
-	public var lastRopeElement:SKSpriteNode? {
+	public var lastRopeElement:SKNode? {
 		return ropeParts.last
 	}
 	
-	public init(attachmentPoint:CGPoint, attachedElement:SKSpriteNode, ropeLength length:Int) {
+	public init(attachmentPoint:CGPoint, attachedElement:SKNode, ropeLength length:Int) {
 		self.length = length
 		self.attachmentPoint = attachmentPoint
 		self.attachedElement = attachedElement
@@ -36,7 +36,7 @@ public final class RopeSprite: SKNode {
 	
 	private func setRopeLength(length:Int) {
 		
-		let first = SKSpriteNode(imageNamed: "ring.png")
+		let first = SKSpriteNode(imageNamed: "circle.png")
 		first.size = CGSize(width: 5, height: 5)
 		first.position = attachmentPoint
 		first.physicsBody = SKPhysicsBody(circleOfRadius: first.size.height)
@@ -49,7 +49,7 @@ public final class RopeSprite: SKNode {
 		ropeParts.append(first)
 		
 		for ropeLink in 1..<length {
-			let part = SKSpriteNode(imageNamed: "ring.png")
+			let part = SKSpriteNode(imageNamed: "circle.png")
 			part.size = CGSize(width: 5, height: 5)
 			part.position = CGPoint(x: first.position.x, y: first.position.y-(CGFloat(ropeLink)*(part.size.width)))
 			part.physicsBody = SKPhysicsBody(circleOfRadius: part.size.height)

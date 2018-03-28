@@ -34,6 +34,8 @@
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 		978DA806206BF2AA0071A162 /* popup.caf in Resources */ = {isa = PBXBuildFile; fileRef = 978DA805206BF2AA0071A162 /* popup.caf */; };
 		9795F50F206BFAA100E39E93 /* cage.png in Resources */ = {isa = PBXBuildFile; fileRef = 9795F50E206BFAA100E39E93 /* cage.png */; };
+		9795F511206C09A900E39E93 /* circle.png in Resources */ = {isa = PBXBuildFile; fileRef = 9795F510206C09A800E39E93 /* circle.png */; };
+		9795F513206C0E3F00E39E93 /* KeyContainmentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9795F512206C0E3F00E39E93 /* KeyContainmentNode.swift */; };
 		97A89A9F2068232E00DF4B59 /* hellolady2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9C2068232D00DF4B59 /* hellolady2.caf */; };
 		97A89AA02068232E00DF4B59 /* helloman.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9D2068232D00DF4B59 /* helloman.caf */; };
 		97A89AA12068232E00DF4B59 /* hellolady1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9E2068232E00DF4B59 /* hellolady1.caf */; };
@@ -97,6 +99,8 @@
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 		978DA805206BF2AA0071A162 /* popup.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = popup.caf; sourceTree = "<group>"; };
 		9795F50E206BFAA100E39E93 /* cage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cage.png; sourceTree = "<group>"; };
+		9795F510206C09A800E39E93 /* circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = circle.png; sourceTree = "<group>"; };
+		9795F512206C0E3F00E39E93 /* KeyContainmentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyContainmentNode.swift; sourceTree = "<group>"; };
 		97A89A9C2068232D00DF4B59 /* hellolady2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hellolady2.caf; sourceTree = "<group>"; };
 		97A89A9D2068232D00DF4B59 /* helloman.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = helloman.caf; sourceTree = "<group>"; };
 		97A89A9E2068232E00DF4B59 /* hellolady1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hellolady1.caf; sourceTree = "<group>"; };
@@ -174,11 +178,13 @@
 				972FE96020619BA800AF243D /* Message3DScene.swift */,
 				972FE96220619BBE00AF243D /* PhysicsCategory.swift */,
 				97A89AAE2068EDD900DF4B59 /* RopeSprite.swift */,
+				9795F512206C0E3F00E39E93 /* KeyContainmentNode.swift */,
 				976328872062884D000C9EAC /* RSAEncryptor.swift */,
 				972FE96C20619E2B00AF243D /* key.png */,
 				972FE96A20619E2B00AF243D /* key@2x.png */,
 				972FE96B20619E2B00AF243D /* key@3x.png */,
 				97A89AB02068F05200DF4B59 /* ring.png */,
+				9795F510206C09A800E39E93 /* circle.png */,
 				9795F50E206BFAA100E39E93 /* cage.png */,
 				978DA805206BF2AA0071A162 /* popup.caf */,
 				97A89A9E2068232E00DF4B59 /* hellolady1.caf */,
@@ -329,6 +335,7 @@
 				97A89AB12068F05200DF4B59 /* ring.png in Resources */,
 				978DA806206BF2AA0071A162 /* popup.caf in Resources */,
 				97A89AAB2068272900DF4B59 /* encrypt.caf in Resources */,
+				9795F511206C09A900E39E93 /* circle.png in Resources */,
 				972FE92920619AF800AF243D /* GameScene.sks in Resources */,
 				972FE96F20619E2B00AF243D /* key.png in Resources */,
 				972FE96E20619E2B00AF243D /* key@3x.png in Resources */,
@@ -379,6 +386,7 @@
 				973B5368206676CE001366A0 /* MoveableSprite.swift in Sources */,
 				972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */,
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
+				9795F513206C0E3F00E39E93 /* KeyContainmentNode.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,
 				972FE92720619AF800AF243D /* AppDelegate.swift in Sources */,
 			);

@@ -89,7 +89,7 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var eveCharacter:CharacterSprite = {
         let eve = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
 		eve.name = "eveCharacter"
-        eve.position = CGPoint(x: 2*self.size.width/4, y: 2*self.size.height/3)
+        eve.position = CGPoint(x: 2*self.size.width/4, y: 3*self.size.height/4)
 		return eve
 	}()
 	
@@ -215,13 +215,16 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(keyLabel)
         }
 		let point = CGPoint(x: self.size.width/9, y: self.size.height)
-		let rope = RopeSprite(attachmentPoint: point, attachedElement: alicePrivateKeyNode, ropeLength: 33)
+        let aliceNode = KeyContainmentNode(forKeySize: self.alicePrivateKeyNode.size)
+		let rope = RopeSprite(attachmentPoint: point, attachedElement: aliceNode, ropeLength: 56)
 		self.addChild(rope)
 		rope.addRopeElementsToScene()
 		let otherPoint = CGPoint(x: 8*self.size.width/9, y: self.size.height)
-		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobPrivateKeyNode, ropeLength: 33)
+        let bobNode = KeyContainmentNode(forKeySize: self.bobPrivateKeyNode.size)
+		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobNode, ropeLength: 56)
 		self.addChild(otherRope)
 		otherRope.addRopeElementsToScene()
+        
     }
 	
 	// MARK: - Methods
