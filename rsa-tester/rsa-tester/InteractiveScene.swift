@@ -214,14 +214,15 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(key)
             self.addChild(keyLabel)
         }
+		let cageSize = CGSize(width: alicePrivateKeyNode.size.width+50, height: alicePrivateKeyNode.size.height+50)
 		let point = CGPoint(x: self.size.width/9, y: self.size.height)
-        let aliceNode = KeyContainmentNode(forKeySize: self.alicePrivateKeyNode.size)
-		let rope = RopeSprite(attachmentPoint: point, attachedElement: aliceNode, ropeLength: 56)
+        let aliceNode = CageSprite(size: cageSize)
+		let rope = RopeSprite(attachmentPoint: point, attachedElement: aliceNode, length: 60)
 		self.addChild(rope)
 		rope.addRopeElementsToScene()
 		let otherPoint = CGPoint(x: 8*self.size.width/9, y: self.size.height)
-        let bobNode = KeyContainmentNode(forKeySize: self.bobPrivateKeyNode.size)
-		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobNode, ropeLength: 56)
+        let bobNode = CageSprite(size: cageSize)
+		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobNode, length: 60)
 		self.addChild(otherRope)
 		otherRope.addRopeElementsToScene()
         
@@ -485,7 +486,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeUp)
             }
-            key.hideCage()
+          //  key.hideCage()
             key.isUserInteractionEnabled = false
         }
         for key in defocus {
@@ -493,7 +494,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeDown)
             }
-            key.putInCage()
+           // key.putInCage()
             key.isUserInteractionEnabled = true
         }
     }
@@ -525,7 +526,7 @@ public final class InteractiveScene: RSAScene  {
             key.isUserInteractionEnabled = true
             // put the private keys in a cage
             if key === alicePrivateKeyNode || key === bobPrivateKeyNode {
-                key.putInCage()
+              //  key.putInCage()
             }
         }
     }

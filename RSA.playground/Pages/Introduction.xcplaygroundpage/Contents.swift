@@ -45,7 +45,7 @@ At the heart of RSA is a number called the *public modulus*, `N`.
 ### Have a look!
 Go ahead and **turn on** `viewMaths` to see the calculations that are done as we encrypt and decrypt!
 
-See how the numbers `e`, `d` and `N` are used in the encryption and decryption calculations.
+See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and decryption calculations.
 
 **Tap on the labels** for a description of what they are and what they do.
 */
@@ -65,6 +65,8 @@ Don't worry if things are still a little confusing, it can take some time to rea
 **Important:** the message must be ***less than*** the public modulus `N` (remember that `N=p*q`).
 
 *For our example, make sure `p` and `q` are numbers 29 or less, otherwise all the numbers will be way too big! In the real world, massive numbers are used for `p` and `q` to make their encryption really secure.*
+
+*Prime numbers to try: 3, 5, 7, 11, 13, 17, 19, 23, 29*
 */
 
 // toggle to turn on real values

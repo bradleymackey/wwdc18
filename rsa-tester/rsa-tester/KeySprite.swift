@@ -61,17 +61,6 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 			return PhysicsCategory.privateKeyB
 		}
 	}
-    
-    private lazy var cageOverlay:SKSpriteNode = {
-        let cage = SKSpriteNode(imageNamed: "cage.png")
-        cage.size = CGSize(width: keyWidth+50, height: keyWidth+50)
-        cage.position = CGPoint(x: 0, y: 10)
-        cage.zRotation = -0.1
-        cage.alpha = 0
-        return cage
-    }()
-    
-    private var insideCage = false
 	
 	// MARK: Lifecycle
 	
@@ -109,7 +98,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		let body = SKPhysicsBody(texture: texture, size: self.dimensions)
 		body.categoryBitMask = mask // assign correct category for this specific key
 		body.affectedByGravity = true
-		body.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box|PhysicsCategory.chainLink) // collide with all but box and chain link
+		body.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box) // collide with all but box 
 		body.contactTestBitMask = PhysicsCategory.box
 		body.allowsRotation = true
 		body.restitution = 0.15
@@ -152,31 +141,6 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		// play the drop sound
 		self.run(dropKeySound)
 	}
-    
-    public func putInCage() {
-        guard !insideCage else { return }
-        defer {
-            self.insideCage = true
-        }
-        self.cageOverlay.removeAllActions()
-        // only add if we had time to remove it last time
-        if self.cageOverlay.parent == nil {
-            self.addChild(cageOverlay)
-        }
-        let fadeIn = SKAction.fadeIn(withDuration: InteractiveScene.fadeTime)
-        self.cageOverlay.run(fadeIn)
-    }
-    
-    public func hideCage() {
-        guard insideCage else { return }
-        defer {
-            self.insideCage = false
-        }
-        self.cageOverlay.removeAllActions()
-        let fadeOut = SKAction.fadeOut(withDuration: InteractiveScene.fadeTime)
-        let remove = SKAction.removeFromParent()
-        let hideRemoveSequence = SKAction.sequence([fadeOut,remove])
-        self.cageOverlay.run(hideRemoveSequence)
-    }
+	
 	
 }

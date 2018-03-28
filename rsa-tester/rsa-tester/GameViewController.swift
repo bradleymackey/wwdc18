@@ -69,17 +69,17 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		return view
 	}()
 	
-	private var scene:IntroScene!
+	private var scene:InteractiveScene!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
 		if let view = self.view as! SKView? {
 			
-            scene = IntroScene(size: view.bounds.size)
-            scene.informationDelegate = self
+//            scene = IntroScene(size: view.bounds.size)
+//            scene.informationDelegate = self
 
-//            scene = InteractiveScene(size: view.bounds.size)
+            scene = InteractiveScene(size: view.bounds.size)
 			
 			// Set the scale mode to scale to fit the window
 			scene.scaleMode = .aspectFill
