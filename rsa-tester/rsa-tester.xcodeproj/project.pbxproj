@@ -32,6 +32,7 @@
 		973B5368206676CE001366A0 /* MoveableSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B5367206676CE001366A0 /* MoveableSprite.swift */; };
 		973B536A2066C325001366A0 /* KeyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B53692066C325001366A0 /* KeyType.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
+		978DA806206BF2AA0071A162 /* popup.caf in Resources */ = {isa = PBXBuildFile; fileRef = 978DA805206BF2AA0071A162 /* popup.caf */; };
 		97A89A9F2068232E00DF4B59 /* hellolady2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9C2068232D00DF4B59 /* hellolady2.caf */; };
 		97A89AA02068232E00DF4B59 /* helloman.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9D2068232D00DF4B59 /* helloman.caf */; };
 		97A89AA12068232E00DF4B59 /* hellolady1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9E2068232E00DF4B59 /* hellolady1.caf */; };
@@ -93,6 +94,7 @@
 		973B5367206676CE001366A0 /* MoveableSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveableSprite.swift; sourceTree = "<group>"; };
 		973B53692066C325001366A0 /* KeyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyType.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
+		978DA805206BF2AA0071A162 /* popup.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = popup.caf; sourceTree = "<group>"; };
 		97A89A9C2068232D00DF4B59 /* hellolady2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hellolady2.caf; sourceTree = "<group>"; };
 		97A89A9D2068232D00DF4B59 /* helloman.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = helloman.caf; sourceTree = "<group>"; };
 		97A89A9E2068232E00DF4B59 /* hellolady1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hellolady1.caf; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				972FE96A20619E2B00AF243D /* key@2x.png */,
 				972FE96B20619E2B00AF243D /* key@3x.png */,
 				97A89AB02068F05200DF4B59 /* ring.png */,
+				978DA805206BF2AA0071A162 /* popup.caf */,
 				97A89A9E2068232E00DF4B59 /* hellolady1.caf */,
 				97A89A9C2068232D00DF4B59 /* hellolady2.caf */,
 				97A89A9D2068232D00DF4B59 /* helloman.caf */,
@@ -321,6 +324,7 @@
 				972FE93220619AF800AF243D /* Main.storyboard in Resources */,
 				97A89A9F2068232E00DF4B59 /* hellolady2.caf in Resources */,
 				97A89AB12068F05200DF4B59 /* ring.png in Resources */,
+				978DA806206BF2AA0071A162 /* popup.caf in Resources */,
 				97A89AAB2068272900DF4B59 /* encrypt.caf in Resources */,
 				972FE92920619AF800AF243D /* GameScene.sks in Resources */,
 				972FE96F20619E2B00AF243D /* key.png in Resources */,
