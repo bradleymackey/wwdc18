@@ -158,7 +158,11 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
         defer {
             self.insideCage = true
         }
-        self.addChild(cageOverlay)
+        self.cageOverlay.removeAllActions()
+        // only add if we had time to remove it last time
+        if self.cageOverlay.parent == nil {
+            self.addChild(cageOverlay)
+        }
         let fadeIn = SKAction.fadeIn(withDuration: InteractiveScene.fadeTime)
         self.cageOverlay.run(fadeIn)
     }
@@ -168,6 +172,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
         defer {
             self.insideCage = false
         }
+        self.cageOverlay.removeAllActions()
         let fadeOut = SKAction.fadeOut(withDuration: InteractiveScene.fadeTime)
         let remove = SKAction.removeFromParent()
         let hideRemoveSequence = SKAction.sequence([fadeOut,remove])
