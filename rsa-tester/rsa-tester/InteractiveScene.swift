@@ -519,8 +519,11 @@ public final class InteractiveScene: RSAScene  {
         for (key,keyLabel) in keyToKeyLabel {
             key.run(fadeDown)
             keyLabel.run(fadeDown)
-            key.putInCage()
             key.isUserInteractionEnabled = true
+            // put the private keys in a cage
+            if key === alicePrivateKeyNode || key === bobPrivateKeyNode {
+                key.putInCage()
+            }
         }
     }
 	

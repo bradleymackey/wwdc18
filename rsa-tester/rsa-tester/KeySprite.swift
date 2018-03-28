@@ -65,7 +65,8 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
     private lazy var cageOverlay:SKSpriteNode = {
         let cage = SKSpriteNode(imageNamed: "cage.png")
         cage.size = CGSize(width: keyWidth+50, height: keyWidth+50)
-        cage.position = .zero
+        cage.position = CGPoint(x: 0, y: 10)
+        cage.zRotation = -0.1
         cage.alpha = 0
         return cage
     }()
