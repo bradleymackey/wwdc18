@@ -25,7 +25,7 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = false
+	public static var useRealValues = true
 	
 	public static var message = 3
 	
@@ -78,7 +78,7 @@ public final class IntroScene: RSAScene {
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
-		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+130)
+		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+115)
 		label.name = "mLabel"
 		return label
 	}()
@@ -133,17 +133,17 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var pLabel:SKLabelNode = {
-        let pText = IntroScene.useRealValues ? "(p=\(IntroScene.encryptor.p))" : "p"
-		let label = RSAScene.mathsLabel(text: pText, fontSize: 32, color: IntroScene.privateColor, bold: false)
-		label.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+70)
+        let pText = IntroScene.useRealValues ? "\(IntroScene.encryptor.p)" : "p"
+		let label = RSAScene.mathsLabel(text: pText, fontSize: 36, color: IntroScene.privateColor, bold: true)
+		label.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+80)
 		label.name = "pLabel"
 		return label
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
-        let qText = IntroScene.useRealValues ? "(q=\(IntroScene.encryptor.q))" : "q"
-		let label = RSAScene.mathsLabel(text: qText, fontSize: 32, color: IntroScene.privateColor, bold: false)
-		label.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+70)
+        let qText = IntroScene.useRealValues ? "\(IntroScene.encryptor.q)" : "q"
+		let label = RSAScene.mathsLabel(text: qText, fontSize: 36, color: IntroScene.privateColor, bold: true)
+		label.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+80)
 		label.name = "qLabel"
 		return label
 	}()
