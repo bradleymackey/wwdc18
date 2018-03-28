@@ -83,8 +83,8 @@ public final class RopeSprite: SKNode {
 		for jointNumber in 1..<(ropeParts.count) {
 			var subtract:CGFloat = 0
 			if jointNumber ==  ropeParts.count - 1 {
-				// on the last one, subtract 25 so the cage touches the chain
-				subtract = 25
+				// on the last one, subtract so the cage touches the chain
+				subtract = 22
 			}
 			let nodeA = ropeParts[jointNumber-1]
 			let nodeB = ropeParts[jointNumber]
