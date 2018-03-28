@@ -61,6 +61,16 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 			return PhysicsCategory.privateKeyB
 		}
 	}
+    
+    private lazy var cageOverlay:SKSpriteNode = {
+        let cage = SKSpriteNode(imageNamed: "cage.png")
+        cage.size = CGSize(width: keyWidth+50, height: keyWidth+50)
+        cage.position = .zero
+        cage.alpha = 0
+        return cage
+    }()
+    
+    private var insideCage = false
 	
 	// MARK: Lifecycle
 	
@@ -141,5 +151,26 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		// play the drop sound
 		self.run(dropKeySound)
 	}
+    
+    public func putInCage() {
+        guard !insideCage else { return }
+        defer {
+            self.insideCage = true
+        }
+        self.addChild(cageOverlay)
+        let fadeIn = SKAction.fadeIn(withDuration: InteractiveScene.fadeTime)
+        self.cageOverlay.run(fadeIn)
+    }
+    
+    public func hideCage() {
+        guard insideCage else { return }
+        defer {
+            self.insideCage = false
+        }
+        let fadeOut = SKAction.fadeOut(withDuration: InteractiveScene.fadeTime)
+        let remove = SKAction.removeFromParent()
+        let hideRemoveSequence = SKAction.sequence([fadeOut,remove])
+        self.cageOverlay.run(hideRemoveSequence)
+    }
 	
 }

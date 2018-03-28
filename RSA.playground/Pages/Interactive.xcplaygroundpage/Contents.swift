@@ -7,6 +7,8 @@ Good question.
 If Alice wants to send a message to Bob and the key to encrypt and decrypt the message was the same, the only way for Alice to tell Bob what key she is going to use is to meet in person and secretly tell him (otherwise somebody else could steal the key if she sends it online)!
 
 This is impractical on the internet. When the key used to lock the data (the public key) is different from the key used to unlock the data (the private key) it means that Bob can tell everyone what his public key is, and it doesn't mean that they can decrypt any data, because this key is only used for encrypting.
+ 
+This means **both** Alice and Bob choose their own secret prime numbers and have their own public and private keys.
 
 ### Let's see...
 

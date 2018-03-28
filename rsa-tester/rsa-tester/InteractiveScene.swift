@@ -482,6 +482,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeUp)
             }
+            key.hideCage()
             key.isUserInteractionEnabled = false
         }
         for key in defocus {
@@ -489,6 +490,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeDown)
             }
+            key.putInCage()
             key.isUserInteractionEnabled = true
         }
     }
@@ -517,6 +519,7 @@ public final class InteractiveScene: RSAScene  {
         for (key,keyLabel) in keyToKeyLabel {
             key.run(fadeDown)
             keyLabel.run(fadeDown)
+            key.putInCage()
             key.isUserInteractionEnabled = true
         }
     }

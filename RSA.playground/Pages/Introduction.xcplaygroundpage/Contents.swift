@@ -77,7 +77,7 @@ Don't worry if things are still a little confusing, it can take some time to rea
 
 **Customise** the example by changing the message value and choosing some prime numbers for `p` and `q` (the numbers must be different from each other).
 
-**Important:** the message must be ***less than*** `N` (remember that `N=p*q`).
+**Important:** the message must be ***less than*** the public modulus `N` (remember that `N=p*q`).
 
 *For our example, make sure `p` and `q` are numbers 29 or less, otherwise all the numbers will be way too big! In the real world, massive numbers are used for `p` and `q` to make their encryption really secure.*
 */

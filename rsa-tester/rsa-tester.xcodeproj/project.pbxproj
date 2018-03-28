@@ -33,6 +33,7 @@
 		973B536A2066C325001366A0 /* KeyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B53692066C325001366A0 /* KeyType.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 		978DA806206BF2AA0071A162 /* popup.caf in Resources */ = {isa = PBXBuildFile; fileRef = 978DA805206BF2AA0071A162 /* popup.caf */; };
+		9795F50F206BFAA100E39E93 /* cage.png in Resources */ = {isa = PBXBuildFile; fileRef = 9795F50E206BFAA100E39E93 /* cage.png */; };
 		97A89A9F2068232E00DF4B59 /* hellolady2.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9C2068232D00DF4B59 /* hellolady2.caf */; };
 		97A89AA02068232E00DF4B59 /* helloman.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9D2068232D00DF4B59 /* helloman.caf */; };
 		97A89AA12068232E00DF4B59 /* hellolady1.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89A9E2068232E00DF4B59 /* hellolady1.caf */; };
@@ -95,6 +96,7 @@
 		973B53692066C325001366A0 /* KeyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyType.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 		978DA805206BF2AA0071A162 /* popup.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = popup.caf; sourceTree = "<group>"; };
+		9795F50E206BFAA100E39E93 /* cage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cage.png; sourceTree = "<group>"; };
 		97A89A9C2068232D00DF4B59 /* hellolady2.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hellolady2.caf; sourceTree = "<group>"; };
 		97A89A9D2068232D00DF4B59 /* helloman.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = helloman.caf; sourceTree = "<group>"; };
 		97A89A9E2068232E00DF4B59 /* hellolady1.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = hellolady1.caf; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 				972FE96A20619E2B00AF243D /* key@2x.png */,
 				972FE96B20619E2B00AF243D /* key@3x.png */,
 				97A89AB02068F05200DF4B59 /* ring.png */,
+				9795F50E206BFAA100E39E93 /* cage.png */,
 				978DA805206BF2AA0071A162 /* popup.caf */,
 				97A89A9E2068232E00DF4B59 /* hellolady1.caf */,
 				97A89A9C2068232D00DF4B59 /* hellolady2.caf */,
@@ -331,6 +334,7 @@
 				972FE96E20619E2B00AF243D /* key@3x.png in Resources */,
 				97A89AA02068232E00DF4B59 /* helloman.caf in Resources */,
 				972FE93420619AF800AF243D /* Assets.xcassets in Resources */,
+				9795F50F206BFAA100E39E93 /* cage.png in Resources */,
 				972FE93720619AF800AF243D /* LaunchScreen.storyboard in Resources */,
 				97A89AAA2068272900DF4B59 /* decrypt.caf in Resources */,
 				97A89AAD206828F400DF4B59 /* fail.caf in Resources */,

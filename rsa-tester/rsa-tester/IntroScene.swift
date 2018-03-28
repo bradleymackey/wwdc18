@@ -35,6 +35,7 @@ public final class IntroScene: RSAScene {
 	private let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
 	private let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
 	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
+    private let clickSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
 	
 	// MARK: Delegate
 	/// for delegating an information message for a UIView to present
@@ -132,14 +133,16 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var pLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "(p=\(IntroScene.encryptor.p))", fontSize: 25, color: IntroScene.privateColor, bold: false)
+        let pText = IntroScene.useRealValues ? "(p=\(IntroScene.encryptor.p))" : "p"
+		let label = RSAScene.mathsLabel(text: pText, fontSize: 25, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+50)
 		label.name = "pLabel"
 		return label
 	}()
 	
 	private lazy var qLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "(q=\(IntroScene.encryptor.q))", fontSize: 25, color: IntroScene.privateColor, bold: false)
+        let qText = IntroScene.useRealValues ? "(q=\(IntroScene.encryptor.q))" : "q"
+		let label = RSAScene.mathsLabel(text: qText, fontSize: 25, color: IntroScene.privateColor, bold: false)
 		label.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+50)
 		label.name = "qLabel"
 		return label
@@ -178,18 +181,12 @@ public final class IntroScene: RSAScene {
 	private func addMathsLabelsIfNeeded() {
 		guard IntroScene.mathsEnabled else { return }
 		// add the maths labels to the scene
-		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel].forEach {
-			self.addChild($0)
-		}
-		// add the p and q labels if we are displaying real values
-		guard IntroScene.useRealValues else { return }
-		[pLabel, qLabel].forEach {
+		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel, pLabel, qLabel].forEach {
 			self.addChild($0)
 		}
 	}
 	
 	private func startInitialMathsAnimationsIfNeeded() {
-		guard IntroScene.useRealValues else { return }
 		[pLabel, qLabel].forEach {
 			self.mathsCreateValueRepeat(node: $0, shrinkPosition: nLabel.position)
 		}
@@ -472,6 +469,9 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
+        defer {
+            self.run(clickSound)
+        }
 		switch label {
 		case "mLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations. We can encrypt the message by using the Public Modulus and Public Exponent.")
@@ -482,13 +482,13 @@ public final class IntroScene: RSAScene {
 		case "nLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This is the number that makes up part of the public key and the private key. It is calculated by multiplying p and q, and is used when we encrypt the message and also when we decrypt the cipher text.")
 		case "eLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key. In order to calculate the cipher text, the message is raised to the power of this number and then we calculate modulo N of this number.")
+			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key.\n\nIt is used to convert the message into the encrypted message (ciphertext), along with the public modulus N. It can be any number that we want that is co-prime to (p-1)*(q-1). This means the only factor that they have in common is 1.\n\nAn easy way to this number is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.")
 		case "dLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key. In order to calculate the original message, the cipher text is raised to the power of this number and then we calculate modulo N of this number.")
+			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key.\n\nIt is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N.\n\nIt is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work). You can only easily calculate this number if you originally knew the 2 prime numbers p and q.")
 		case "pLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Prime p", message: "This is one of the prime numbers used to calculate N (p*q), and (p-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
+            self.informationDelegate?.presentInformationPopup(title: "Prime p", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n - it must be a prime number\n - it must be different from q\n\nWe multiply p and q to calculate the public modulus N.")
 		case "qLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Prime q", message: "This is one of the prime numbers used to calculate N (p*q), and (q-1) is used in calculating (p-1)(q-1), which constrains the values that e can be.")
+			self.informationDelegate?.presentInformationPopup(title: "Prime q", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n - it must be a prime number\n - it must be different from p\n\nWe multiply p and q to calculate the public modulus N.")
 		default:
 			return
 		}
