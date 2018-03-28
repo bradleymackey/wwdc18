@@ -23,7 +23,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 	
 	/// the big bold title label that is displayed in the information view
 	private lazy var informationTitleLabel:UILabel = {
-		let labelFrame = CGRect(x: 30, y: 15, width: self.view.frame.width-60, height: 50)
+		let labelFrame = CGRect(x: 40, y: 25, width: (self.view.frame.width/2)-60, height: 50)
 		let label = UILabel(frame: labelFrame)
 		label.font = UIFont.boldSystemFont(ofSize: 32)
 		label.numberOfLines = 0
@@ -33,7 +33,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 	
 	/// the detail message label that is displayed in the information view
 	private lazy var informationDetailLabel:UILabel = {
-		let labelFrame = CGRect(x: 30, y: 55, width: self.view.frame.width-60, height: self.view.frame.height-300)
+		let labelFrame = CGRect(x: 30, y: 55, width: (self.view.frame.width/2)-60, height: self.view.frame.height-400)
 		let label = UILabel(frame: labelFrame)
 		label.font = UIFont.systemFont(ofSize: 20)
 		label.textColor = .white
@@ -43,7 +43,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 	
 	/// the message that tells people to drag down to dismiss the message
 	private lazy var dismissLabel:UILabel = {
-		let labelFrame = CGRect(x: 0, y: self.view.frame.height-235, width: self.view.frame.width, height: 24)
+		let labelFrame = CGRect(x: 0, y: self.view.frame.height-335, width: self.view.frame.width/2, height: 24)
 		let label = UILabel(frame: labelFrame)
 		label.text = "Drag down to dismiss"
 		label.font = UIFont.systemFont(ofSize: 15)
@@ -55,7 +55,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 	/// the view that diplays the information about the label that was tapped
 	private lazy var informationView:UIView = {
 		// make the view a bit shorter than the height of the full view and set it offscreen initially.
-		let viewFrame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-200)
+		let viewFrame = CGRect(x: self.view.frame.width/4, y: self.view.frame.height, width: self.view.frame.width/2, height: self.view.frame.height-300)
 		let view = UIView(frame: viewFrame)
 		view.backgroundColor = #colorLiteral(red: 0.6379951485, green: 0.6427444434, blue: 0.6216148005, alpha: 1)
 		// only mask the corners at the top of the view
@@ -124,7 +124,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		self.cancelPriorAnimationIfNeeded()
 		// animate upwards
 		informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
-			self.informationView.frame = CGRect(x: 0, y: 200, width: self.view.frame.width, height: self.view.frame.height-200)
+			self.informationView.frame = CGRect(x: self.view.frame.width/4, y: 300, width: self.view.frame.width/2, height: self.view.frame.height-300)
 			self.informationView.layer.cornerRadius = 50
 			self.blurView.effect = UIBlurEffect(style: .light)
 			// make sure the user cannot tap other scene elements
@@ -139,7 +139,7 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			// cancel and restart animation when user drags
 			self.cancelPriorAnimationIfNeeded()
 			informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
-				self.informationView.frame = CGRect(x: 0, y: self.view.frame.height, width: self.view.frame.width, height: self.view.frame.height-200)
+				self.informationView.frame = CGRect(x: self.view.frame.width/4, y: self.view.frame.height, width: self.view.frame.width/2, height: self.view.frame.height-300)
 				self.informationView.layer.cornerRadius = 0
 				self.blurView.effect = nil
 				// ensure that the scene is fully interactive again
@@ -151,8 +151,15 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			let translation = recogniser.translation(in: self.view)
 			informationPaneAnimator.fractionComplete = translation.y / 400
 		case .ended:
-			// continue animation when user lets go of display
-			informationPaneAnimator.continueAnimation(withTimingParameters: nil, durationFactor: 0.5)
+			if informationPaneAnimator.fractionComplete <= 0.07 {
+				// we clearly don't want to do the animation, stop here
+				self.cancelPriorAnimationIfNeeded()
+				// regenerate the blur view (to prevent a weird glitch where it won't go away after we stop back at the top)
+				self.blurView.effect = UIBlurEffect(style: .light)
+			} else {
+				// continue animation when user lets go of display
+				informationPaneAnimator.continueAnimation(withTimingParameters: nil, durationFactor: 0.5)
+			}
 		case .possible, .cancelled, .failed:
 			// ignore other gesture events
 			return
