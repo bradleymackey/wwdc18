@@ -52,21 +52,6 @@ See how the numbers `e`, `d` and `N` are used in the encryption and decryption c
 
 // view maths toggle
 
-// these should be inside the labels that we tap on.
-//### `p` and `q`
-//These are just 2 numbers that we pick. They can be anything we want with 2 simple rules:
-//- they must be *prime numbers*
-//- they must be different
-// We use these numbers to calculate the public modulus N.
-//
-//### Public Modulus, `N`
-// Calculating `N` is really easy. We just multiply `p` and `q`. This number is used both when we encrypt the message and decrypt the ciphertext.
-//
-//### Public Exponent, `e`
-// This is used to convert the message into the encrypted message (ciphertext), along with the public modulus N. It can be any number that we want that is co-prime to (p-1)*(q-1). This means the only factor that they have in common is 1. An easy way to get `e` is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.
-//
-//### Private Exponent, `d`
-// This is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N. It is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work).
 
 /*:
 

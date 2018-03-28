@@ -476,19 +476,19 @@ public final class IntroScene: RSAScene {
 		case "mLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations. We can encrypt the message by using the Public Modulus and Public Exponent.")
 		case "cLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Cipher Text", message: "This is the encrypted message. We can only convert this back to the original message with the private key (the Public Modulus and Private Exponent).")
+			self.informationDelegate?.presentInformationPopup(title: "Ciphertext", message: "This is the encrypted message. We can only convert this back to the original message with the private key (by using the Public Modulus and Private Exponent).")
 		case "modLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Modulo Operator", message: "This is the operator that is used to calculate the remainder after dividing some number by another number.")
+			self.informationDelegate?.presentInformationPopup(title: "Modulo Operator", message: "This is the mathematical operator that is used to calculate the remainder after dividing some number by another number.\n\nModulo arithmetic is widely used in computer science for all sorts of different applications.")
 		case "nLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This is the number that makes up part of the public key and the private key. It is calculated by multiplying p and q, and is used when we encrypt the message and also when we decrypt the cipher text.")
+			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This number is really easy to calculate. It is calculated by multiplying p and q, and is used when we encrypt the message and also when we decrypt the cipher text.\n\nAlthough, we can not figure out p and q just given this number (more on that later)!")
 		case "eLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key.\n\nIt is used to convert the message into the encrypted message (ciphertext), along with the public modulus N. It can be any number that we want that is co-prime to (p-1)*(q-1). This means the only factor that they have in common is 1.\n\nAn easy way to this number is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.")
 		case "dLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key.\n\nIt is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N.\n\nIt is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work). You can only easily calculate this number if you originally knew the 2 prime numbers p and q.")
 		case "pLabel":
-            self.informationDelegate?.presentInformationPopup(title: "Prime p", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n - it must be a prime number\n - it must be different from q\n\nWe multiply p and q to calculate the public modulus N.")
+            self.informationDelegate?.presentInformationPopup(title: "Prime p", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n   1. it must be a prime number\n   2. it must be different from q\n\nWe multiply p and q to calculate the public modulus N.")
 		case "qLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Prime q", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n - it must be a prime number\n - it must be different from p\n\nWe multiply p and q to calculate the public modulus N.")
+			self.informationDelegate?.presentInformationPopup(title: "Prime q", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n   1. it must be a prime number\n   2. it must be different from p\n\nWe multiply p and q to calculate the public modulus N.")
 		default:
 			return
 		}

@@ -76,7 +76,6 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
         
 		if let view = self.view as! SKView? {
 			
-			
             scene = IntroScene(size: view.bounds.size)
             scene.informationDelegate = self
 
@@ -151,10 +150,10 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			let translation = recogniser.translation(in: self.view)
 			informationPaneAnimator.fractionComplete = translation.y / 400
 		case .ended:
-			if informationPaneAnimator.fractionComplete <= 0.07 {
+			if informationPaneAnimator.fractionComplete == 0.0 {
 				// we clearly don't want to do the animation, stop here
 				self.cancelPriorAnimationIfNeeded()
-				// regenerate the blur view (to prevent a weird glitch where it won't go away after we stop back at the top)
+				// regenerate the blur effect (to prevent a weird glitch where it won't go away after we stop back at the top)
 				self.blurView.effect = UIBlurEffect(style: .light)
 			} else {
 				// continue animation when user lets go of display
