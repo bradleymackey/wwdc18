@@ -27,33 +27,34 @@ public final class ChainSprite: SKNode {
 	}
 	
 	private func setChainLength(length:Int) {
-		
-		let chainLink = SKSpriteNode(imageNamed: "circle.png")
-		chainLink.size = CGSize(width: 5, height: 5)
-		chainLink.position = attachmentPoint
-		chainLink.physicsBody = SKPhysicsBody(circleOfRadius: chainLink.size.height)
-		chainLink.physicsBody?.categoryBitMask = PhysicsCategory.chainLink
-		chainLink.physicsBody?.collisionBitMask = PhysicsCategory.boundry | PhysicsCategory.keys
-		chainLink.physicsBody?.contactTestBitMask = PhysicsCategory.none
-		chainLink.physicsBody?.allowsRotation = true
-		chainLink.physicsBody?.isDynamic = true
-		
-		chainLinks.append(chainLink)
-		
-		for linkNumber in 1..<length {
-			chainLink.position = CGPoint(x: self.attachmentPoint.x, y: self.attachmentPoint.y-(CGFloat(linkNumber)*(chainLink.size.width)))
-			chainLinks.append(chainLink)
+		// add the links that we will use
+		for linkNumber in 0..<length {
+            let link = ChainSprite.newLinkSprite()
+			link.position = CGPoint(x: self.attachmentPoint.x, y: self.attachmentPoint.y-(CGFloat(linkNumber)*(link.size.width)))
+			chainLinks.append(link)
 		}
-		
+		// add the element that we will attach as well
 		guard let previous = chainLinks.last else { return }
 		attachedElement.position = CGPoint(x: previous.position.x, y: previous.frame.minY)
 		chainLinks.append(attachedElement)
 	}
+    
+    /// creates a new chain link sprite
+    private class func newLinkSprite() -> SKSpriteNode {
+        let link = SKSpriteNode(imageNamed: "circle.png")
+        link.size = CGSize(width: 5, height: 5)
+        link.physicsBody = SKPhysicsBody(circleOfRadius: link.size.height)
+        link.physicsBody?.categoryBitMask = PhysicsCategory.chainLink
+        link.physicsBody?.collisionBitMask = PhysicsCategory.boundry | PhysicsCategory.keys
+        link.physicsBody?.contactTestBitMask = PhysicsCategory.none
+        link.physicsBody?.allowsRotation = true
+        link.physicsBody?.isDynamic = true
+        return link
+    }
 	
-	public func addChainElementsToScene() {
-
-		guard let enclosingScene = self.scene else { return }
-		
+    public func addChainElementsToScene(forScene enclosingScene:SKScene) {
+        
+        // add them to the scene
 		for item in chainLinks {
 			guard item.parent == nil else { continue }
 			enclosingScene.addChild(item)
@@ -64,8 +65,8 @@ public final class ChainSprite: SKNode {
 		enclosingScene.physicsWorld.add(joint)
 		
 		for jointNumber in 1..<(chainLinks.count) {
-			var subtract:CGFloat = 0
-            var friction:CGFloat = 0.9
+			var subtract = CGFloat(0)
+            var friction = CGFloat(0.9)
 			if jointNumber ==  chainLinks.count - 1 {
 				// on the last one, subtract so the cage touches the chain
 				subtract = 22

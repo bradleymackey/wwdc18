@@ -42,7 +42,6 @@ public final class CageSprite: SKSpriteNode {
 	}
 	
 	private func physicsBody(texture:SKTexture) -> SKPhysicsBody {
-		//let smaller = CGSize(width: self.spriteSize.width/2, height: self.spriteSize.height/2)
 		let body = SKPhysicsBody(texture: texture, size: self.spriteSize)
 		body.categoryBitMask = PhysicsCategory.chainLink
 		body.affectedByGravity = true
@@ -50,7 +49,7 @@ public final class CageSprite: SKSpriteNode {
 		body.contactTestBitMask = PhysicsCategory.none
 		body.allowsRotation = true
 		body.restitution = 0.15
-        body.mass = 0.15
+        body.mass = 0.2
 		return body
 	}
 	

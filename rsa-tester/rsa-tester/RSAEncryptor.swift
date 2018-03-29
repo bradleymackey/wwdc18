@@ -24,7 +24,7 @@ public final class RSAEncryptor {
 	
 	/// public exponent
     public lazy var e:Int = {
-        let primes = [3,5,7,11,13,17,19,23,29,31]
+        let primes = [3,5,7,11,13,17,19,23]
         let primeCount = UInt32(primes.count)
 		let index = Int(arc4random_uniform(primeCount))
         return primes[index]
