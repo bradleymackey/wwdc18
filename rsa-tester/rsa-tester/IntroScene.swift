@@ -25,7 +25,7 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = false
+	public static var useRealValues = true
 	
 	public static var message = 3
 	
