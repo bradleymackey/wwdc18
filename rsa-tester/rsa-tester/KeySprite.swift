@@ -14,8 +14,8 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
 	// MARK: Properties
 	
-	private let pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
-	private let dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
+	private lazy var pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
+	private lazy var dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
 	
 	/// whether the user is dragging this key around or not
 	public var isBeingMoved = false
@@ -61,6 +61,9 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 			return PhysicsCategory.privateKeyB
 		}
 	}
+    
+    /// simple tracking variable to keep track of if a key is inside a cage
+    public weak var insideCage:CageSprite?
 	
 	// MARK: Lifecycle
 	
@@ -141,6 +144,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		// play the drop sound
 		self.run(dropKeySound)
 	}
-	
+    
+  
 	
 }

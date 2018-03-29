@@ -42,12 +42,12 @@ public final class InteractiveScene: RSAScene  {
 	
 	public static var paperScene = Message3DScene(message: InteractiveScene.aliceMessage)
 	
-	private let aliceSound = SKAction.playSoundFileNamed("hellolady1.caf", waitForCompletion: false)
-	private let bobSound = SKAction.playSoundFileNamed("helloman.caf", waitForCompletion: false)
-	private let eveSound = SKAction.playSoundFileNamed("hellolady2.caf", waitForCompletion: false)
-	private let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
-	private let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
-	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
+	private lazy var aliceSound = SKAction.playSoundFileNamed("hellolady1.caf", waitForCompletion: false)
+	private lazy var bobSound = SKAction.playSoundFileNamed("helloman.caf", waitForCompletion: false)
+	private lazy var eveSound = SKAction.playSoundFileNamed("hellolady2.caf", waitForCompletion: false)
+	private lazy var encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
+	private lazy var decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
+	private lazy var failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
 
     
     /// for fading items up that come into focus
@@ -154,6 +154,18 @@ public final class InteractiveScene: RSAScene  {
 		return label
 	}()
     
+    private lazy var aliceCage:CageSprite = {
+        let cageSize = CGSize(width: alicePrivateKeyNode.size.width+50, height: alicePrivateKeyNode.size.height+50)
+        let cage = CageSprite(size: cageSize)
+        return cage
+    }()
+    
+    private lazy var bobCage:CageSprite = {
+        let cageSize = CGSize(width: bobPrivateKeyNode.size.width+50, height: bobPrivateKeyNode.size.height+50)
+        let cage = CageSprite(size: cageSize)
+        return cage
+    }()
+    
     /// convenience property to get all characters
     private lazy var allCharacters:[CharacterSprite] = {
         return [aliceCharacter, bobCharacter, eveCharacter]
@@ -214,15 +226,13 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(key)
             self.addChild(keyLabel)
         }
-		let cageSize = CGSize(width: alicePrivateKeyNode.size.width+50, height: alicePrivateKeyNode.size.height+50)
+		
 		let point = CGPoint(x: self.size.width/9, y: self.size.height)
-        let aliceNode = CageSprite(size: cageSize)
-		let rope = RopeSprite(attachmentPoint: point, attachedElement: aliceNode, length: 75)
+        let rope = RopeSprite(attachmentPoint: point, attachedElement: self.aliceCage, length: 75)
 		self.addChild(rope)
 		rope.addRopeElementsToScene()
 		let otherPoint = CGPoint(x: 8*self.size.width/9, y: self.size.height)
-        let bobNode = CageSprite(size: cageSize)
-		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: bobNode, length: 75)
+		let otherRope = RopeSprite(attachmentPoint: otherPoint, attachedElement: self.bobCage, length: 75)
 		self.addChild(otherRope)
 		otherRope.addRopeElementsToScene()
         
@@ -388,8 +398,12 @@ public final class InteractiveScene: RSAScene  {
     
     public override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
+        // update caged key positions if needed
         // position key labels above the keys
         for (key,keyLabel) in keyToKeyLabel {
+            if let cage = key.insideCage {
+                key.position = CGPoint(x: cage.position.x, y: cage.position.y-10)
+            }
             updatePosition(forNode: keyLabel, aboveNode: key)
         }
 		updatePosition(forNode: messageLabel, aboveNode: messageNode, by: 45.0)
@@ -486,7 +500,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeUp)
             }
-          //  key.hideCage()
+            self.removeKeyFromCage(key: key)
             key.isUserInteractionEnabled = false
         }
         for key in defocus {
@@ -494,7 +508,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeDown)
             }
-           // key.putInCage()
+            self.putKeyInsideCorrectCageIfNeeded(key: key)
             key.isUserInteractionEnabled = true
         }
     }
@@ -525,10 +539,37 @@ public final class InteractiveScene: RSAScene  {
             keyLabel.run(fadeDown)
             key.isUserInteractionEnabled = true
             // put the private keys in a cage
-            if key === alicePrivateKeyNode || key === bobPrivateKeyNode {
-              //  key.putInCage()
-            }
+            self.putKeyInsideCorrectCageIfNeeded(key: key)
+        }
+    }
+    
+    private func putKeyInsideCorrectCageIfNeeded(key:KeySprite) {
+        if key === alicePrivateKeyNode {
+            self.putInsideCage(key: key, cage: self.aliceCage)
+        } else if key === bobPrivateKeyNode {
+            self.putInsideCage(key: key, cage: self.bobCage)
         }
     }
 	
+    private func putInsideCage(key:KeySprite, cage:CageSprite) {
+        guard key.insideCage == nil else { return }
+       // key.removeAllActions()
+        key.physicsBody?.isDynamic = false
+        key.physicsBody?.collisionBitMask = PhysicsCategory.none
+        let moveToCage = SKAction.move(to: cage.position, duration: 0.3)
+        moveToCage.timingMode = .easeOut
+        let confirmInside = SKAction.customAction(withDuration: 0) { (_, _) in
+            key.insideCage = cage
+        }
+        let moveSequence = SKAction.sequence([moveToCage,confirmInside])
+        key.run(moveSequence)
+    }
+    
+    private func removeKeyFromCage(key:KeySprite) {
+        guard let _ = key.insideCage else { return }
+        key.insideCage = nil
+      //  key.removeAllActions()
+        key.physicsBody?.isDynamic = true
+        key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box)
+    }
 }
