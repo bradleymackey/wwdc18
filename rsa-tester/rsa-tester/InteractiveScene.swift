@@ -34,9 +34,9 @@ public final class InteractiveScene: RSAScene  {
     public static var invalidPulseTime:TimeInterval = 0.2
     public static var cubeChangeTime:TimeInterval = 0.5
     
-    public static var aliceMessage = "Hello world. This is a really long message just to test how thingsk sdf sdf skjdf ksjd fkshdf ksjdhfksjhdfsk jfskjdfhskjd fksd fksjhdf ksjdfhks dfkshdf ksfhskfhkh."
-    public static var bobMessage = "This is a test."
-    public static var eveMessage = "I am a 1337 hacker!!"
+    public static var aliceMessage = "Hi Bob! How are you doing? Nice weather we're having."
+    public static var bobMessage = "Hi Alice! I'm great. It's cool that our we can chat in private!"
+    public static var eveMessage = "Don't mind me, I'm just trying to EVEsdrop. Haha. Get it guys?"
 	
 	// MARK: Instance Variables
 	
@@ -65,7 +65,7 @@ public final class InteractiveScene: RSAScene  {
     }()
 	
 	private lazy var messageNode:Message3DNode = {
-		let sceneSize = CGSize(width: 120, height: 120)
+		let sceneSize = CGSize(width: 140, height: 140)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
 		sceneNode.position = CGPoint(x: aliceCharacter.position.x, y: aliceCharacter.position.y + 140)
 		sceneNode.name = "messageNode"
@@ -147,10 +147,10 @@ public final class InteractiveScene: RSAScene  {
 	
 	private lazy var messageLabel:SKLabelNode = {
 		let label = InteractiveScene.keyLabel(text: "Alice's Message")
-		label.fontSize = 10
+		label.fontSize = 12
 		label.numberOfLines = 2
 		label.lineBreakMode = .byWordWrapping
-		self.updatePosition(forNode: label, aboveNode: messageNode, by: 45.0)
+		self.updatePosition(forNode: label, aboveNode: messageNode, by: 60.0)
 		return label
 	}()
     
@@ -239,7 +239,7 @@ public final class InteractiveScene: RSAScene  {
 	// MARK: - Methods
     
     private class func keyLabel(text:String) -> SKLabelNode {
-        let label = SKLabelNode(fontNamed: "SanFransico")
+        let label = SKLabelNode(fontNamed: "Courier")
         label.text = text
         label.fontColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         label.fontSize = 12
@@ -404,7 +404,7 @@ public final class InteractiveScene: RSAScene  {
             }
             updatePosition(forNode: keyLabel, aboveNode: key)
         }
-		updatePosition(forNode: messageLabel, aboveNode: messageNode, by: 45.0)
+		updatePosition(forNode: messageLabel, aboveNode: messageNode, by: 60.0)
         // update finger position or exit
         guard let point = currentFingerPosition else { return }
         // determine which character is in range of message
@@ -557,7 +557,7 @@ public final class InteractiveScene: RSAScene  {
         key.removeAction(forKey: "puttingInCage")
         key.physicsBody?.isDynamic = false
         key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box | PhysicsCategory.chainLink)
-        let moveToCage = SKAction.move(to: cage.position, duration: 0.45)
+        let moveToCage = SKAction.move(to: cage.position, duration: 0.3)
         moveToCage.timingMode = .easeOut
         let confirmInCage = SKAction.customAction(withDuration: 0) { (_, _) in
             key.animationInCage = true

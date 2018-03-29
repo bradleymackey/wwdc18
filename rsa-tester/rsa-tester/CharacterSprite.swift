@@ -34,7 +34,7 @@ public final class CharacterSprite: SKLabelNode {
 	}
 	
 	public var lockedByMessage:String {
-		return "🔒 with " + characterName + "'s Key"
+		return "🔒 by " + characterName + "'s Key"
 	}
 	
 	/// the state that the character is currently in
