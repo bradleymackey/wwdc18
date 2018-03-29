@@ -29,7 +29,7 @@ public final class InteractiveScene: RSAScene  {
 	
 	// MARK: Constants
     
-    public static var fadedDown:CGFloat = 0.15
+    public static var fadedDown:CGFloat = 0.25
     public static var fadeTime:TimeInterval = 0.2
     public static var invalidPulseTime:TimeInterval = 0.2
     public static var cubeChangeTime:TimeInterval = 0.5
@@ -555,7 +555,7 @@ public final class InteractiveScene: RSAScene  {
         guard key.insideCage == nil else { return }
        // key.removeAllActions()
         key.physicsBody?.isDynamic = false
-        key.physicsBody?.collisionBitMask = PhysicsCategory.none
+        key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box | PhysicsCategory.chainLink)
         let moveToCage = SKAction.move(to: cage.position, duration: 0.3)
         moveToCage.timingMode = .easeOut
         let confirmInside = SKAction.customAction(withDuration: 0) { (_, _) in
@@ -570,6 +570,8 @@ public final class InteractiveScene: RSAScene  {
         key.insideCage = nil
       //  key.removeAllActions()
         key.physicsBody?.isDynamic = true
-        key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box)
+        }
     }
 }
