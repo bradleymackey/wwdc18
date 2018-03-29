@@ -96,28 +96,28 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var alicePublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 45)
 		keySprite.name = "alicePublicKeyNode"
-		keySprite.position = CGPoint(x: (self.size.width/2)-20, y: (self.size.height/5)+10)
+		keySprite.position = CGPoint(x: (self.size.width/2)-40, y: (self.size.height/5)+10)
 		return keySprite
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
         let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`, size: 45)
 		keySprite.name = "alicePrivateKeyNode"
-		keySprite.position = CGPoint(x: (self.size.width/2)-20, y: (self.size.height/5)-10)
+		keySprite.position = CGPoint(x: self.size.width/9, y: self.size.height/5)
 		return keySprite
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .`public`, size: 45)
 		keySprite.name = "bobPublicKeyNode"
-		keySprite.position = CGPoint(x: (self.size.width/2)+20, y: (self.size.height/5)+10)
+		keySprite.position = CGPoint(x: (self.size.width/2)+40, y: (self.size.height/5)+10)
 		return keySprite
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .`private`, size: 45)
 		keySprite.name = "bobPrivateKeyNode"
-		keySprite.position = CGPoint(x: (self.size.width/2)+20, y: (self.size.height/5)-10)
+		keySprite.position = CGPoint(x: 8*self.size.width/9, y: self.size.height/5)
 		return keySprite
 	}()
     
@@ -206,9 +206,7 @@ public final class InteractiveScene: RSAScene  {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
         self.addNodesToScene()
-        self.setNoCharacterFocusIfNeeded()
-        self.setNoKeyFocusIfNeeded()
-		// refocus on alice, our first character
+		// focus on alice, our first character
 		self.setCharacterFocusIfNeeded(character: self.aliceCharacter)
 	}
     
@@ -550,6 +548,18 @@ public final class InteractiveScene: RSAScene  {
             self.putInsideCage(key: key, cage: self.bobCage)
         }
     }
+    
+    /*
+ 
+ 
+     CURRENT WEIRDNESS BECAUSE OF THE DELAY WHEN RE-ENABLING THE CHAIN COLLISION FOR THE KEY, SO IF YOU QUICKLY MOVE OUT AND BACK IN RANGE, THE KEY CAN COLLIDE WITH THE CAGE WHILE IT IS INSIDE.
+     
+     SOLUTION: INVALIDATE THE DELAY BLOCK WHEN CALLING PUT INSIDE CAGE
+     
+     HANDLE ALL OTHER WEIRD EDGE CASES TOO
+ 
+ 
+     */
 	
     private func putInsideCage(key:KeySprite, cage:CageSprite) {
         guard key.insideCage == nil else { return }

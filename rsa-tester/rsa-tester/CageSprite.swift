@@ -46,7 +46,7 @@ public final class CageSprite: SKSpriteNode {
 		let body = SKPhysicsBody(texture: texture, size: self.spriteSize)
 		body.categoryBitMask = PhysicsCategory.chainLink
 		body.affectedByGravity = true
-		body.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box | PhysicsCategory.privateKeys) // collide with all but box
+		body.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box | PhysicsCategory.privateKeys) // collide with all but box and private keys
 		body.contactTestBitMask = PhysicsCategory.none
 		body.allowsRotation = true
 		body.restitution = 0.15
