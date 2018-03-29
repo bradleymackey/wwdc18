@@ -23,7 +23,7 @@ Go ahead and **turn on** `snoopingEnabled` to say hello to Eve.
 
 /*:
 ## How's it secure?
-The security of RSA depends on the fact that the public modulus `N` is easy to calculate by multiplying `p` and `q`, but it is ***infeasible*** to reverse `N` to get `p` and `q`.
+The security of RSA depends on the fact that the public modulus `N` is easy to calculate by multiplying `p` and `q`, but it is ***infeasible*** (really difficult) to reverse `N` to get `p` and `q`.
 
 This is because if you were able to figure out `p` and `q`, you could easily figure out `d` and could read secure messages sent by other people!
 

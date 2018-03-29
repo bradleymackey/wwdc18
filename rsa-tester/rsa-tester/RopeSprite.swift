@@ -78,18 +78,22 @@ public final class RopeSprite: SKNode {
 		}
 		
 		let joint = SKPhysicsJointPin.joint(withBodyA: enclosingScene.physicsBody!, bodyB: ropeParts[0].physicsBody!, anchor: attachmentPoint)
+        joint.frictionTorque = 0.7
 		enclosingScene.physicsWorld.add(joint)
 		
 		for jointNumber in 1..<(ropeParts.count) {
 			var subtract:CGFloat = 0
+            var friction:CGFloat = 0.7
 			if jointNumber ==  ropeParts.count - 1 {
 				// on the last one, subtract so the cage touches the chain
 				subtract = 22
+                friction = 0.2
 			}
 			let nodeA = ropeParts[jointNumber-1]
 			let nodeB = ropeParts[jointNumber]
 			let anchorPoint = CGPoint(x: nodeB.frame.midX, y: nodeB.frame.maxY-subtract)
 			let otherJoint = SKPhysicsJointPin.joint(withBodyA: nodeA.physicsBody!, bodyB: nodeB.physicsBody!, anchor: anchorPoint)
+            otherJoint.frictionTorque = friction
 			enclosingScene.physicsWorld.add(otherJoint)
 		}
 		
