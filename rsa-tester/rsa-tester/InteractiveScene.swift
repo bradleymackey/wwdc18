@@ -548,40 +548,30 @@ public final class InteractiveScene: RSAScene  {
             self.putInsideCage(key: key, cage: self.bobCage)
         }
     }
-    
-    /*
- 
- 
-     CURRENT WEIRDNESS BECAUSE OF THE DELAY WHEN RE-ENABLING THE CHAIN COLLISION FOR THE KEY, SO IF YOU QUICKLY MOVE OUT AND BACK IN RANGE, THE KEY CAN COLLIDE WITH THE CAGE WHILE IT IS INSIDE.
-     
-     SOLUTION: INVALIDATE THE DELAY BLOCK WHEN CALLING PUT INSIDE CAGE
-     
-     HANDLE ALL OTHER WEIRD EDGE CASES TOO
- 
- 
-     */
 	
     private func putInsideCage(key:KeySprite, cage:CageSprite) {
         guard key.insideCage == nil else { return }
-       // key.removeAllActions()
+        key.insideCage = cage
+        key.removeAction(forKey: "removingFromCage")
+        key.removeAction(forKey: "puttingInCage")
         key.physicsBody?.isDynamic = false
         key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box | PhysicsCategory.chainLink)
         let moveToCage = SKAction.move(to: cage.position, duration: 0.3)
         moveToCage.timingMode = .easeOut
-        let confirmInside = SKAction.customAction(withDuration: 0) { (_, _) in
-            key.insideCage = cage
-        }
-        let moveSequence = SKAction.sequence([moveToCage,confirmInside])
-        key.run(moveSequence)
+        key.run(moveToCage, withKey: "puttingInCage")
     }
     
     private func removeKeyFromCage(key:KeySprite) {
         guard let _ = key.insideCage else { return }
         key.insideCage = nil
-      //  key.removeAllActions()
+        key.removeAction(forKey: "puttingInCage")
+        key.removeAction(forKey: "removingFromCage")
         key.physicsBody?.isDynamic = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        let enableFullCollisions = SKAction.customAction(withDuration: 0) { (_, _) in
+            // ensure that when the block is run we are still outside of the cage
+            guard key.insideCage == nil else { return }
             key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box)
         }
+        key.run(enableFullCollisions, withKey: "removingFromCage")
     }
 }

@@ -50,7 +50,7 @@ public final class CageSprite: SKSpriteNode {
 		body.contactTestBitMask = PhysicsCategory.none
 		body.allowsRotation = true
 		body.restitution = 0.15
-        body.mass = 0.1
+        body.mass = 0.15
 		return body
 	}
 	
