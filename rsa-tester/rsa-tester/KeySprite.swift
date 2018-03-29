@@ -64,6 +64,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
     
     /// simple tracking variable to keep track of if a key is inside a cage
     public weak var insideCage:CageSprite?
+    public var animationInCage = false
 	
 	// MARK: Lifecycle
 	

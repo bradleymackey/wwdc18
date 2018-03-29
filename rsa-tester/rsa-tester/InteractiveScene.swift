@@ -399,7 +399,7 @@ public final class InteractiveScene: RSAScene  {
         // update caged key positions if needed
         // position key labels above the keys
         for (key,keyLabel) in keyToKeyLabel {
-            if let cage = key.insideCage {
+            if let cage = key.insideCage, key.animationInCage {
                 key.position = CGPoint(x: cage.position.x, y: cage.position.y-10)
             }
             updatePosition(forNode: keyLabel, aboveNode: key)
@@ -552,18 +552,24 @@ public final class InteractiveScene: RSAScene  {
     private func putInsideCage(key:KeySprite, cage:CageSprite) {
         guard key.insideCage == nil else { return }
         key.insideCage = cage
+        key.animationInCage = false
         key.removeAction(forKey: "removingFromCage")
         key.removeAction(forKey: "puttingInCage")
         key.physicsBody?.isDynamic = false
         key.physicsBody?.collisionBitMask = PhysicsCategory.all ^ (PhysicsCategory.box | PhysicsCategory.chainLink)
-        let moveToCage = SKAction.move(to: cage.position, duration: 0.3)
+        let moveToCage = SKAction.move(to: cage.position, duration: 0.45)
         moveToCage.timingMode = .easeOut
-        key.run(moveToCage, withKey: "puttingInCage")
+        let confirmInCage = SKAction.customAction(withDuration: 0) { (_, _) in
+            key.animationInCage = true
+        }
+        let moveSequence = SKAction.sequence([moveToCage,confirmInCage])
+        key.run(moveSequence, withKey: "puttingInCage")
     }
     
     private func removeKeyFromCage(key:KeySprite) {
         guard let _ = key.insideCage else { return }
         key.insideCage = nil
+        key.animationInCage = false
         key.removeAction(forKey: "puttingInCage")
         key.removeAction(forKey: "removingFromCage")
         key.physicsBody?.isDynamic = true
