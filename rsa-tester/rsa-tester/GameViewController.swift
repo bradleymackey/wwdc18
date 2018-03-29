@@ -88,7 +88,8 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 			view.presentScene(scene)
 		
 			//view.ignoresSiblingOrder = true
-			
+
+            
 			view.showsFPS = true
 			view.showsNodeCount = true
 		}
