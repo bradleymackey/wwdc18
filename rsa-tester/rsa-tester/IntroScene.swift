@@ -177,6 +177,23 @@ public final class IntroScene: RSAScene {
 		return label
 	}()
 	
+	/// static to do title
+	private lazy var toDoLabel:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "To-Do", fontSize: 35, color: .black, bold: true)
+		label.name = "toDo"
+		label.horizontalAlignmentMode = .left
+		label.position = CGPoint(x: 30, y: self.size.height-45)
+		return label
+	}()
+	
+	private lazy var listItem:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "• multiply p and q", fontSize: 21, color: .darkGray, bold: false)
+		label.name = "listItem"
+		label.horizontalAlignmentMode = .left
+		label.position = CGPoint(x: toDoLabel.position.x, y: toDoLabel.position.y-40)
+		return label
+	}()
+	
 	// MARK: State Machines
 	
 	/// bolier-plate for intro scene key machine
@@ -220,7 +237,7 @@ public final class IntroScene: RSAScene {
 	private func addMathsLabelsIfNeeded() {
 		guard IntroScene.mathsEnabled else { return }
 		// add the maths labels to the scene
-		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel, pLabel, qLabel].forEach {
+		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel, pLabel, qLabel, toDoLabel, listItem].forEach {
 			self.addChild($0)
 		}
 	}
@@ -507,6 +524,24 @@ public final class IntroScene: RSAScene {
 				if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
 					key.updatePosition(to: point)
 				}
+			}
+			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, label == "pLabel" {
+				pLabel.xScale = 2
+				pLabel.yScale = 2
+				pLabel.alpha = 0.7
+				pLabel.position = point
+			}
+			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, label == "qLabel" {
+				qLabel.xScale = 2
+				qLabel.yScale = 2
+				qLabel.alpha = 0.7
+				qLabel.position = point
+			}
+			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, label == "modLabel" {
+				modLabel.xScale = 2
+				modLabel.yScale = 2
+				modLabel.alpha = 0.7
+				modLabel.position = point
 			}
         }
 	}

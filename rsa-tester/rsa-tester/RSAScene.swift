@@ -54,7 +54,7 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		let x = fingerPosition.x - touchPoint.x
 		let y = fingerPosition.y - touchPoint.y
 		let dist = sqrt(x*x + y*y)
-		return dist > 10.0
+		return dist > 12.0
 	}
 	
 	// MARK: - Methods
