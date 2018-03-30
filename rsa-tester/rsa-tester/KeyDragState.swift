@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SpriteKit
 import GameplayKit
 
 public final class KeyDragState: KeyState {
@@ -15,7 +16,8 @@ public final class KeyDragState: KeyState {
 		super.didEnter(from: previousState)
 		// if we were previously waiting, play the key pickup sound
 		if let state = previousState, state.isKind(of: KeyWaitState.self) {
-			self.key.run(self.pickupKeySound, withKey: "pickupKeySound")
+			self.key.removeAllActions()
+			self.key.run(KeyState.pickupKeySound, withKey: "pickupKeySound")
 		}
 	}
 	

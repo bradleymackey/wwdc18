@@ -107,7 +107,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	}
 	
 	public func startMoving(initialPoint:CGPoint) {
-		self.removeAllActions()
+		//self.removeAllActions()
 		let moveAnimation = SKAction.move(to: initialPoint, duration: 0.04)
 		self.run(moveAnimation)
 		self.physicsBody?.affectedByGravity = false
@@ -121,7 +121,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	}
 	
 	public func stopMoving(at lastPoint:CGPoint) {
-		self.removeAllActions()
+		//self.removeAllActions()
 		self.physicsBody?.affectedByGravity = true
 		guard let previousPoint = self.lastPoint else { return }
 		let moveX = lastPoint.x - previousPoint.x

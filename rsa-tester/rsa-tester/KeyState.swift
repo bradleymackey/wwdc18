@@ -15,8 +15,8 @@ public class KeyState: GKState {
 	
 	// MARK: - Statics
 	
-	public lazy var pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: true)
-	public lazy var dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: true)
+	public static let pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
+	public static let dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
 	
 	// MARK: - Properties
 	
