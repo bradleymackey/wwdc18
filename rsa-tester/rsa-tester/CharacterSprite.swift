@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import GameplayKit
 
 /// an emoji character within the interactive scene
 public final class CharacterSprite: SKLabelNode {
@@ -52,13 +53,13 @@ public final class CharacterSprite: SKLabelNode {
     /// the name of the character
     public let characterName:String
 	/// the expression the character gives when waiting
-	private let waiting:String
+	public let waiting:String
     /// the expression when the message is in range of a character
-    private let inRange:String
+    public let inRange:String
 	/// the expression after a success event
-	private let success:String
+	public let success:String
 	/// the expression after a fail event
-	private let fail:String
+	public let fail:String
 	
 	private var textForCurrentState:String {
 		switch self.currentState {
@@ -72,6 +73,9 @@ public final class CharacterSprite: SKLabelNode {
 			return self.fail
 		}
 	}
+	
+	/// state machine to manage state transitions
+	public var stateMachine: GKStateMachine!
 	
 	// MARK: - Setup
 	
