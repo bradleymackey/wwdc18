@@ -13,14 +13,6 @@ import GameplayKit
 /// an emoji character within the interactive scene
 public final class CharacterSprite: SKLabelNode {
 	
-	/// the possible states that a character can be in
-	public enum State {
-		case waiting
-        case inRange
-		case success
-		case fail
-	}
-	
 	// MARK: - Properties
     
     // MARK: Constants
@@ -38,18 +30,6 @@ public final class CharacterSprite: SKLabelNode {
 		return "🔒 by " + characterName + "'s Key"
 	}
 	
-	/// the state that the character is currently in
-	/// - note: updates the state of the character and the label text
-    public var currentState:State {
-        get {
-            return _currentState
-        }
-        set(newState) {
-            _currentState = newState
-            self.text = self.textForCurrentState
-        }
-    }
-    private var _currentState = State.waiting
     /// the name of the character
     public let characterName:String
 	/// the expression the character gives when waiting
@@ -61,21 +41,16 @@ public final class CharacterSprite: SKLabelNode {
 	/// the expression after a fail event
 	public let fail:String
 	
-	private var textForCurrentState:String {
-		switch self.currentState {
-		case .waiting:
-			return self.waiting
-        case .inRange:
-            return self.inRange
-		case .success:
-			return self.success
-		case .fail:
-			return self.fail
-		}
+	/// the states that a character can be in
+	public var characterStates:[CharacterState] {
+		return [CharacterWaitingState(character: self, text: self.waiting),
+				CharacterFailState(character: self, text: self.fail),
+				CharacterSuccessState(character: self, text: self.success),
+				CharacterInRangeState(character: self, text: self.inRange)]
 	}
 	
 	/// state machine to manage state transitions
-	public var stateMachine: GKStateMachine!
+	public lazy var stateMachine = GKStateMachine(states: self.characterStates)
 	
 	// MARK: - Setup
 	

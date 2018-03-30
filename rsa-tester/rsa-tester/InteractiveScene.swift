@@ -89,7 +89,6 @@ public final class InteractiveScene: RSAScene  {
 	
 	private lazy var eveCharacter:CharacterSprite = {
         let eve = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
-		eve.stateMachine = GKStateMachine(states: )
 		eve.name = "eveCharacter"
         eve.position = CGPoint(x: 2*self.size.width/4, y: 3*self.size.height/4)
 		return eve
