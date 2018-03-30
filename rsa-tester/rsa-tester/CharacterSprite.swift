@@ -75,7 +75,7 @@ public final class CharacterSprite: SKLabelNode {
 	
 	// MARK: - Setup
 	
-    public init(characterName:String, waiting:String, inRange:String, success:String, fail:String) {
+    required public init(characterName:String, waiting:String, inRange:String, success:String, fail:String) {
         self.characterName = characterName
 		self.waiting = waiting
         self.inRange = inRange

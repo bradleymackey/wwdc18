@@ -15,7 +15,7 @@ public final class CageSprite: SKSpriteNode {
 	
 	private let spriteSize:CGSize
 	
-	public init(size:CGSize) {
+	required public init(size:CGSize) {
 		self.spriteSize = size
 		super.init(texture: CageSprite.textureImage, color: .black, size: size)
 		self.physicsBody = self.physicsBody(texture: CageSprite.textureImage)

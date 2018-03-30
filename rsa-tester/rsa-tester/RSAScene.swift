@@ -20,6 +20,23 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	/// simply loads the key texture so we don't have to reload it for each key
 	public static let keyTexture = KeySprite.textureForKey()
 	
+	/// the point that we initially touched at during a touch event (the touch point for the touch down event)
+	public var initialTouchPoint:CGPoint?
+	
+	/// whether the current touch has been deemed significant
+	/// - note: this can be used to distinguish a touch action from a drag action
+	public var movedSignificantlyThisTouch:Bool = false
+	
+	/// determines whether our touch has moved significantly since we touched it
+	private var movedSignificantly:Bool {
+		guard let fingerPosition = self.currentFingerPosition else { return false }
+		guard let touchPoint = self.initialTouchPoint else { return false }
+		let x = fingerPosition.x - touchPoint.x
+		let y = fingerPosition.y - touchPoint.y
+		let dist = sqrt(x*x + y*y)
+		return dist > 10.0
+	}
+	
 	// MARK: - Methods
 	
 	public override func sceneDidLoad() {
@@ -83,16 +100,25 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	// MARK: Friendly touch functions
 	
 	public func touchDown(atPoint point: CGPoint) {
-		currentFingerPosition = point
+		self.currentFingerPosition = point
+		self.initialTouchPoint = point
 	}
 	
 	public func touchMoved(toPoint point: CGPoint) {
-		currentFingerPosition = point
+		self.currentFingerPosition = point
+		// determine if we have moved our finger a significant amount
+		if !self.movedSignificantlyThisTouch {
+			self.movedSignificantlyThisTouch = self.movedSignificantly
+		}
 	}
 	
 	public func touchUp(atPoint point: CGPoint) {
         // on exit, set finger position to nil
-        defer { currentFingerPosition = nil }
+        defer {
+			self.currentFingerPosition = nil
+			self.initialTouchPoint = nil
+			self.movedSignificantlyThisTouch = false
+		}
 	}
 	
 	public func didBegin(_ contact: SKPhysicsContact) {

@@ -42,7 +42,7 @@ public final class RSAEncryptor {
     
     // MARK: Lifecycle
     
-    public init(p:Int, q:Int) {
+    required public init(p:Int, q:Int) {
         self.p = p
         self.q = q
 		if p > 29 || q > 29 {

@@ -68,7 +68,7 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
 	// MARK: Lifecycle
 	
-    public init(texture: SKTexture, color: UIColor, owner: KeyOwner, type: KeyType, size:CGFloat) {
+    required public init(texture: SKTexture, color: UIColor, owner: KeyOwner, type: KeyType, size:CGFloat) {
 		self.owner = owner
 		self.type = type
         self.keyWidth = size

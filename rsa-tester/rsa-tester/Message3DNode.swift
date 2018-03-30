@@ -31,7 +31,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	
 	// MARK: Lifecycle
 	
-	public init(viewportSize: CGSize, messageScene: Message3DScene) {
+	required public init(viewportSize: CGSize, messageScene: Message3DScene) {
 		self.messageScene = messageScene
 		super.init(viewportSize: viewportSize)
 		// setup

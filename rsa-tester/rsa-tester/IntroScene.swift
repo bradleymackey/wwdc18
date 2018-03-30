@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import GameplayKit
 
 /// used for delegating the display of information about labels when tapped
 public protocol IntroSceneInformationDelegate: class {
@@ -90,6 +91,7 @@ public final class IntroScene: RSAScene {
 		label.position =  CGPoint(x: (self.size.width/2)+50, y: 3*self.size.height/4)
 		label.name = "nLabel"
 		label.zPosition = 2.0
+		label.alpha = 0 // initially hidden
 		return label
 	}()
 	
@@ -148,10 +150,23 @@ public final class IntroScene: RSAScene {
 		return label
 	}()
 	
+	// MARK: State Machines
+	
+	/// bolier-plate for intro scene key machine
+	private class func introKeyMachine(forKey key:KeySprite) -> GKStateMachine {
+		let machine = GKStateMachine(states: [KeyDragState(key: key),
+											  KeyWaitState(key: key)])
+		machine.enter(KeyWaitState.self)
+		return machine
+	}
+	
+	private lazy var publicKeyStateMachine: GKStateMachine = IntroScene.introKeyMachine(forKey: self.publicKeyNode)
+	private lazy var privateKeyStateMachine: GKStateMachine = IntroScene.introKeyMachine(forKey: self.privateKeyNode)
+	
 	// MARK: Tracking Variables
-	var currentlyAnimating = false
-	var currentlySelectedLabel:String?
-	var currentlyRepeatingNodes = [SKNode]()
+	private var currentlyAnimating = false
+	private var currentlySelectedLabel:String?
+	private var currentlyRepeatingNodes = [SKNode]()
 	
 	// MARK: - Methods
 	
@@ -194,6 +209,7 @@ public final class IntroScene: RSAScene {
 	}
 	
 	// MARK: Methods
+	
 	
 	override public func touchDown(atPoint point: CGPoint) {
 		// call the implementation in RSAScene

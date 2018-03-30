@@ -15,7 +15,7 @@ public final class ChainSprite: SKNode {
 	public let attachedElement:SKSpriteNode
 	private var chainLinks = [SKSpriteNode]()
 	
-	public init(attachmentPoint:CGPoint, attachedElement:SKSpriteNode, length:Int) {
+	required public init(attachmentPoint:CGPoint, attachedElement:SKSpriteNode, length:Int) {
 		self.attachmentPoint = attachmentPoint
 		self.attachedElement = attachedElement
 		super.init()
