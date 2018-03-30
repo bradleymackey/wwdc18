@@ -8,7 +8,7 @@
 
 /*
 PEOPLE SOUNDS:
-https://freesound.org/people/marcello777/
+https://freesound.org/people/marcello777
 https://freesound.org/people/AderuMoro
 */
 
@@ -195,8 +195,6 @@ public final class InteractiveScene: RSAScene  {
     
     /// the character that is currently in range of the message
     private weak var characterInRange:CharacterSprite?
-    /// whether the box animation is currently taking place
-    private var currentlyAnimating = false
 	/// the label that says whos message this was before it gets locked
 	private var previousLockedMessage:String?
 	/// keeps track of if no characters are currently focused (for efficiency)
@@ -268,24 +266,16 @@ public final class InteractiveScene: RSAScene  {
         let node = self.atPoint(point)
         // ensure that the node has a name
         guard let nodeName = node.name else { return }
-        switch (nodeName) {
-        case "alicePublicKeyNode":
-			self.alicePublicKeyNode.stateMachine.enter(KeyDragState.self)
-            self.alicePublicKeyNode.startMoving(initialPoint: point)
-        case "alicePrivateKeyNode":
-			self.alicePrivateKeyNode.stateMachine.enter(KeyDragState.self)
-            self.alicePrivateKeyNode.startMoving(initialPoint: point)
-        case "bobPublicKeyNode":
-			self.bobPublicKeyNode.stateMachine.enter(KeyDragState.self)
-            self.bobPublicKeyNode.startMoving(initialPoint: point)
-        case "bobPrivateKeyNode":
-			self.bobPrivateKeyNode.stateMachine.enter(KeyDragState.self)
-            self.bobPrivateKeyNode.startMoving(initialPoint: point)
-        case "messageNode":
-            self.messageNode.startMoving(initialPoint: point)
-        default:
-            return
-        }
+		// start moving message node
+		if nodeName == "messageNode" {
+			self.messageNode.startMoving(initialPoint: point)
+		}
+		// start moving the key node once we set the start point
+		if nodeName.contains("KeyNode") {
+			guard let keyNode = node as? KeySprite else { return }
+			keyNode.stateMachine.state(forClass: KeyDragState.self)?.startMovingPoint = point
+			keyNode.stateMachine.enter(KeyDragState.self)
+		}
 	}
 	
 	override public func touchMoved(toPoint point: CGPoint) {
@@ -323,8 +313,8 @@ public final class InteractiveScene: RSAScene  {
 	}
     
     private func publicKeyContact(keyOwner: KeyOwner) {
-        guard !currentlyAnimating else { return }
-        currentlyAnimating = true
+		guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
+		sceneStateMachine.enter(SceneAnimatingState.self)
         switch (InteractiveScene.paperScene.paperState) {
         case .unencrypted:
             // mark who has encrypted this
@@ -335,7 +325,7 @@ public final class InteractiveScene: RSAScene  {
             InteractiveScene.paperScene.morphToCrypto(duration: InteractiveScene.cubeChangeTime)
             // inform that we are no longer animating after the animation when we are not using maths animations
             DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
-                self.currentlyAnimating = false
+                self.sceneStateMachine.enter(SceneWaitState.self)
             }
 			// the character success animation
             self.characterInRange?.successAnimation()
@@ -358,8 +348,8 @@ public final class InteractiveScene: RSAScene  {
     }
     
     private func privateKeyContact(keyOwner: KeyOwner) {
-        guard !currentlyAnimating else { return }
-        currentlyAnimating = true
+		guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
+		sceneStateMachine.enter(SceneAnimatingState.self)
         switch (InteractiveScene.paperScene.paperState) {
         case .unencrypted:
             // do the question mark animation
@@ -382,7 +372,7 @@ public final class InteractiveScene: RSAScene  {
             InteractiveScene.paperScene.morphToPaper(duration: InteractiveScene.cubeChangeTime)
             // inform that we are no longer animating after the animation when we are not using maths animations
             DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
-                self.currentlyAnimating = false
+                self.sceneStateMachine.enter(SceneWaitState.self)
             }
             self.characterInRange?.successAnimation()
 			// set the label above the message back to before it was encrypted
@@ -405,7 +395,7 @@ public final class InteractiveScene: RSAScene  {
             state == .encrypted ? InteractiveScene.paperScene.morphToCrypto(duration: InteractiveScene.invalidPulseTime) : InteractiveScene.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
         }
         let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-            self.currentlyAnimating = false
+            self.sceneStateMachine.enter(SceneWaitState.self)
         }
         let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
         self.messageNode.run(invalidContactSequence)

@@ -17,6 +17,9 @@ public final class KeyDragState: KeyState {
 		// if we were previously waiting, play the key pickup sound
 		if let state = previousState, state.isKind(of: KeyWaitState.self) {
 			self.key.removeAllActions()
+			if let movingPoint = self.startMovingPoint {
+				self.key.startMoving(initialPoint: movingPoint)
+			}
 			self.key.run(KeyState.pickupKeySound, withKey: "pickupKeySound")
 		}
 	}

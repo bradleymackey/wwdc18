@@ -40,14 +40,6 @@ public final class IntroScene: RSAScene {
 	
 	// MARK: State
 	
-	/// keeps track of the scene's current state
-	private lazy var sceneStateMachine: GKStateMachine = {
-		let machine = GKStateMachine(states: [SceneWaitState(),
-											  SceneAnimatingState()])
-		machine.enter(SceneWaitState.self)
-		return machine
-	}()
-	
 	// MARK: Delegate
 	/// for delegating an information message for a UIView to present
 	public weak var informationDelegate:IntroSceneInformationDelegate?
@@ -255,17 +247,16 @@ public final class IntroScene: RSAScene {
 			self.currentlySelectedLabel = nodeName
 			return
 		}
-		switch (nodeName) {
-		case "publicKeyNode":
-			self.publicKeyNode.stateMachine.enter(KeyDragState.self)
-			self.publicKeyNode.startMoving(initialPoint: point)
-		case "privateKeyNode":
-			self.privateKeyNode.stateMachine.enter(KeyDragState.self)
-			self.privateKeyNode.startMoving(initialPoint: point)
-		case "messageNode":
+		// start rotating the cube/message
+		guard nodeName != "messageNode" else {
 			self.messageNode.startRotating(at: point)
-		default:
 			return
+		}
+		// start moving the key node
+		if nodeName.contains("KeyNode") {
+			guard let keyNode = node as? KeySprite else { return }
+			keyNode.stateMachine.state(forClass: KeyDragState.self)?.startMovingPoint = point
+			keyNode.stateMachine.enter(KeyDragState.self)
 		}
 	}
 	

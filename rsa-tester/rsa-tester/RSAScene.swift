@@ -8,11 +8,20 @@
 
 import Foundation
 import SpriteKit
+import GameplayKit
 
 /// a scene that implements shared functionality between the intro scene and interactive scene
 public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	
 	// MARK: - Properties
+	
+	/// keeps track of the scene's current state
+	public lazy var sceneStateMachine: GKStateMachine = {
+		let machine = GKStateMachine(states: [SceneWaitState(),
+											  SceneAnimatingState()])
+		machine.enter(SceneWaitState.self)
+		return machine
+	}()
 	
 	/// tracks the location of a finger, can be useful for subclasses
 	public var currentFingerPosition:CGPoint?
