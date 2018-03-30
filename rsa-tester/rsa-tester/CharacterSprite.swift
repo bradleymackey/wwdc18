@@ -44,6 +44,7 @@ public final class CharacterSprite: SKLabelNode {
 	/// the states that a character can be in
 	public var characterStates:[CharacterState] {
 		return [CharacterWaitingState(character: self, text: self.waiting),
+				CharacterWaitingInactiveState(character: self, text: self.waiting),
 				CharacterFailState(character: self, text: self.fail),
 				CharacterSuccessState(character: self, text: self.success),
 				CharacterInRangeState(character: self, text: self.inRange)]
@@ -71,7 +72,7 @@ public final class CharacterSprite: SKLabelNode {
 	// MARK: - Methods
     
     private func setup() {
-        self.text = self.waiting // we are initially waiting
+        self.stateMachine.enter(CharacterWaitingState.self) // we are initially waiting
         self.setupLabelProperties()
         self.physicsBody = CharacterSprite.physicsBody(ofRadius: self.frame.size.width/2)
         self.addNameAboveCharacter()
@@ -106,27 +107,27 @@ public final class CharacterSprite: SKLabelNode {
 		self.verticalAlignmentMode = .center
 	}
 	
-	private func changeAnimationIfIdle(brieflyTo text:String) {
+	private func changeAnimationIfIdle(brieflyTo state: AnyClass) {
 		// only perform animation if we are not currently animating
 		// only perform animation if we are in the 'inRange' state
-		guard !self.hasActions(), self.text == self.inRange else { return }
+		guard !self.hasActions(), let currentState = stateMachine.currentState, currentState.isKind(of: CharacterInRangeState.self) else { return }
 		let change = SKAction.customAction(withDuration: 0) { (_, _) in
-			self.text = text
+			self.stateMachine.enter(state.self)
 		}
 		let wait = SKAction.wait(forDuration: CharacterSprite.changeAnimationPauseTime)
 		let changeToInRange = SKAction.customAction(withDuration: 0) { (_, _) in
-			self.text = self.inRange
+			self.stateMachine.enter(CharacterInRangeState.self)
 		}
 		let sequence = SKAction.sequence([change,wait,changeToInRange])
 		self.run(sequence)
 	}
     
     public func successAnimation() {
-        self.changeAnimationIfIdle(brieflyTo: self.success)
+        self.changeAnimationIfIdle(brieflyTo: CharacterSuccessState.self)
     }
     
     public func failAnimation() {
-        self.changeAnimationIfIdle(brieflyTo: self.fail)
+        self.changeAnimationIfIdle(brieflyTo: CharacterFailState.self)
     }
 	
 }

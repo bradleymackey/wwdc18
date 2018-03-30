@@ -8,6 +8,7 @@
 
 import Foundation
 import GameplayKit
+import SpriteKit
 
 /// the base class for the possible states that a character can be in
 public class CharacterState: GKState {

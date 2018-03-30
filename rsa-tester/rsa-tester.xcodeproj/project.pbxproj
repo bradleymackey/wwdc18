@@ -57,6 +57,7 @@
 		97F5C373206EB9280091E7BA /* CharacterInRangeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C372206EB9280091E7BA /* CharacterInRangeState.swift */; };
 		97F5C375206EB9C40091E7BA /* CharacterSuccessState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C374206EB9C40091E7BA /* CharacterSuccessState.swift */; };
 		97F5C377206EBA040091E7BA /* CharacterFailState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C376206EBA040091E7BA /* CharacterFailState.swift */; };
+		97F5C37A206EF5070091E7BA /* CharacterWaitingInactiveState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C379206EF5070091E7BA /* CharacterWaitingInactiveState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,6 +134,7 @@
 		97F5C372206EB9280091E7BA /* CharacterInRangeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterInRangeState.swift; sourceTree = "<group>"; };
 		97F5C374206EB9C40091E7BA /* CharacterSuccessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSuccessState.swift; sourceTree = "<group>"; };
 		97F5C376206EBA040091E7BA /* CharacterFailState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterFailState.swift; sourceTree = "<group>"; };
+		97F5C379206EF5070091E7BA /* CharacterWaitingInactiveState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterWaitingInactiveState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -271,6 +273,7 @@
 			children = (
 				97F5C36E206EB6800091E7BA /* CharacterState.swift */,
 				97F5C370206EB8020091E7BA /* CharacterWaitingState.swift */,
+				97F5C379206EF5070091E7BA /* CharacterWaitingInactiveState.swift */,
 				97F5C372206EB9280091E7BA /* CharacterInRangeState.swift */,
 				97F5C374206EB9C40091E7BA /* CharacterSuccessState.swift */,
 				97F5C376206EBA040091E7BA /* CharacterFailState.swift */,
@@ -436,6 +439,7 @@
 				9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */,
 				97F5C377206EBA040091E7BA /* CharacterFailState.swift in Sources */,
 				97F5C373206EB9280091E7BA /* CharacterInRangeState.swift in Sources */,
+				97F5C37A206EF5070091E7BA /* CharacterWaitingInactiveState.swift in Sources */,
 				972FE96120619BA800AF243D /* Message3DScene.swift in Sources */,
 				972FE92D20619AF800AF243D /* GameScene.swift in Sources */,
 				97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */,

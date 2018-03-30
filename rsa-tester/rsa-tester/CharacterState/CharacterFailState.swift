@@ -8,11 +8,12 @@
 
 import Foundation
 import GameplayKit
+import SpriteKit
 
 public final class CharacterFailState: CharacterState {
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
 		switch stateClass {
-		case is CharacterInRangeState.Type, is CharacterWaitingState.Type:
+		case is CharacterInRangeState.Type, is CharacterWaitingState.Type, is CharacterWaitingInactiveState.Type:
 			return true
 		default:
 			return false

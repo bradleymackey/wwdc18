@@ -42,15 +42,11 @@ public final class InteractiveScene: RSAScene  {
 	// MARK: Instance Variables
 	
 	public static var paperScene = Message3DScene(message: InteractiveScene.aliceMessage)
-	
-	private lazy var aliceSound = SKAction.playSoundFileNamed("hellolady1.caf", waitForCompletion: false)
-	private lazy var bobSound = SKAction.playSoundFileNamed("helloman.caf", waitForCompletion: false)
-	private lazy var eveSound = SKAction.playSoundFileNamed("hellolady2.caf", waitForCompletion: false)
+
 	private lazy var encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
 	private lazy var decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
 	private lazy var failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
 
-    
     /// for fading items up that come into focus
     private let fadeUp:SKAction = {
         let action = SKAction.fadeAlpha(to: 1, duration: InteractiveScene.fadeTime)
@@ -476,29 +472,22 @@ public final class InteractiveScene: RSAScene  {
         case .alice:
             self.focus(character: aliceCharacter, defocus: [bobCharacter, eveCharacter])
             self.focus(keys: [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode], defocus: [bobPrivateKeyNode])
-			aliceCharacter.run(aliceSound)
         case .bob:
             self.focus(character: bobCharacter, defocus: [aliceCharacter, eveCharacter])
             self.focus(keys: [alicePublicKeyNode, bobPrivateKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode])
-			bobCharacter.run(bobSound)
         case .eve:
             self.focus(character: eveCharacter, defocus: [aliceCharacter, bobCharacter])
             self.focus(keys: [alicePublicKeyNode, bobPublicKeyNode], defocus: [alicePrivateKeyNode, bobPrivateKeyNode])
-			eveCharacter.run(eveSound)
         }
     }
     
     private func focus(character:CharacterSprite, defocus:[CharacterSprite]) {
 		self.noCharactersFocused = false // we are now focused on a character
         self.characterInRange = character
-        character.currentState = .inRange
+        character.stateMachine.enter(CharacterInRangeState.self)
         character.run(fadeUp)
         for other in defocus {
-			other.removeAllActions() // remove actions so we don't accidently go back to inrange
-            if other.currentState != .waiting {
-                other.currentState = .waiting
-            }
-            other.run(fadeDown)
+			other.stateMachine.enter(CharacterWaitingInactiveState.self)
         }
     }
     
@@ -506,7 +495,7 @@ public final class InteractiveScene: RSAScene  {
 		self.noKeysFocused = false // we are now focused on a certain key
         for key in keys {
 			key.stateMachine.enter(KeyWaitState.self)
-            self.removeKeyFromCage(key: key)
+            self.removeKeyFromCageIfNeeded(key: key)
         }
         for key in defocus {
 			key.stateMachine.enter(KeyInactiveState.self)
@@ -522,11 +511,7 @@ public final class InteractiveScene: RSAScene  {
         self.characterInRange = nil
         // no characters in range, set all waiting with full alpha
         for character in allCharacters {
-			character.removeAllActions() // remove actions so we don't accidently go back to inrange
-            if character.currentState != .waiting {
-                character.currentState = .waiting
-            }
-            character.run(fadeUp)
+			character.stateMachine.enter(CharacterWaitingState.self)
         }
     }
     
@@ -567,7 +552,7 @@ public final class InteractiveScene: RSAScene  {
         key.run(moveSequence, withKey: "puttingInCage")
     }
     
-    private func removeKeyFromCage(key:KeySprite) {
+    private func removeKeyFromCageIfNeeded(key:KeySprite) {
         guard let _ = key.insideCage else { return }
         key.insideCage = nil
         key.animationInCage = false
