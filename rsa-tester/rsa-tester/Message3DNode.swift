@@ -61,7 +61,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	private class func physicsBody(frame: CGRect) -> SKPhysicsBody {
 		let body = SKPhysicsBody(circleOfRadius: frame.width/2)
 		body.categoryBitMask = PhysicsCategory.box
-		body.contactTestBitMask = PhysicsCategory.keys | PhysicsCategory.character
+		body.contactTestBitMask = PhysicsCategory.keys
 		body.collisionBitMask = PhysicsCategory.box | PhysicsCategory.boundry | PhysicsCategory.character
 		body.affectedByGravity = false
 		body.allowsRotation = false // we do not allow rotation, otherwise we will get nosense looking things

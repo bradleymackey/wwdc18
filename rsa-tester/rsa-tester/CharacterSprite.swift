@@ -104,6 +104,7 @@ public final class CharacterSprite: SKLabelNode {
         body.contactTestBitMask = PhysicsCategory.none
         body.collisionBitMask = PhysicsCategory.all ^ PhysicsCategory.boundry // collide with all but boundry
         body.allowsRotation = false
+		body.isDynamic = false
         body.pinned = true // the character is fixed to the canvas
         return body
 	}

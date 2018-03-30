@@ -52,7 +52,7 @@ public final class ChainSprite: SKNode {
         return link
     }
 	
-    public func addChainElementsToScene(forScene enclosingScene:SKScene) {
+    public func addChainElementsToScene(_ enclosingScene:SKScene) {
         
         // add them to the scene
 		for item in chainLinks {

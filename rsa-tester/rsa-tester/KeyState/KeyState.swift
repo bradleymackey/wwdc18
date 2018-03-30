@@ -34,17 +34,5 @@ public class KeyState: GKState {
 	required public init(key: KeySprite) {
 		self.key = key
 	}
-	
-	// MARK: - Methods
-	
-	public func fadeKeyDown(to alpha:CGFloat, time:TimeInterval) {
-		let fadeDown = SKAction.fadeAlpha(to: alpha, duration: time)
-		key.run(fadeDown, withKey: "fadeDown")
-	}
-	
-	public func fadeKeyUp(time:TimeInterval) {
-		let fadeUp = SKAction.fadeIn(withDuration: time)
-		key.run(fadeUp, withKey: "fadeUp")
-	}
-	
+
 }
