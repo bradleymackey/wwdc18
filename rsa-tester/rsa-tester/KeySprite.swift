@@ -12,13 +12,9 @@ import SpriteKit
 
 public final class KeySprite: SKSpriteNode, MoveableSprite {
 	
+	
 	// MARK: Properties
 	
-	private lazy var pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
-	private lazy var dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
-	
-	/// whether the user is dragging this key around or not
-	public var isBeingMoved = false
 	/// the previous point that the key was at
 	public var lastPoint:CGPoint?
 	
@@ -111,26 +107,20 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 	}
 	
 	public func startMoving(initialPoint:CGPoint) {
-		self.isBeingMoved = true
 		self.removeAllActions()
 		let moveAnimation = SKAction.move(to: initialPoint, duration: 0.04)
 		self.run(moveAnimation)
 		self.physicsBody?.affectedByGravity = false
 		self.lastPoint = initialPoint
-		// play the pickup sound
-		self.run(pickupKeySound)
 	}
 	
-	public func updatePositionIfNeeded(to point: CGPoint) {
-		guard isBeingMoved else { return }
+	public func updatePosition(to point: CGPoint) {
 		let moveAnimation = SKAction.move(to: point, duration: 0.02)
 		self.run(moveAnimation)
 		self.lastPoint = point
 	}
 	
 	public func stopMoving(at lastPoint:CGPoint) {
-		defer { self.isBeingMoved = false }
-		guard isBeingMoved else { return }
 		self.removeAllActions()
 		self.physicsBody?.affectedByGravity = true
 		guard let previousPoint = self.lastPoint else { return }
@@ -142,10 +132,6 @@ public final class KeySprite: SKSpriteNode, MoveableSprite {
 		// fling the key based on the last 2 movement points
 		let fling = SKAction.applyImpulse(vec, duration: 0.005)
 		self.run(fling)
-		// play the drop sound
-		self.run(dropKeySound)
 	}
     
-  
-	
 }

@@ -13,14 +13,21 @@ import GameplayKit
 /// possible states that a key can be in
 public class KeyState: GKState {
 	
+	// MARK: - Statics
+	
+	public lazy var pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: true)
+	public lazy var dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: true)
+	
 	// MARK: - Properties
 	
 	public let key: KeySprite
+	public let cage: CageSprite?
 	
 	// MARK: - Lifecycle
 	
-	required init(key: KeySprite) {
+	required public init(key: KeySprite, associatedCage cage:CageSprite?) {
 		self.key = key
+		self.cage = cage
 	}
 	
 	// MARK: - Methods

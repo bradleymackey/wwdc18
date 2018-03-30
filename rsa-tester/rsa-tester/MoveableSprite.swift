@@ -12,6 +12,6 @@ import SpriteKit
 /// indicates that a sprite can be moved by dragging it
 public protocol MoveableSprite {
     func startMoving(initialPoint:CGPoint)
-    func updatePositionIfNeeded(to point: CGPoint)
+    func updatePosition(to point: CGPoint)
     func stopMoving(at lastPoint:CGPoint)
 }

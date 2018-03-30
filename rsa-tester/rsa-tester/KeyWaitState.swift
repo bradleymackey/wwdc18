@@ -13,6 +13,12 @@ public final class KeyWaitState: KeyState {
 	
 	public override func didEnter(from previousState: GKState?) {
 		super.didEnter(from: previousState)
+		// if we were previously dragging, play the drop sound
+		if let state = previousState, state.isKind(of: KeyDragState.self) {
+			self.key.run(self.dropKeySound, withKey: "dropKeySound")
+			let shrink = SKAction.scale(to: 0.2, duration: 0.2)
+			self.key.run(shrink)
+		}
 	}
 	
 	public override func willExit(to nextState: GKState) {
@@ -28,6 +34,5 @@ public final class KeyWaitState: KeyState {
 			return false
 		}
 	}
-	
 	
 }

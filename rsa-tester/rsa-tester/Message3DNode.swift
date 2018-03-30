@@ -115,7 +115,7 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
         self.run(moveAnimation)
     }
     
-    public func updatePositionIfNeeded(to point: CGPoint) {
+    public func updatePosition(to point: CGPoint) {
         guard isBeingMoved else { return }
         let moveAnimation = SKAction.move(to: point, duration: 0.02)
         self.run(moveAnimation)

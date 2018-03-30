@@ -286,22 +286,22 @@ public final class InteractiveScene: RSAScene  {
         // we only care about contact when the second item is the box
         guard secondBody.categoryBitMask == PhysicsCategory.box else { return }
         // determine which item collided with the box
-        switch firstBody.categoryBitMask {
-        case PhysicsCategory.publicKeyA:
-			guard alicePublicKeyNode.isBeingMoved else { return }
-			self.publicKeyContact(keyOwner: .alice)
-        case PhysicsCategory.privateKeyA:
-			guard alicePrivateKeyNode.isBeingMoved else { return }
-            self.privateKeyContact(keyOwner: .alice)
-        case PhysicsCategory.publicKeyB:
-			guard bobPublicKeyNode.isBeingMoved else { return }
-            self.publicKeyContact(keyOwner: .bob)
-        case PhysicsCategory.privateKeyB:
-			guard bobPrivateKeyNode.isBeingMoved else { return }
-            self.privateKeyContact(keyOwner: .bob)
-        default:
-            return
-        }
+//        switch firstBody.categoryBitMask {
+//        case PhysicsCategory.publicKeyA:
+//			guard alicePublicKeyNode.isBeingMoved else { return }
+//			self.publicKeyContact(keyOwner: .alice)
+//        case PhysicsCategory.privateKeyA:
+//			guard alicePrivateKeyNode.isBeingMoved else { return }
+//            self.privateKeyContact(keyOwner: .alice)
+//        case PhysicsCategory.publicKeyB:
+//			guard bobPublicKeyNode.isBeingMoved else { return }
+//            self.publicKeyContact(keyOwner: .bob)
+//        case PhysicsCategory.privateKeyB:
+//			guard bobPrivateKeyNode.isBeingMoved else { return }
+//            self.privateKeyContact(keyOwner: .bob)
+//        default:
+//            return
+//        }
 	}
     
     private func publicKeyContact(keyOwner: KeyOwner) {
@@ -417,7 +417,7 @@ public final class InteractiveScene: RSAScene  {
             }
         } else {
             for movable in allMoveable {
-                movable.updatePositionIfNeeded(to: point)
+                movable.updatePosition(to: point)
             }
         }
     }

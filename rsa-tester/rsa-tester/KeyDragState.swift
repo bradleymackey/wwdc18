@@ -13,6 +13,10 @@ public final class KeyDragState: KeyState {
 	
 	public override func didEnter(from previousState: GKState?) {
 		super.didEnter(from: previousState)
+		// if we were previously waiting, play the key pickup sound
+		if let state = previousState, state.isKind(of: KeyWaitState.self) {
+			self.key.run(self.pickupKeySound, withKey: "pickupKeySound")
+		}
 	}
 	
 	public override func willExit(to nextState: GKState) {

@@ -154,8 +154,8 @@ public final class IntroScene: RSAScene {
 	
 	/// bolier-plate for intro scene key machine
 	private class func introKeyMachine(forKey key:KeySprite) -> GKStateMachine {
-		let machine = GKStateMachine(states: [KeyDragState(key: key),
-											  KeyWaitState(key: key)])
+		let machine = GKStateMachine(states: [KeyDragState(key: key, associatedCage: nil),
+											  KeyWaitState(key: key, associatedCage: nil)])
 		machine.enter(KeyWaitState.self)
 		return machine
 	}
@@ -225,8 +225,10 @@ public final class IntroScene: RSAScene {
 		}
 		switch (nodeName) {
 		case "publicKeyNode":
+			self.publicKeyStateMachine.enter(KeyDragState.self)
 			self.publicKeyNode.startMoving(initialPoint: point)
 		case "privateKeyNode":
+			self.privateKeyStateMachine.enter(KeyDragState.self)
 			self.privateKeyNode.startMoving(initialPoint: point)
 		case "messageNode":
 			self.messageNode.startRotating(at: point)
@@ -256,8 +258,14 @@ public final class IntroScene: RSAScene {
 			self.showInfoPanel(forLabel: labelSelected)
 		}
 		// stop moving keys if they were being moved
-		self.privateKeyNode.stopMoving(at: point)
-		self.publicKeyNode.stopMoving(at: point)
+		if let state = publicKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+			self.publicKeyStateMachine.enter(KeyWaitState.self)
+			self.publicKeyNode.stopMoving(at: point)
+		}
+		if let state = privateKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+			self.privateKeyStateMachine.enter(KeyWaitState.self)
+			self.privateKeyNode.stopMoving(at: point)
+		}
 		// stop the cube rotation
 		self.messageNode.endRotation()
 	}
@@ -269,10 +277,10 @@ public final class IntroScene: RSAScene {
         // determine the first body
         switch firstBody.categoryBitMask {
         case PhysicsCategory.publicKeyA:
-			guard publicKeyNode.isBeingMoved else { return }
+			guard let state = publicKeyStateMachine.currentState, state === KeyDragState.self else { return }
             self.publicKeyContact()
         case PhysicsCategory.privateKeyA:
-			guard privateKeyNode.isBeingMoved else { return }
+			guard let state = privateKeyStateMachine.currentState, state === KeyDragState.self else { return }
             self.privateKeyContact()
         default:
             return
@@ -477,11 +485,21 @@ public final class IntroScene: RSAScene {
         let margin:CGFloat = 10
         if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
             // stop moving keys if the touch is outside the margin
-            self.privateKeyNode.stopMoving(at: point)
-            self.publicKeyNode.stopMoving(at: point)
+			if let state = publicKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+				self.publicKeyStateMachine.enter(KeyWaitState.self)
+				self.publicKeyNode.stopMoving(at: point)
+			}
+			if let state = privateKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+				self.privateKeyStateMachine.enter(KeyWaitState.self)
+				self.privateKeyNode.stopMoving(at: point)
+			}
         } else {
-            self.publicKeyNode.updatePositionIfNeeded(to: point)
-            self.privateKeyNode.updatePositionIfNeeded(to: point)
+			if let state = publicKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+				 self.publicKeyNode.updatePosition(to: point)
+			}
+			if let state = privateKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+				self.privateKeyNode.updatePosition(to: point)
+			}
         }
 	}
 	
