@@ -129,24 +129,28 @@ public final class InteractiveScene: RSAScene  {
     private lazy var alicePublicLabel:SKLabelNode = {
         let label = InteractiveScene.keyLabel(text: "Alice")
         self.updatePosition(forNode: label, aboveNode: alicePublicKeyNode)
+		self.alicePublicKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
     
     private lazy var alicePrivateLabel:SKLabelNode = {
         let label = InteractiveScene.keyLabel(text: "Alice")
         self.updatePosition(forNode: label, aboveNode: alicePrivateKeyNode)
+		self.alicePrivateKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
     
     private lazy var bobPublicLabel:SKLabelNode = {
         let label = InteractiveScene.keyLabel(text: "Bob")
 		self.updatePosition(forNode: label, aboveNode: bobPublicKeyNode)
+		self.bobPublicKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
     
     private lazy var bobPrivateLabel:SKLabelNode = {
         let label = InteractiveScene.keyLabel(text: "Bob")
 		self.updatePosition(forNode: label, aboveNode: bobPrivateKeyNode)
+		self.bobPrivateKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
 	
@@ -503,22 +507,12 @@ public final class InteractiveScene: RSAScene  {
     private func focus(keys:[KeySprite], defocus:[KeySprite]) {
 		self.noKeysFocused = false // we are now focused on a certain key
         for key in keys {
-            key.run(fadeUp)
-            if let label = keyToKeyLabel[key] {
-                label.run(fadeUp)
-            }
 			key.stateMachine.enter(KeyWaitState.self)
             self.removeKeyFromCage(key: key)
-            key.isUserInteractionEnabled = false
         }
         for key in defocus {
-            key.run(fadeDown)
-            if let label = keyToKeyLabel[key] {
-                label.run(fadeDown)
-            }
 			key.stateMachine.enter(KeyInactiveState.self)
             self.putKeyInsideCorrectCageIfNeeded(key: key)
-            key.isUserInteractionEnabled = true
         }
     }
     
@@ -543,11 +537,8 @@ public final class InteractiveScene: RSAScene  {
 		guard !self.noKeysFocused else { return }
 		self.noKeysFocused = true
 		// defocus all the keys if we need to
-        for (key,keyLabel) in keyToKeyLabel {
-            key.run(fadeDown)
-            keyLabel.run(fadeDown)
+        for key in allKeys {
 			key.stateMachine.enter(KeyInactiveState.self)
-            key.isUserInteractionEnabled = true
             // put the private keys in a cage
             self.putKeyInsideCorrectCageIfNeeded(key: key)
         }
