@@ -40,7 +40,7 @@ public final class IntroScene: RSAScene {
 	
 	// MARK: State
 	
-	/// keeps track of the scene's current states
+	/// keeps track of the scene's current state
 	private lazy var sceneStateMachine: GKStateMachine = {
 		let machine = GKStateMachine(states: [SceneWaitState(),
 											  SceneAnimatingState()])
@@ -290,7 +290,7 @@ public final class IntroScene: RSAScene {
     
     private func publicKeyContact() {
         // do nothing if we are currently animating
-		guard sceneStateMachine.canEnterState(SceneAnimatingState.self) else { return }
+		guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
 		sceneStateMachine.enter(SceneAnimatingState.self)
         switch (IntroScene.paperScene.paperState) {
         case .unencrypted:
@@ -318,7 +318,7 @@ public final class IntroScene: RSAScene {
     
     private func privateKeyContact() {
         // do nothing if we are currently animating
-        guard sceneStateMachine.canEnterState(SceneAnimatingState.self) else { return }
+        guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
         sceneStateMachine.enter(SceneAnimatingState.self)
         switch (IntroScene.paperScene.paperState) {
         case .unencrypted:
@@ -508,10 +508,10 @@ public final class IntroScene: RSAScene {
 			}
 		}
 		// enter both keys into the waiting state if applicable
-		if publicKeyNode.stateMachine.canEnterState(KeyDragState.self) {
+		if let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
 			self.publicKeyNode.stateMachine.enter(KeyWaitState.self)
 		}
-		if privateKeyNode.stateMachine.canEnterState(KeyDragState.self) {
+		if let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
 			self.privateKeyNode.stateMachine.enter(KeyWaitState.self)
 		}
 	}
