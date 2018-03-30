@@ -26,7 +26,7 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = true
+	public static var useRealValues = false
 	
 	public static var message = 3
 	
@@ -172,6 +172,14 @@ public final class IntroScene: RSAScene {
 		return node
 	}()
 	
+	/// simple non-interactive label that prompts the user to rotate the 3D message
+	private lazy var dragToRotateLabel:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "Drag to rotate", fontSize: 12, color: .gray, bold: false)
+		label.name = "dragToRotate"
+		label.position = CGPoint(x: self.size.width/2, y: messageNode.position.y-110)
+		return label
+	}()
+	
 	// MARK: State Machines
 	
 	/// bolier-plate for intro scene key machine
@@ -204,6 +212,7 @@ public final class IntroScene: RSAScene {
 
 	private func addMessageSceneNode() {
 		self.addChild(messageNode)
+		self.addChild(dragToRotateLabel)
 	}
 	
 	private func addKeySprites() {
