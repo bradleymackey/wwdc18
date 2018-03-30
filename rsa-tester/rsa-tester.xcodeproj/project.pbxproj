@@ -50,6 +50,9 @@
 		97A89AAB2068272900DF4B59 /* encrypt.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89AA92068272800DF4B59 /* encrypt.caf */; };
 		97A89AAD206828F400DF4B59 /* fail.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89AAC206828F400DF4B59 /* fail.caf */; };
 		97A89AAF2068EDD900DF4B59 /* ChainSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */; };
+		97F5C367206E88810091E7BA /* SceneState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C366206E88810091E7BA /* SceneState.swift */; };
+		97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C368206E889A0091E7BA /* SceneWaitState.swift */; };
+		97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +122,9 @@
 		97A89AA92068272800DF4B59 /* encrypt.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = encrypt.caf; sourceTree = "<group>"; };
 		97A89AAC206828F400DF4B59 /* fail.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fail.caf; sourceTree = "<group>"; };
 		97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainSprite.swift; sourceTree = "<group>"; };
+		97F5C366206E88810091E7BA /* SceneState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneState.swift; sourceTree = "<group>"; };
+		97F5C368206E889A0091E7BA /* SceneWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneWaitState.swift; sourceTree = "<group>"; };
+		97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAnimatingState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,11 +194,8 @@
 				97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */,
 				978DA807206C42AA0071A162 /* CageSprite.swift */,
 				976328872062884D000C9EAC /* RSAEncryptor.swift */,
-				9748EFDE206E5E2F00FB3780 /* KeyState.swift */,
-				9748EFE0206E61BB00FB3780 /* KeyDragState.swift */,
-				9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */,
-				9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */,
-				9748EFE6206E629A00FB3780 /* KeyCagedState.swift */,
+				97F5C36C206E88AE0091E7BA /* KeyState */,
+				97F5C36D206E88BA0091E7BA /* SceneState */,
 				972FE96C20619E2B00AF243D /* key.png */,
 				972FE96A20619E2B00AF243D /* key@2x.png */,
 				972FE96B20619E2B00AF243D /* key@3x.png */,
@@ -231,6 +234,28 @@
 				972FE94E20619AF800AF243D /* Info.plist */,
 			);
 			path = "rsa-testerUITests";
+			sourceTree = "<group>";
+		};
+		97F5C36C206E88AE0091E7BA /* KeyState */ = {
+			isa = PBXGroup;
+			children = (
+				9748EFDE206E5E2F00FB3780 /* KeyState.swift */,
+				9748EFE0206E61BB00FB3780 /* KeyDragState.swift */,
+				9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */,
+				9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */,
+				9748EFE6206E629A00FB3780 /* KeyCagedState.swift */,
+			);
+			path = KeyState;
+			sourceTree = "<group>";
+		};
+		97F5C36D206E88BA0091E7BA /* SceneState */ = {
+			isa = PBXGroup;
+			children = (
+				97F5C366206E88810091E7BA /* SceneState.swift */,
+				97F5C368206E889A0091E7BA /* SceneWaitState.swift */,
+				97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */,
+			);
+			path = SceneState;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -386,15 +411,18 @@
 				972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */,
 				972FE95D20619B7000AF243D /* KeySprite.swift in Sources */,
 				972FE96320619BBE00AF243D /* PhysicsCategory.swift in Sources */,
+				97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */,
 				972FE9732064459100AF243D /* RSAScene.swift in Sources */,
 				9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */,
 				972FE96120619BA800AF243D /* Message3DScene.swift in Sources */,
 				972FE92D20619AF800AF243D /* GameScene.swift in Sources */,
+				97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */,
 				972FE95B20619B4100AF243D /* IntroScene.swift in Sources */,
 				9748EFE5206E61F900FB3780 /* KeyInactiveState.swift in Sources */,
 				972FE92F20619AF800AF243D /* GameViewController.swift in Sources */,
 				97A89AAF2068EDD900DF4B59 /* ChainSprite.swift in Sources */,
 				9748EFDF206E5E2F00FB3780 /* KeyState.swift in Sources */,
+				97F5C367206E88810091E7BA /* SceneState.swift in Sources */,
 				972FE95F20619B9500AF243D /* Message3DNode.swift in Sources */,
 				9748EFE1206E61BB00FB3780 /* KeyDragState.swift in Sources */,
 				973B536A2066C325001366A0 /* KeyType.swift in Sources */,

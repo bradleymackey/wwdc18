@@ -68,7 +68,7 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	/// the physics for the world
 	public func setupWorldPhysics() {
 		self.physicsWorld.contactDelegate = self
-		self.physicsWorld.gravity = CGVector(dx: 0, dy: -6)
+		self.physicsWorld.gravity = CGVector(dx: 0, dy: -8)
 		self.physicsBody = RSAScene.worldPhysicsBody(frame: self.frame)
 	}
 	

@@ -38,6 +38,16 @@ public final class IntroScene: RSAScene {
 	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
     private let clickSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
 	
+	// MARK: State
+	
+	/// keeps track of the scene's current states
+	private lazy var sceneStateMachine: GKStateMachine = {
+		let machine = GKStateMachine(states: [SceneWaitState(),
+											  SceneAnimatingState()])
+		machine.enter(SceneWaitState.self)
+		return machine
+	}()
+	
 	// MARK: Delegate
 	/// for delegating an information message for a UIView to present
 	public weak var informationDelegate:IntroSceneInformationDelegate?
@@ -163,7 +173,6 @@ public final class IntroScene: RSAScene {
 	}
 
 	// MARK: Tracking Variables
-	private var currentlyAnimating = false
 	private var currentlySelectedLabel:String?
 	private var currentlyRepeatingNodes = [SKNode]()
 	
@@ -281,8 +290,8 @@ public final class IntroScene: RSAScene {
     
     private func publicKeyContact() {
         // do nothing if we are currently animating
-        if currentlyAnimating { return }
-        currentlyAnimating = true
+		guard sceneStateMachine.canEnterState(SceneAnimatingState.self) else { return }
+		sceneStateMachine.enter(SceneAnimatingState.self)
         switch (IntroScene.paperScene.paperState) {
         case .unencrypted:
             // mark the new state
@@ -292,7 +301,7 @@ public final class IntroScene: RSAScene {
                 IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
                 // inform that we are no longer animating after the animation when we are not using maths animations
                 DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
-                    self.currentlyAnimating = false
+                    self.sceneStateMachine.enter(SceneWaitState.self)
                 }
 				// play the encrypt sound
 				self.messageNode.run(encryptSound)
@@ -309,8 +318,8 @@ public final class IntroScene: RSAScene {
     
     private func privateKeyContact() {
         // do nothing if we are currently animating
-        if currentlyAnimating { return }
-        currentlyAnimating = true
+        guard sceneStateMachine.canEnterState(SceneAnimatingState.self) else { return }
+        sceneStateMachine.enter(SceneAnimatingState.self)
         switch (IntroScene.paperScene.paperState) {
         case .unencrypted:
 			// do the question mark animation
@@ -325,7 +334,7 @@ public final class IntroScene: RSAScene {
                 IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
                 // inform that we are no longer animating after the animation when we are not using maths animations
                 DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
-                    self.currentlyAnimating = false
+                    self.sceneStateMachine.enter(SceneWaitState.self)
                 }
 				// play the decrypt sound
 				self.messageNode.run(decryptSound)
@@ -345,7 +354,8 @@ public final class IntroScene: RSAScene {
 			state == .encrypted ? IntroScene.paperScene.morphToCrypto(duration: IntroScene.invalidPulseTime) : IntroScene.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-			self.currentlyAnimating = false
+			// we are no longer animating
+			self.sceneStateMachine.enter(SceneWaitState.self)
 		}
 		let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
 		self.messageNode.run(invalidContactSequence)
@@ -414,7 +424,7 @@ public final class IntroScene: RSAScene {
 			}
         }
         let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-            self.currentlyAnimating = false
+            self.sceneStateMachine.enter(SceneWaitState.self)
 			// restart the initial maths animations
 			self.startInitialMathsAnimationsIfNeeded()
         }
@@ -498,10 +508,10 @@ public final class IntroScene: RSAScene {
 			}
 		}
 		// enter both keys into the waiting state if applicable
-		if let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+		if publicKeyNode.stateMachine.canEnterState(KeyDragState.self) {
 			self.publicKeyNode.stateMachine.enter(KeyWaitState.self)
 		}
-		if let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+		if privateKeyNode.stateMachine.canEnterState(KeyDragState.self) {
 			self.privateKeyNode.stateMachine.enter(KeyWaitState.self)
 		}
 	}
