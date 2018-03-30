@@ -483,9 +483,9 @@ public final class IntroScene: RSAScene {
         }
 		// update finger position or exit
         guard let point = currentFingerPosition else { return }
-        // ignore movement if position is outside scene
-        let margin:CGFloat = 10
-        if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
+        // ignore movement if position is outside scene (smaller margin on bottom)
+        let margin:CGFloat = 25
+        if point.x < margin || point.x > self.size.width - margin || point.y < 10 || point.y > self.size.height - margin {
             // stop moving keys if the touch is outside the margin
 			self.stopKeysMovingIfNeeded(at: point)
         } else {
