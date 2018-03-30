@@ -36,7 +36,7 @@ public final class KeyWaitState: KeyState {
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
 		// we can drag, become inactive or be caged after waiting.
 		switch stateClass {
-		case is KeyDragState.Type, is KeyInactiveState.Type, is KeyCagedState.Type:
+		case is KeyDragState.Type, is KeyInactiveState.Type:
 			return true
 		default:
 			return false

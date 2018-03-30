@@ -9,7 +9,7 @@
 import Foundation
 import GameplayKit
 
-/// - important: being inactive and being caged are mutually exclusive. The key must be one or the other, it cannot be both.
+/// key has faded out, it cannot be touched
 public final class KeyInactiveState: KeyState {
 	
 	

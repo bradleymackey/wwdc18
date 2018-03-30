@@ -20,8 +20,19 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	/// simply loads the key texture so we don't have to reload it for each key
 	public static let keyTexture = KeySprite.textureForKey()
 	
+	/// the edge margin where touches stop being detected
+	public static let edgeMargin:CGFloat = 25
+	/// an ideally smaller edge margin for the bottom, because most things rest on the bottom of the screen
+	public static let bottomEdgeMargin:CGFloat = 10
+	
 	/// the point that we initially touched at during a touch event (the touch point for the touch down event)
 	public var initialTouchPoint:CGPoint?
+	
+	/// all of the keys for the scene
+	/// - note: override in subclasses
+	public var allKeys: [KeySprite] {
+		return []
+	}
 	
 	/// whether the current touch has been deemed significant
 	/// - note: this can be used to distinguish a touch action from a drag action
@@ -43,6 +54,11 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		super.sceneDidLoad()
 		// setup the world physics
 		self.setupWorldPhysics()
+	}
+	
+	/// determines whether a point is inside our defined edge margin
+	public class func insideEdgeMargin(scene: SKScene, point:CGPoint) -> Bool {
+		return point.x < RSAScene.edgeMargin || point.x > scene.size.width - RSAScene.edgeMargin || point.y < RSAScene.bottomEdgeMargin || point.y > scene.size.height - RSAScene.edgeMargin
 	}
 	
 	/// the basic structure of a maths labels, which all labels share
@@ -149,6 +165,20 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
     /// a more friendly `didBegin(_:)` method, where first body is always of a lower bitmask value
 	public func bodyContact(firstBody:SKPhysicsBody, secondBody:SKPhysicsBody) {
 		// override in subclasses
+	}
+	
+	/// uses the gameplaykit state machines to stop the keys from moving if it needs to
+	public func stopKeysMovingIfNeeded(at point:CGPoint) {
+		for key in allKeys {
+			// set the wait state stopping point
+			if let waitState = key.stateMachine.state(forClass: KeyWaitState.self) {
+				waitState.stopMovingPoint = point
+			}
+			// enter both keys into the waiting state if applicable
+			if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+				key.stateMachine.enter(KeyWaitState.self)
+			}
+		}
 	}
 
 }

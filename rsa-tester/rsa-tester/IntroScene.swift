@@ -77,6 +77,11 @@ public final class IntroScene: RSAScene {
 		return keySprite
 	}()
 	
+	/// convenience property to get all keys
+	public override var allKeys:[KeySprite] {
+		return [publicKeyNode, privateKeyNode]
+	}
+	
 	private lazy var messageNode:Message3DNode = {
 		let sceneSize = CGSize(width: 220, height: 220)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
@@ -184,8 +189,8 @@ public final class IntroScene: RSAScene {
 	
 	/// bolier-plate for intro scene key machine
 	private class func introKeyMachine(forKey key:KeySprite) -> GKStateMachine {
-		let machine = GKStateMachine(states: [KeyDragState(key: key, associatedCage: nil),
-											  KeyWaitState(key: key, associatedCage: nil)])
+		let machine = GKStateMachine(states: [KeyDragState(key: key),
+											  KeyWaitState(key: key)])
 		machine.enter(KeyWaitState.self)
 		return machine
 	}
@@ -503,36 +508,16 @@ public final class IntroScene: RSAScene {
 		// update finger position or exit
         guard let point = currentFingerPosition else { return }
         // ignore movement if position is outside scene (smaller margin on bottom)
-        let margin:CGFloat = 25
-        if point.x < margin || point.x > self.size.width - margin || point.y < 10 || point.y > self.size.height - margin {
+        if RSAScene.insideEdgeMargin(scene: self, point: point) {
             // stop moving keys if the touch is outside the margin
 			self.stopKeysMovingIfNeeded(at: point)
         } else {
-			if let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
-				 self.publicKeyNode.updatePosition(to: point)
-			}
-			if let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
-				self.privateKeyNode.updatePosition(to: point)
+			for key in allKeys {
+				if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+					key.updatePosition(to: point)
+				}
 			}
         }
-	}
-	
-	/// uses the gameplaykit state machines to stop the keys from moving if it needs to
-	private func stopKeysMovingIfNeeded(at point:CGPoint) {
-		// set the wait state stopping point
-		for machine in [publicKeyNode.stateMachine, privateKeyNode.stateMachine] {
-			guard let m = machine else { continue }
-			if let waitState = m.state(forClass: KeyWaitState.self) {
-				waitState.stopMovingPoint = point
-			}
-		}
-		// enter both keys into the waiting state if applicable
-		if let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
-			self.publicKeyNode.stateMachine.enter(KeyWaitState.self)
-		}
-		if let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
-			self.privateKeyNode.stateMachine.enter(KeyWaitState.self)
-		}
 	}
 	
 	private func showInfoPanel(forLabel label:String) {

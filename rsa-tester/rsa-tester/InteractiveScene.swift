@@ -14,6 +14,7 @@ https://freesound.org/people/AderuMoro
 
 import Foundation
 import SpriteKit
+import GameplayKit
 
 /// the interactive scene used to display the real scenario
 /// - note: the aim of this scene is to give the user a real understanding of RSA and how it is really used
@@ -97,6 +98,7 @@ public final class InteractiveScene: RSAScene  {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 45)
 		keySprite.name = "alicePublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)-40, y: (self.size.height/5)+10)
+		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
 		return keySprite
 	}()
 	
@@ -104,6 +106,7 @@ public final class InteractiveScene: RSAScene  {
         let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`, size: 45)
 		keySprite.name = "alicePrivateKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/9, y: self.size.height/5)
+		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
 		return keySprite
 	}()
 	
@@ -111,6 +114,7 @@ public final class InteractiveScene: RSAScene  {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .`public`, size: 45)
 		keySprite.name = "bobPublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)+40, y: (self.size.height/5)+10)
+		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
 		return keySprite
 	}()
 	
@@ -118,6 +122,7 @@ public final class InteractiveScene: RSAScene  {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .`private`, size: 45)
 		keySprite.name = "bobPrivateKeyNode"
 		keySprite.position = CGPoint(x: 8*self.size.width/9, y: self.size.height/5)
+		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
 		return keySprite
 	}()
     
@@ -172,9 +177,9 @@ public final class InteractiveScene: RSAScene  {
     }()
     
     /// convenience property to get all keys
-    private lazy var allKeys:[KeySprite] = {
+    public override var allKeys:[KeySprite] {
         return [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode, bobPrivateKeyNode]
-    }()
+	}
     
     private lazy var allMoveable:[MoveableSprite] = {
         var moveable:[MoveableSprite] = allKeys
@@ -247,6 +252,16 @@ public final class InteractiveScene: RSAScene  {
         return label
     }
 	
+
+	/// machine for public key, where the key is not caged, but just made inactive
+	private class func keyMachine(key: KeySprite) -> GKStateMachine {
+		let machine = GKStateMachine(states: [KeyDragState(key: key),
+											  KeyWaitState(key: key),
+											  KeyInactiveState(key: key)])
+		machine.enter(KeyInactiveState.self)
+		return machine
+	}
+	
 	override public func touchDown(atPoint point: CGPoint) {
 		super.touchDown(atPoint: point)
         // get the node that we have just touched
@@ -255,12 +270,16 @@ public final class InteractiveScene: RSAScene  {
         guard let nodeName = node.name else { return }
         switch (nodeName) {
         case "alicePublicKeyNode":
+			self.alicePublicKeyNode.stateMachine.enter(KeyDragState.self)
             self.alicePublicKeyNode.startMoving(initialPoint: point)
         case "alicePrivateKeyNode":
+			self.alicePrivateKeyNode.stateMachine.enter(KeyDragState.self)
             self.alicePrivateKeyNode.startMoving(initialPoint: point)
         case "bobPublicKeyNode":
+			self.bobPublicKeyNode.stateMachine.enter(KeyDragState.self)
             self.bobPublicKeyNode.startMoving(initialPoint: point)
         case "bobPrivateKeyNode":
+			self.bobPrivateKeyNode.stateMachine.enter(KeyDragState.self)
             self.bobPrivateKeyNode.startMoving(initialPoint: point)
         case "messageNode":
             self.messageNode.startMoving(initialPoint: point)
@@ -276,9 +295,8 @@ public final class InteractiveScene: RSAScene  {
 	override public func touchUp(atPoint point: CGPoint) {
 		super.touchUp(atPoint: point)
 		// mark that all moveables are no longer being moved by the user
-        for moveable in allMoveable {
-            moveable.stopMoving(at: point)
-        }
+		self.stopKeysMovingIfNeeded(at: point)
+		self.messageNode.stopMoving(at: point)
 	}
 	
 	public override func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
@@ -286,22 +304,22 @@ public final class InteractiveScene: RSAScene  {
         // we only care about contact when the second item is the box
         guard secondBody.categoryBitMask == PhysicsCategory.box else { return }
         // determine which item collided with the box
-//        switch firstBody.categoryBitMask {
-//        case PhysicsCategory.publicKeyA:
-//			guard alicePublicKeyNode.isBeingMoved else { return }
-//			self.publicKeyContact(keyOwner: .alice)
-//        case PhysicsCategory.privateKeyA:
-//			guard alicePrivateKeyNode.isBeingMoved else { return }
-//            self.privateKeyContact(keyOwner: .alice)
-//        case PhysicsCategory.publicKeyB:
-//			guard bobPublicKeyNode.isBeingMoved else { return }
-//            self.publicKeyContact(keyOwner: .bob)
-//        case PhysicsCategory.privateKeyB:
-//			guard bobPrivateKeyNode.isBeingMoved else { return }
-//            self.privateKeyContact(keyOwner: .bob)
-//        default:
-//            return
-//        }
+        switch firstBody.categoryBitMask {
+        case PhysicsCategory.publicKeyA:
+			guard let state = alicePublicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) else { return }
+			self.publicKeyContact(keyOwner: .alice)
+        case PhysicsCategory.privateKeyA:
+			guard let state = alicePrivateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) else { return }
+            self.privateKeyContact(keyOwner: .alice)
+        case PhysicsCategory.publicKeyB:
+			guard let state = bobPublicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) else { return }
+            self.publicKeyContact(keyOwner: .bob)
+        case PhysicsCategory.privateKeyB:
+			guard let state = bobPrivateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) else { return }
+            self.privateKeyContact(keyOwner: .bob)
+        default:
+            return
+        }
 	}
     
     private func publicKeyContact(keyOwner: KeyOwner) {
@@ -409,19 +427,21 @@ public final class InteractiveScene: RSAScene  {
         // determine which character is in range of message
         self.determineCharacterInRangeOfMessage()
         // ignore movement if position is outside scene
-        let margin:CGFloat = 10
-        if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
+        if RSAScene.insideEdgeMargin(scene: self, point: point) {
             // stop moving keys if the touch is outside the margin
-            for moveable in allMoveable {
-                moveable.stopMoving(at: point)
-            }
+            self.stopKeysMovingIfNeeded(at: point)
+			self.messageNode.stopMoving(at: point)
         } else {
-            for movable in allMoveable {
-                movable.updatePosition(to: point)
-            }
+			for key in allKeys {
+				if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+					key.updatePosition(to: point)
+				}
+			}
+            self.messageNode.updatePosition(to: point)
         }
     }
-    
+	
+	/// updates the position of one node above another
 	private func updatePosition(forNode node:SKNode, aboveNode mainNode:SKNode, by amount:CGFloat=30.0) {
         node.position = CGPoint(x: mainNode.position.x, y: mainNode.position.y + amount)
     }
@@ -497,6 +517,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeUp)
             }
+			key.stateMachine.enter(KeyWaitState.self)
             self.removeKeyFromCage(key: key)
             key.isUserInteractionEnabled = false
         }
@@ -505,6 +526,7 @@ public final class InteractiveScene: RSAScene  {
             if let label = keyToKeyLabel[key] {
                 label.run(fadeDown)
             }
+			key.stateMachine.enter(KeyInactiveState.self)
             self.putKeyInsideCorrectCageIfNeeded(key: key)
             key.isUserInteractionEnabled = true
         }
@@ -534,6 +556,7 @@ public final class InteractiveScene: RSAScene  {
         for (key,keyLabel) in keyToKeyLabel {
             key.run(fadeDown)
             keyLabel.run(fadeDown)
+			key.stateMachine.enter(KeyInactiveState.self)
             key.isUserInteractionEnabled = true
             // put the private keys in a cage
             self.putKeyInsideCorrectCageIfNeeded(key: key)

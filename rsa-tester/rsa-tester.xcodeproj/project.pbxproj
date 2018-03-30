@@ -35,7 +35,6 @@
 		9748EFE1206E61BB00FB3780 /* KeyDragState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE0206E61BB00FB3780 /* KeyDragState.swift */; };
 		9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */; };
 		9748EFE5206E61F900FB3780 /* KeyInactiveState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */; };
-		9748EFE7206E629A00FB3780 /* KeyCagedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE6206E629A00FB3780 /* KeyCagedState.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
 		978DA806206BF2AA0071A162 /* popup.caf in Resources */ = {isa = PBXBuildFile; fileRef = 978DA805206BF2AA0071A162 /* popup.caf */; };
 		978DA808206C42AA0071A162 /* CageSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978DA807206C42AA0071A162 /* CageSprite.swift */; };
@@ -107,7 +106,6 @@
 		9748EFE0206E61BB00FB3780 /* KeyDragState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyDragState.swift; sourceTree = "<group>"; };
 		9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyWaitState.swift; sourceTree = "<group>"; };
 		9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInactiveState.swift; sourceTree = "<group>"; };
-		9748EFE6206E629A00FB3780 /* KeyCagedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCagedState.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
 		978DA805206BF2AA0071A162 /* popup.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = popup.caf; sourceTree = "<group>"; };
 		978DA807206C42AA0071A162 /* CageSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CageSprite.swift; sourceTree = "<group>"; };
@@ -243,7 +241,6 @@
 				9748EFE0206E61BB00FB3780 /* KeyDragState.swift */,
 				9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */,
 				9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */,
-				9748EFE6206E629A00FB3780 /* KeyCagedState.swift */,
 			);
 			path = KeyState;
 			sourceTree = "<group>";
@@ -431,7 +428,6 @@
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,
 				978DA808206C42AA0071A162 /* CageSprite.swift in Sources */,
-				9748EFE7206E629A00FB3780 /* KeyCagedState.swift in Sources */,
 				972FE92720619AF800AF243D /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
