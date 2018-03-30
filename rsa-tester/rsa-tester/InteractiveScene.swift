@@ -39,6 +39,10 @@ public final class InteractiveScene: RSAScene  {
     public static var bobMessage = "Hi Alice! I'm great. It's cool that our we can chat in private!"
     public static var eveMessage = "Don't mind me, I'm just trying to EVEsdrop. Haha. Get it guys?"
 	
+	public static var aliceCharacterDetails = CharacterSprite(characterName: "Alice", waiting: "💁🏽‍♀️", inRange: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
+	public static var bobCharacterDetails = CharacterSprite(characterName: "Bob", waiting: "💁🏼‍♂️", inRange: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
+	public static var eveCharacterDetails = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
+	
 	// MARK: Instance Variables
 	
 	public static var paperScene = Message3DScene(message: InteractiveScene.aliceMessage)
@@ -48,6 +52,7 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
 
     /// for fading items up that come into focus
+	/// - note: to be used within state machines
     public static let fadeUp:SKAction = {
         let action = SKAction.fadeAlpha(to: 1, duration: InteractiveScene.fadeTime)
         action.timingMode = .easeOut
@@ -55,6 +60,7 @@ public final class InteractiveScene: RSAScene  {
     }()
     
     /// for fading items down that lose focus
+	/// - note: to be used within state machines
     public static let fadeDown:SKAction = {
         let action = SKAction.fadeAlpha(to: InteractiveScene.fadedDown, duration: InteractiveScene.fadeTime)
         action.timingMode = .easeOut
@@ -70,21 +76,21 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var aliceCharacter:CharacterSprite = {
-        let alice = CharacterSprite(characterName: "Alice", waiting: "💁🏽‍♀️", inRange: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
+        let alice = InteractiveScene.aliceCharacterDetails
 		alice.name = "aliceCharacter"
         alice.position = CGPoint(x: self.size.width/4, y: 40)
 		return alice
 	}()
 	
 	private lazy var bobCharacter:CharacterSprite = {
-        let bob = CharacterSprite(characterName: "Bob", waiting: "💁🏼‍♂️", inRange: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
+        let bob = InteractiveScene.bobCharacterDetails
 		bob.name = "bobCharacter"
         bob.position = CGPoint(x: 3*self.size.width/4, y: 40)
 		return bob
 	}()
 	
 	private lazy var eveCharacter:CharacterSprite = {
-        let eve = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
+        let eve = InteractiveScene.eveCharacterDetails
 		eve.name = "eveCharacter"
         eve.position = CGPoint(x: 2*self.size.width/4, y: 3*self.size.height/4)
 		return eve

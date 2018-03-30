@@ -10,6 +10,7 @@ import Foundation
 import GameplayKit
 import SpriteKit
 
+/// the paper is in range of this particular character
 public final class CharacterInRangeState: CharacterState {
 	
 	private lazy var aliceSound = SKAction.playSoundFileNamed("hellolady1.caf", waitForCompletion: false)

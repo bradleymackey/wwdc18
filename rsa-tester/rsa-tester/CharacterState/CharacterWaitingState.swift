@@ -10,6 +10,7 @@ import Foundation
 import GameplayKit
 import SpriteKit
 
+/// the character is waiting and faded in
 public final class CharacterWaitingState: CharacterState {
 
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {

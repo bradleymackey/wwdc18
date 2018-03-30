@@ -9,7 +9,7 @@
 import Foundation
 import GameplayKit
 
-/// character is inactive
+/// character is inactive, but waiting (waiting but slightly faded)
 public final class CharacterWaitingInactiveState: CharacterState {
 	
 	public override func didEnter(from previousState: GKState?) {
@@ -21,7 +21,7 @@ public final class CharacterWaitingInactiveState: CharacterState {
 	public override func willExit(to nextState: GKState) {
 		super.willExit(to: nextState)
 		self.character.removeAllActions() // remove any prior actions that may affect the state
-		self.character.run(InteractiveScene.fadeDown)
+		self.character.run(InteractiveScene.fadeUp)
 	}
 	
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
