@@ -7,38 +7,26 @@
 //
 
 import Foundation
+import SpriteKit
 import GameplayKit
 
 /// key has faded out, it cannot be touched
 public final class KeyInactiveState: KeyState {
 	
+	/// the label that is associated with this key
 	public var label:SKLabelNode?
-	
-	/// for fading items up that come into focus
-	private let fadeUp:SKAction = {
-		let action = SKAction.fadeAlpha(to: 1, duration: InteractiveScene.fadeTime)
-		action.timingMode = .easeOut
-		return action
-	}()
-	
-	/// for fading items down that lose focus
-	private let fadeDown:SKAction = {
-		let action = SKAction.fadeAlpha(to: InteractiveScene.fadedDown, duration: InteractiveScene.fadeTime)
-		action.timingMode = .easeOut
-		return action
-	}()
 	
 	public override func didEnter(from previousState: GKState?) {
 		super.didEnter(from: previousState)
-		self.key.run(fadeDown)
-		self.label?.run(fadeDown)
+		self.key.run(InteractiveScene.fadeDown)
+		self.label?.run(InteractiveScene.fadeDown)
 		self.key.isUserInteractionEnabled = true
 	}
 	
 	public override func willExit(to nextState: GKState) {
 		super.willExit(to: nextState)
-		self.key.run(fadeUp)
-		self.label?.run(fadeUp)
+		self.key.run(InteractiveScene.fadeUp)
+		self.label?.run(InteractiveScene.fadeUp)
 		self.key.isUserInteractionEnabled = false
 	}
 	

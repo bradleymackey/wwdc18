@@ -48,14 +48,14 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
 
     /// for fading items up that come into focus
-    private let fadeUp:SKAction = {
+    public static let fadeUp:SKAction = {
         let action = SKAction.fadeAlpha(to: 1, duration: InteractiveScene.fadeTime)
         action.timingMode = .easeOut
         return action
     }()
     
     /// for fading items down that lose focus
-    private let fadeDown:SKAction = {
+    public static let fadeDown:SKAction = {
         let action = SKAction.fadeAlpha(to: InteractiveScene.fadedDown, duration: InteractiveScene.fadeTime)
         action.timingMode = .easeOut
         return action
@@ -485,7 +485,6 @@ public final class InteractiveScene: RSAScene  {
 		self.noCharactersFocused = false // we are now focused on a character
         self.characterInRange = character
         character.stateMachine.enter(CharacterInRangeState.self)
-        character.run(fadeUp)
         for other in defocus {
 			other.stateMachine.enter(CharacterWaitingInactiveState.self)
         }

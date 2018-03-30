@@ -12,7 +12,6 @@ import SpriteKit
 
 public final class CharacterWaitingState: CharacterState {
 
-	
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
 		return stateClass is CharacterInRangeState.Type || stateClass is CharacterWaitingInactiveState.Type
 	}

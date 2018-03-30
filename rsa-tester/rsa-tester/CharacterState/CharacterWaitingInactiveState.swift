@@ -12,30 +12,16 @@ import GameplayKit
 /// character is inactive
 public final class CharacterWaitingInactiveState: CharacterState {
 	
-	/// for fading items up that come into focus
-	private let fadeUp:SKAction = {
-		let action = SKAction.fadeAlpha(to: 1, duration: InteractiveScene.fadeTime)
-		action.timingMode = .easeOut
-		return action
-	}()
-	
-	/// for fading items down that lose focus
-	private let fadeDown:SKAction = {
-		let action = SKAction.fadeAlpha(to: InteractiveScene.fadedDown, duration: InteractiveScene.fadeTime)
-		action.timingMode = .easeOut
-		return action
-	}()
-	
 	public override func didEnter(from previousState: GKState?) {
 		super.didEnter(from: previousState)
 		self.character.removeAllActions() // remove any prior actions that may affect the state
-		self.character.run(fadeDown)
+		self.character.run(InteractiveScene.fadeDown)
 	}
 	
 	public override func willExit(to nextState: GKState) {
 		super.willExit(to: nextState)
 		self.character.removeAllActions() // remove any prior actions that may affect the state
-		self.character.run(fadeUp)
+		self.character.run(InteractiveScene.fadeDown)
 	}
 	
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {

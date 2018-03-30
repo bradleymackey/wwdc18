@@ -27,6 +27,10 @@ public final class CharacterInRangeState: CharacterState {
 	
 	public override func didEnter(from previousState: GKState?) {
 		super.didEnter(from: previousState)
+		// if not already faded up to max, do that
+		if character.alpha != 1 {
+			self.character.run(InteractiveScene.fadeUp)
+		}
 		// if we transition from the waiting state, play the correct sound
 		if let state = previousState, state.isKind(of: CharacterWaitingState.self), let name = self.character.name {
 			switch name {
