@@ -146,20 +146,30 @@ public final class IntroScene: RSAScene {
 		return label
 	}()
 	
-	private lazy var pLabel:SKLabelNode = {
+	private lazy var pLabel:SKNode = {
+		let node = SKNode()
         let pText = IntroScene.useRealValues ? "\(IntroScene.encryptor.p)" : "p"
-		let label = RSAScene.mathsLabel(text: pText, fontSize: 36, color: IntroScene.privateColor, bold: true)
-		label.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+80)
+		let label = RSAScene.mathsLabel(text: pText, fontSize: 25, color: .white, bold: false)
+		node.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+80)
 		label.name = "pLabel"
-		return label
+		label.zPosition = 3.0
+		let backgroundDisk = RSAScene.backgroundDisk(forLabel: label, color: IntroScene.privateColor)
+		node.addChild(label)
+		node.addChild(backgroundDisk)
+		return node
 	}()
 	
-	private lazy var qLabel:SKLabelNode = {
+	private lazy var qLabel:SKNode = {
+		let node = SKNode()
         let qText = IntroScene.useRealValues ? "\(IntroScene.encryptor.q)" : "q"
-		let label = RSAScene.mathsLabel(text: qText, fontSize: 36, color: IntroScene.privateColor, bold: true)
-		label.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+80)
+		let label = RSAScene.mathsLabel(text: qText, fontSize: 25, color: .white, bold: false)
+		node.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+80)
 		label.name = "qLabel"
-		return label
+		label.zPosition = 3.0
+		let backgroundDisk = RSAScene.backgroundDisk(forLabel: label, color: IntroScene.privateColor)
+		node.addChild(label)
+		node.addChild(backgroundDisk)
+		return node
 	}()
 	
 	// MARK: State Machines
@@ -450,10 +460,10 @@ public final class IntroScene: RSAScene {
 		let moveBack = SKAction.move(to: initialPosition, duration: 0)
 		let fadeUp = SKAction.fadeIn(withDuration: 0)
 		let scaleUp = SKAction.scale(to: 1, duration: 0)
-		let nodeCopy = node.copy() as! SKLabelNode
+		let nodeCopy = node.copy() as! SKNode
 		node.zPosition = 2.0
 		nodeCopy.zPosition = 1.0
-		nodeCopy.fontColor = .gray
+		nodeCopy.alpha = 0.5
 		let sequence = SKAction.sequence([shrinkFade,moveBack,fadeUp,scaleUp])
 		let forever = SKAction.repeatForever(sequence)
 		self.addChild(nodeCopy)

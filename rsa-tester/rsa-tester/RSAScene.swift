@@ -65,6 +65,16 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		return body
 	}
 	
+	public class func backgroundDisk(forLabel label:SKLabelNode, color:UIColor) -> SKShapeNode {
+		let node = SKShapeNode(circleOfRadius: (label.frame.width/2)+8)
+		node.isAntialiased = true
+		node.fillColor = color
+		node.lineWidth = 0.8
+		node.strokeColor = color
+		node.zPosition = 0.1
+		return node
+	}
+	
 	/// the physics for the world
 	public func setupWorldPhysics() {
 		self.physicsWorld.contactDelegate = self
