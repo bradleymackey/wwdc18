@@ -20,8 +20,13 @@ public class KeyState: GKState {
 	
 	// MARK: - Properties
 	
-	public let key: KeySprite
-	public let cage: CageSprite?
+	/// unowned key as it is always present, but we do not want a reference cycle
+	public unowned let key: KeySprite
+	/// weak cage because it may not always be present and we do not want to create a reference cycle
+	public weak var cage: CageSprite?
+	
+	/// the point that we stop moving the key at, to allow the key to calculate a correct 'fling'
+	public var stopMovingPoint:CGPoint?
 	
 	// MARK: - Lifecycle
 	

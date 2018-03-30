@@ -55,6 +55,7 @@ public final class IntroScene: RSAScene {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 55)
 		keySprite.name = "publicKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
+		keySprite.stateMachine = IntroScene.introKeyMachine(forKey: keySprite)
 		return keySprite
 	}()
 	
@@ -62,6 +63,7 @@ public final class IntroScene: RSAScene {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`, size: 55)
 		keySprite.name = "privateKeyNode"
 		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
+		keySprite.stateMachine = IntroScene.introKeyMachine(forKey: keySprite)
 		return keySprite
 	}()
 	
@@ -159,10 +161,7 @@ public final class IntroScene: RSAScene {
 		machine.enter(KeyWaitState.self)
 		return machine
 	}
-	
-	private lazy var publicKeyStateMachine: GKStateMachine = IntroScene.introKeyMachine(forKey: self.publicKeyNode)
-	private lazy var privateKeyStateMachine: GKStateMachine = IntroScene.introKeyMachine(forKey: self.privateKeyNode)
-	
+
 	// MARK: Tracking Variables
 	private var currentlyAnimating = false
 	private var currentlySelectedLabel:String?
@@ -225,10 +224,10 @@ public final class IntroScene: RSAScene {
 		}
 		switch (nodeName) {
 		case "publicKeyNode":
-			self.publicKeyStateMachine.enter(KeyDragState.self)
+			self.publicKeyNode.stateMachine.enter(KeyDragState.self)
 			self.publicKeyNode.startMoving(initialPoint: point)
 		case "privateKeyNode":
-			self.privateKeyStateMachine.enter(KeyDragState.self)
+			self.privateKeyNode.stateMachine.enter(KeyDragState.self)
 			self.privateKeyNode.startMoving(initialPoint: point)
 		case "messageNode":
 			self.messageNode.startRotating(at: point)
@@ -257,15 +256,8 @@ public final class IntroScene: RSAScene {
 			guard nodeName == labelSelected else { return }
 			self.showInfoPanel(forLabel: labelSelected)
 		}
-		// stop moving keys if they were being moved
-		if let state = publicKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
-			self.publicKeyStateMachine.enter(KeyWaitState.self)
-			self.publicKeyNode.stopMoving(at: point)
-		}
-		if let state = privateKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
-			self.privateKeyStateMachine.enter(KeyWaitState.self)
-			self.privateKeyNode.stopMoving(at: point)
-		}
+		// set the stop moving points, so we can compute the fling
+		self.stopKeysMovingIfNeeded(at: point)
 		// stop the cube rotation
 		self.messageNode.endRotation()
 	}
@@ -277,10 +269,10 @@ public final class IntroScene: RSAScene {
         // determine the first body
         switch firstBody.categoryBitMask {
         case PhysicsCategory.publicKeyA:
-			guard let state = publicKeyStateMachine.currentState, state === KeyDragState.self else { return }
+			guard let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) else { return }
             self.publicKeyContact()
         case PhysicsCategory.privateKeyA:
-			guard let state = privateKeyStateMachine.currentState, state === KeyDragState.self else { return }
+			guard let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) else { return }
             self.privateKeyContact()
         default:
             return
@@ -485,22 +477,33 @@ public final class IntroScene: RSAScene {
         let margin:CGFloat = 10
         if point.x < margin || point.x > self.size.width - margin || point.y < margin || point.y > self.size.height - margin {
             // stop moving keys if the touch is outside the margin
-			if let state = publicKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
-				self.publicKeyStateMachine.enter(KeyWaitState.self)
-				self.publicKeyNode.stopMoving(at: point)
-			}
-			if let state = privateKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
-				self.privateKeyStateMachine.enter(KeyWaitState.self)
-				self.privateKeyNode.stopMoving(at: point)
-			}
+			self.stopKeysMovingIfNeeded(at: point)
         } else {
-			if let state = publicKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+			if let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
 				 self.publicKeyNode.updatePosition(to: point)
 			}
-			if let state = privateKeyStateMachine.currentState, state.isKind(of: KeyDragState.self) {
+			if let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
 				self.privateKeyNode.updatePosition(to: point)
 			}
         }
+	}
+	
+	/// uses the gameplaykit state machines to stop the keys from moving if it needs to
+	private func stopKeysMovingIfNeeded(at point:CGPoint) {
+		// set the wait state stopping point
+		for machine in [publicKeyNode.stateMachine, privateKeyNode.stateMachine] {
+			guard let m = machine else { continue }
+			if let waitState = m.state(forClass: KeyWaitState.self) {
+				waitState.stopMovingPoint = point
+			}
+		}
+		// enter both keys into the waiting state if applicable
+		if let state = publicKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+			self.publicKeyNode.stateMachine.enter(KeyWaitState.self)
+		}
+		if let state = privateKeyNode.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+			self.privateKeyNode.stateMachine.enter(KeyWaitState.self)
+		}
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
