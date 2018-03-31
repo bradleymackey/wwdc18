@@ -229,8 +229,6 @@ public final class IntroScene: RSAScene {
 	private var currentlyRepeatingNodes = [SKNode]()
 	/// a set containing all moveable labels
 	private var moveableLabels = Set<String>()
-	/// the label that is currently being dragged and moved (different from currently selected label)
-	private var movingLabel:String?
 	
 	// MARK: - Methods
 	
@@ -309,6 +307,20 @@ public final class IntroScene: RSAScene {
 	}
 	
 	override public func touchUp(atPoint point: CGPoint) {
+		if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
+			guard let movingLabel = self.childNode(withName: label + "-copy") else { return }
+			let scaleUp = SKAction.scale(to: 0.6, duration: 0.2)
+			let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+			let remove = SKAction.removeFromParent()
+			let fadeAnimation = SKAction.group([scaleUp, fadeOut])
+			let removeAnimation = SKAction.sequence([fadeAnimation,remove])
+			movingLabel.removeAction(forKey: "startMovingAction")
+			movingLabel.run(removeAnimation, withKey: "removeAnimation")
+			if let originalLabel = self.childNode(withName: label) {
+				let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+				originalLabel.run(fadeIn)
+			}
+		}
 		// call the implementation in RSAScene
 		super.touchUp(atPoint: point)
 		if let labelSelected = currentlySelectedLabel {
@@ -325,6 +337,7 @@ public final class IntroScene: RSAScene {
 		self.stopKeysMovingIfNeeded(at: point)
 		// stop the cube rotation
 		self.messageNode.stateMachine.enter(MessageWaitingState.self)
+		
 	}
 	
 	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
@@ -529,13 +542,20 @@ public final class IntroScene: RSAScene {
 				}
 			}
 			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
-				guard let movingLabel = self.childNode(withName: label) else { return }
-				if self.movingLabel == nil {
-					self.movingLabel = label
-					let scale = SKAction.scale(to: 1.6, duration: 0.2)
-					let fade = SKAction.fadeAlpha(to: 0.7, duration: 0.2)
+				guard let movingLabel = self.childNode(withName: label + "-copy") else {
+					guard let regular = self.childNode(withName: label) else { return }
+					let copy = regular.copy() as! SKNode
+					regular.alpha = 0
+					copy.name = label + "-copy"
+					for child in copy.children {
+						child.name = label + "-copy"
+					}
+					self.addChild(copy)
+					let scale = SKAction.scale(to: 1.2, duration: 0.2)
+					let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
 					let startMovingAction = SKAction.group([scale,fade])
-					movingLabel.run(startMovingAction, withKey: "startMovingAction")
+					copy.run(startMovingAction, withKey: "startMovingAction")
+					return
 				}
 				movingLabel.position = point
 			}
