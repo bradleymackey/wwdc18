@@ -228,8 +228,7 @@ public final class Message3DScene: SCNScene {
 	}
     
     /// - note: call from background thread for improved performance
-    public func updateMessageIfUnencrypted(toPerson person:InteractiveScene.SceneCharacters) {
-        guard paperState == .unencrypted else { return }
+    public func updateMessage(toPerson person:InteractiveScene.SceneCharacters) {
         // only change the message if it is different
         guard self.currentlyDisplayingMessage != person else { return }
         self.currentlyDisplayingMessage = person

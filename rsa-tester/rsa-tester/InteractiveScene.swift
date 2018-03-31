@@ -438,9 +438,9 @@ public final class InteractiveScene: RSAScene  {
             guard existingName != nodeName else { return }
         }
         guard let characterType = SceneCharacters(rawValue: nodeName) else { return }
-		if InteractiveScene.paperScene.paperState == .unencrypted {
+		if let paperState = messageNode.sceneStateMachine.currentState, paperState is PaperNormalState {
 			// update the message shown on the paper (if unencrypted)
-			InteractiveScene.paperScene.updateMessageIfUnencrypted(toPerson: characterType)
+			InteractiveScene.paperScene.updateMessage(toPerson: characterType)
 			// update the text above the message if unencrypted
 			self.messageLabel.text = character.labelForMessage
 		}
