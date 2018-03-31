@@ -326,21 +326,20 @@ public final class IntroScene: RSAScene {
 		sceneStateMachine.enter(SceneAnimatingState.self)
 		// switch on that state of the paper scene
 		guard let paperState = messageNode.sceneStateMachine.currentState else { return }
-        switch (paperState) {
+        switch paperState {
         case is PaperNormalState:
             // perform the maths animation if enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
                 self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
                 // inform that we are no longer animating after the animation when we are not using maths animations
-                DispatchQueue.main.asyncAfter(deadline: .now() + PaperEncryptedState.moveToCryptoTime) {
-                    self.sceneStateMachine.enter(SceneWaitState.self)
-                }
+               	self.setSceneNotAnimating(afterDelay: PaperEncryptedState.moveToCryptoTime)
                 return
             }
             self.performMathsAnimation(transformToState: .encrypted)
         case is PaperEncryptedState:
 			// move to the question mark state
 			self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
+			self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3) // *3 => change, wait, change
 		default:
 			return
         }
@@ -350,45 +349,35 @@ public final class IntroScene: RSAScene {
         // do nothing if we are currently animating
         guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
         sceneStateMachine.enter(SceneAnimatingState.self)
-        switch (IntroScene.paperScene.paperState) {
-        case .unencrypted:
+		// switch on that state of the paper scene
+		guard let paperState = messageNode.sceneStateMachine.currentState else { return }
+        switch paperState {
+        case is PaperNormalState:
 			// do the question mark animation
-			self.invalidContactAnimation(forState: .unencrypted)
-			// play the fail sound
-			self.messageNode.run(failSound)
-        case .encrypted:
-            // mark the new state
-            IntroScene.paperScene.paperState = .unencrypted
+			self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
+			self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3) // *3 => change, wait, change
+        case is PaperEncryptedState:
             // perform the maths animation is enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
-                IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
+                self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
                 // inform that we are no longer animating after the animation when we are not using maths animations
-                DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
-                    self.sceneStateMachine.enter(SceneWaitState.self)
-                }
-				// play the decrypt sound
-				self.messageNode.run(decryptSound)
+                self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
                 return
             }
             self.performMathsAnimation(transformToState: .unencrypted)
+		default:
+			return
         }
     }
 	
 	/// the animation that should run when the incorrect key is brought to the box
-	private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
-		let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
-		let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
-			IntroScene.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
-		}
-		let backToPaper = SKAction.customAction(withDuration: 0) { _, _ in
-			state == .encrypted ? IntroScene.paperScene.morphToCrypto(duration: IntroScene.invalidPulseTime) : IntroScene.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
-		}
+	private func setSceneNotAnimating(afterDelay delay:TimeInterval) {
+		let wait = SKAction.wait(forDuration: delay)
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-			// we are no longer animating
 			self.sceneStateMachine.enter(SceneWaitState.self)
 		}
-		let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
-		self.messageNode.run(invalidContactSequence)
+		let invalidContactSequence = SKAction.sequence([wait,notAnimating])
+		self.run(invalidContactSequence)
 	}
 	
 	private func stopForeverAnimations() {

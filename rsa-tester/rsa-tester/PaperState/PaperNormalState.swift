@@ -21,7 +21,7 @@ public final class PaperNormalState: PaperState {
 		case is PaperEncryptedState:
 			// coming from normal, morph to crypto and play the morph sound
 			self.messageNode.messageScene.morphToPaper(duration: PaperNormalState.moveToPaperTime)
-			self.messageNode.run(PaperState.encryptSound)
+			self.messageNode.run(PaperState.decryptSound)
 		case is PaperErrorState:
 			// coming from error, we want a shorter flash time
 			self.messageNode.messageScene.morphToPaper(duration: PaperErrorState.errorFlashTime)
