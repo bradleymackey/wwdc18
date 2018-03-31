@@ -15,21 +15,17 @@ public class PaperState: GKState {
 	
 	// MARK: - Properties
 	
-	private let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
-	private let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
-	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
+	public static let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
+	public static let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
+	public static let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
 	
-	/// a reference to the node that contains the scene, that we will run the sound actions on
+	/// a reference to the node that contains the scene, that we will run the sound actions on and get access to the scene inside, to manage the states
 	public unowned let messageNode:Message3DNode
-	
-	/// a reference to the paper scene that should be transforming
-	public unowned let paperScene:Message3DScene
 	
 	// MARK: - Lifecycle
 	
-	public init(messageNode:Message3DNode, paperScene:Message3DScene) {
+	public init(messageNode:Message3DNode) {
 		self.messageNode = messageNode
-		self.paperScene = paperScene
 	}
 	
 }

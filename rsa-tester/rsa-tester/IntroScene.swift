@@ -38,13 +38,16 @@ public final class IntroScene: RSAScene {
 	// MARK: State
 	
 	// MARK: Delegate
+	
 	/// for delegating an information message for a UIView to present
 	public weak var informationDelegate:IntroSceneInformationDelegate?
 	
 	// MARK: 3D Scene
+	
 	public static var paperScene = Message3DScene(message: "Here's to the crazy ones. The misfits. The round pegs in the square holes. Think different.")
 	
 	// MARK: Encryption
+	
 	/// the encryption engine
 	public static var encryptor = RSAEncryptor(p: 23, q: 13)
 	
@@ -78,7 +81,7 @@ public final class IntroScene: RSAScene {
 		sceneNode.name = "messageNode"
 		return sceneNode
 	}()
-	
+
 	// MARK: Maths labels
 	
 	/// the message
@@ -321,27 +324,25 @@ public final class IntroScene: RSAScene {
         // do nothing if we are currently animating
 		guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
 		sceneStateMachine.enter(SceneAnimatingState.self)
-        switch (IntroScene.paperScene.paperState) {
-        case .unencrypted:
-            // mark the new state
-            IntroScene.paperScene.paperState = .encrypted
+		// switch on that state of the paper scene
+		guard let paperState = messageNode.sceneStateMachine.currentState else { return }
+        switch (paperState) {
+        case is PaperNormalState:
             // perform the maths animation if enabled, otherwise just morph
             guard IntroScene.mathsEnabled else {
-                IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
+                self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
                 // inform that we are no longer animating after the animation when we are not using maths animations
-                DispatchQueue.main.asyncAfter(deadline: .now() + IntroScene.mathsAnimationMoveTime) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + PaperEncryptedState.moveToCryptoTime) {
                     self.sceneStateMachine.enter(SceneWaitState.self)
                 }
-				// play the encrypt sound
-				self.messageNode.run(encryptSound)
                 return
             }
             self.performMathsAnimation(transformToState: .encrypted)
-        case .encrypted:
-			// do the question mark animation
-            self.invalidContactAnimation(forState: .encrypted)
-			// play the fail sound
-			self.messageNode.run(failSound)
+        case is PaperEncryptedState:
+			// move to the question mark state
+			self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
+		default:
+			return
         }
     }
     

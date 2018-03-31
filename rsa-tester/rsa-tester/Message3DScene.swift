@@ -34,11 +34,6 @@ fileprivate struct ObjectDimensions {
 /// The 3D SceneKit scene that renders the message
 public final class Message3DScene: SCNScene {
 	
-	public enum PaperState {
-		case unencrypted
-		case encrypted
-	}
-	
 	// MARK: Constants
 	public static let surfaceFontSize:CGFloat = 17
 	public static var paperColors:(text:UIColor,background:UIColor) = (text: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1), background: #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
@@ -48,8 +43,7 @@ public final class Message3DScene: SCNScene {
 	
 	/// the message that will appear on the 3D message
 	public var message: String
-	/// the current state of the paper
-	public var paperState = PaperState.unencrypted
+	
     /// the person that has encrypted the message
     public var encryptedBy:KeyOwner?
     

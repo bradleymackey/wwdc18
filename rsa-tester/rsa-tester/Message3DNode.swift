@@ -36,6 +36,19 @@ public final class Message3DNode: SK3DNode {
 		return machine
 	}()
 	
+	/// for managing the states of this node's scene
+	private var sceneStates:[PaperState] {
+		return [PaperNormalState(messageNode: self),
+				PaperErrorState(messageNode: self),
+				PaperEncryptedState(messageNode: self)]
+	}
+	
+	public lazy var sceneStateMachine: GKStateMachine = {
+		let machine = GKStateMachine(states: self.sceneStates)
+		machine.enter(PaperNormalState.self)
+		return machine
+	}()
+	
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
 	
