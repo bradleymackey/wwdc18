@@ -307,16 +307,13 @@ public final class IntroScene: RSAScene {
 	override public func touchUp(atPoint point: CGPoint) {
 		if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
 			guard let movingLabel = self.childNode(withName: label + "-copy") else { return }
-			let scaleUp = SKAction.scale(to: 0.6, duration: 0.2)
-			let fadeOut = SKAction.fadeOut(withDuration: 0.2)
-			let remove = SKAction.removeFromParent()
-			let fadeAnimation = SKAction.group([scaleUp, fadeOut])
-			let removeAnimation = SKAction.sequence([fadeAnimation,remove])
-			movingLabel.removeAction(forKey: "startMovingAction")
-			movingLabel.run(removeAnimation, withKey: "removeAnimation")
-			if let originalLabel = self.childNode(withName: label) {
-				let fadeIn = SKAction.fadeIn(withDuration: 0.2)
-				originalLabel.run(fadeIn)
+			
+			if let blinking = self.draggedLabelOnTopOfBlinkingLabel(point: point, label: label) {
+				// we have made contact with the correct blinking label, so merge the dragging label to the correct position
+				self.alignDraggingLabelWithBlinkingLabel(dragging: movingLabel, blinking: blinking)
+			} else {
+				// not in the right place, just drop the label
+				self.dropDraggingLabel(movingLabel, label: label)
 			}
 		}
 		// call the implementation in RSAScene
@@ -335,7 +332,45 @@ public final class IntroScene: RSAScene {
 		self.stopKeysMovingIfNeeded(at: point)
 		// stop the cube rotation
 		self.messageNode.stateMachine.enter(MessageWaitingState.self)
-		
+	}
+	
+	
+	private func draggedLabelOnTopOfBlinkingLabel(point:CGPoint, label:String) -> SKNode? {
+		let nodes = self.nodes(at: point)
+		for node in nodes {
+			guard let nodeName = node.name else { continue }
+			guard nodeName == (label + "-blinking") else { continue }
+			return node
+		}
+		return nil
+	}
+	
+	private func alignDraggingLabelWithBlinkingLabel(dragging:SKNode, blinking:SKNode) {
+		let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+		fadeIn.timingMode = .easeOut
+		let scale = SKAction.scale(to: 1, duration: 0.2)
+		scale.timingMode = .easeOut
+		let moveToBlinking = SKAction.move(to: blinking.position, duration: 0.2)
+		moveToBlinking.timingMode = .easeOut
+		let group = SKAction.group([fadeIn, scale, moveToBlinking])
+		dragging.run(group)
+		let removeBlinking = SKAction.removeFromParent()
+		blinking.run(removeBlinking)
+	}
+	
+	private func dropDraggingLabel(_ node:SKNode, label:String) {
+		let scaleUp = SKAction.scale(to: 0.6, duration: 0.2)
+		let fadeOut = SKAction.fadeOut(withDuration: 0.2)
+		let remove = SKAction.removeFromParent()
+		let fadeAnimation = SKAction.group([scaleUp, fadeOut])
+		let removeAnimation = SKAction.sequence([fadeAnimation,remove])
+		node.removeAction(forKey: "startMovingAction")
+		node.run(removeAnimation, withKey: "removeAnimation")
+		// fade the original in
+		if let originalLabel = self.childNode(withName: label) {
+			let fadeIn = SKAction.fadeIn(withDuration: 0.2)
+			originalLabel.run(fadeIn)
+		}
 	}
 	
 	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
@@ -443,17 +478,26 @@ public final class IntroScene: RSAScene {
 		// n label
 		let newNPosition = CGPoint(x: (self.size.width/2)+120, y: oldMessageLabel.position.y)
 		self.moveHiddenCopyToLocationAndThenBlink(node: nLabel, location: newNPosition)
+		// old message
+		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 105 : 115
+		let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
+		let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
+		moveOldMessageAnimation.timingMode = .easeOut
+		oldMessageLabel.run(moveOldMessageAnimation)
 	}
 	
 	private func moveHiddenCopyToLocationAndThenBlink(node:SKNode, location:CGPoint) {
 		let moveCopyAction = SKAction.move(to: location, duration: IntroScene.mathsAnimationMoveTime)
-		let fadedDown = SKAction.fadeAlpha(to: 0.4, duration: 0.7)
-		let fadedUp = SKAction.fadeAlpha(to: 0.7, duration: 0.7)
+		let fadedDown = SKAction.fadeAlpha(to: 0.2, duration: 0.5)
+		fadedDown.timingMode = .easeInEaseOut
+		let fadedUp = SKAction.fadeAlpha(to: 0.3, duration: 0.5)
+		fadedUp.timingMode = .easeInEaseOut
 		let fadeCycle = SKAction.sequence([fadedDown,fadedUp])
 		let fadeForeverCycle = SKAction.repeatForever(fadeCycle)
 		let nodeCopySequence = SKAction.sequence([moveCopyAction,fadeForeverCycle])
 		let nodeCopy = node.copy() as! SKNode
 		nodeCopy.alpha = 0
+		nodeCopy.name = (node.name ?? "") + "-blinking"
 		self.addChild(nodeCopy)
 		nodeCopy.run(nodeCopySequence)
 		currentlyRepeatingNodes.append(nodeCopy)
