@@ -97,7 +97,6 @@ public final class IntroScene: RSAScene {
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
 		label.zPosition = 3.0
-		label.alpha = 1
 		return label
 	}()
 	
@@ -112,6 +111,8 @@ public final class IntroScene: RSAScene {
 		let nodeName = "nLabel"
 		[node, background, label].forEach { $0.name = nodeName }
 		self.moveableLabels.insert(nodeName)
+		node.alpha = 0 // initially hidden
+		node.setScale(0.7)
 		return node
 	}()
 	
@@ -233,6 +234,8 @@ public final class IntroScene: RSAScene {
 	}
 
 	// MARK: Tracking Variables
+	/// keeps track of whether we have created N yet. It only needs to be created at the start of the round
+	private var nCreated = false
 	private var currentlySelectedLabel:String?
 	private var currentlyRepeatingNodes = [SKNode]()
 	/// a set containing all moveable labels
@@ -283,6 +286,7 @@ public final class IntroScene: RSAScene {
 	
 	private func startInitialMathsAnimationsIfNeeded() {
         guard IntroScene.mathsEnabled else { return }
+		guard !nCreated else { return }
 		self.mathsCreateValueRepeat(node: pLabel, shrinkPosition: qLabel.position)
 		self.mathsCreateValueRepeat(node: qLabel, shrinkPosition: pLabel.position)
 	}
@@ -326,6 +330,31 @@ public final class IntroScene: RSAScene {
 		if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
 			guard let movingLabel = self.childNode(withName: label + "-copy") else { return }
 			
+			if !nCreated {
+				if label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel") {
+					let scale = SKAction.scale(to: 1, duration: 0.2)
+					let fade = SKAction.fadeIn(withDuration: 0.2)
+					let grouped = SKAction.group([scale,fade])
+					self.nLabel.run(grouped)
+					self.nCreated = true
+					self.sceneStateMachine.enter(SceneWaitState.self)
+					self.stopForeverAnimations()
+				}
+				if label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel") {
+					let scale = SKAction.scale(to: 1, duration: 0.2)
+					let fade = SKAction.fadeIn(withDuration: 0.2)
+					let grouped = SKAction.group([scale,fade])
+					self.nLabel.run(grouped)
+					self.nCreated = true
+					self.sceneStateMachine.enter(SceneWaitState.self)
+					self.stopForeverAnimations()
+				}
+			}
+			
+			// start any initial animations again if needed
+			self.startInitialMathsAnimationsIfNeeded()
+			
+			
 			if let blinking = self.draggedLabelOnTopOfBlinkingLabel(point: point, label: label) {
 				// we have made contact with the correct blinking label, so merge the dragging label to the correct position
 				self.alignDraggingLabelWithBlinkingLabel(dragging: movingLabel, blinking: blinking)
@@ -352,6 +381,15 @@ public final class IntroScene: RSAScene {
 		self.messageNode.stateMachine.enter(MessageWaitingState.self)
 	}
 	
+	private func touchingOtherLabel(point:CGPoint, label:String) -> Bool {
+		let nodes = self.nodes(at: point)
+		for node in nodes {
+			guard let nodeName = node.name else { continue }
+			guard nodeName == label else { continue }
+			return true
+		}
+		return false
+	}
 	
 	private func draggedLabelOnTopOfBlinkingLabel(point:CGPoint, label:String) -> SKNode? {
 		let nodes = self.nodes(at: point)
@@ -529,7 +567,6 @@ public final class IntroScene: RSAScene {
 		nodeCopy.name = blinkingName
 		self.addChild(nodeCopy)
 		nodeCopy.run(nodeCopySequence)
-		currentlyRepeatingNodes.append(nodeCopy)
 	}
 	
 	/// finishes off the maths animation after the user has dragged the labels to the correct position
@@ -578,8 +615,6 @@ public final class IntroScene: RSAScene {
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
 			self.sceneStateMachine.enter(SceneWaitState.self)
-			// restart the initial maths animations
-			self.startInitialMathsAnimationsIfNeeded()
 		}
 		let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
 		self.run(morphSeq)
@@ -603,6 +638,7 @@ public final class IntroScene: RSAScene {
 		let nodeCopy = node.copy() as! SKNode
 		node.zPosition = 2.0
 		nodeCopy.zPosition = 1.0
+		nodeCopy.name = (node.name ?? "") + "-animating"
 		nodeCopy.alpha = 0.5
 		let sequence = SKAction.sequence([shrinkFade,moveBack,fadeUp,scaleUp])
 		let forever = SKAction.repeatForever(sequence)
@@ -649,6 +685,7 @@ public final class IntroScene: RSAScene {
 			movingLabel.position = point
 		} else {
 			guard let regular = self.childNode(withName: label) else { return }
+			self.stopForeverAnimations() // stop the forever animations
 			self.createDraggingLabel(fromLabel: regular, name: label)
 		}
 	}
