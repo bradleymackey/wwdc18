@@ -105,21 +105,31 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	/// the public exponent
-	private lazy var eLabel:SKLabelNode = {
+	private lazy var eLabel:SKNode = {
+		let node = SKNode()
+		node.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
+		node.name = "eLabel"
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.publicColor, bold: false)
-		label.position =  CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
-		label.name = "eLabel"
-		return label
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: .white, bold: false)
+		label.zPosition = 3.0
+		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
+		node.addChild(background)
+		node.addChild(label)
+		return node
 	}()
 	
 	/// the private exponent
-	private lazy var dLabel:SKLabelNode = {
+	private lazy var dLabel:SKNode = {
+		let node = SKNode()
+		node.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
+		node.name = "dLabel"
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.privateColor, bold: false)
-		label.position =  CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
-		label.name = "dLabel"
-		return label
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: .white, bold: false)
+		label.zPosition = 3.0
+		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
+		node.addChild(background)
+		node.addChild(label)
+		return node
 	}()
 	
 	/// the 'mod' label that is just for visual completeness
@@ -392,7 +402,7 @@ public final class IntroScene: RSAScene {
 		self.stopForeverAnimations()
 		
         let encrypting = paperState is PaperNormalState
-        let keyLabel:SKLabelNode = encrypting ? eLabel : dLabel
+        let keyLabel:SKNode = encrypting ? eLabel : dLabel
         let oldMessageLabel:SKLabelNode = encrypting ? mLabel : cLabel
         let newMessageLabel:SKLabelNode = encrypting ? cLabel : mLabel
         

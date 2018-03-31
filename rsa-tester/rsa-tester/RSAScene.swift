@@ -92,8 +92,8 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	
 	public class func backgroundSquare(forLabel label:SKLabelNode, color:UIColor) -> SKShapeNode {
 		let extraWidth = max(label.frame.size.width*1.4, label.frame.size.width+20)
-		let biggerSize = CGSize(width: extraWidth, height: label.frame.size.height*1.9)
-		let node = SKShapeNode(rectOf: biggerSize, cornerRadius: 7)
+		let biggerSize = CGSize(width: extraWidth, height: label.frame.size.height*1.7)
+		let node = SKShapeNode(rectOf: biggerSize, cornerRadius: 10)
 		node.isAntialiased = true
 		node.fillColor = color
 		node.lineWidth = 5
