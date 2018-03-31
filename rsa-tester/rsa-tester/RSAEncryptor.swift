@@ -45,6 +45,7 @@ public final class RSAEncryptor {
             possibleD += 1
 			if possibleD > N {
 				// so we dont just loop forever
+				print("WE COULD NOT FIND A PRIVATE EXPONENT VALUE")
 				return 0
 			}
         }

@@ -49,9 +49,11 @@ public final class IntroScene: RSAScene {
 	// MARK: Encryption
 	
 	/// the encryption engine
-	public static var encryptor = RSAEncryptor(p: 23, q: 13)
+	public static var encryptor = RSAEncryptor(p: 19, q: 13)
 	
 	// MARK: Sprites
+	
+	
 	
 	private lazy var publicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 55)
@@ -104,7 +106,9 @@ public final class IntroScene: RSAScene {
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
-		[node, background, label].forEach { $0.name = "nLabel" }
+		let nodeName = "nLabel"
+		[node, background, label].forEach { $0.name = nodeName }
+		self.moveableLabels.insert(nodeName)
 		return node
 	}()
 	
@@ -137,7 +141,9 @@ public final class IntroScene: RSAScene {
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
-		[node, background, label].forEach { $0.name = "modLabel" }
+		let nodeName = "modLabel"
+		[node, background, label].forEach { $0.name = nodeName }
+		moveableLabels.insert(nodeName)
 		return node
 	}()
 	
@@ -162,7 +168,9 @@ public final class IntroScene: RSAScene {
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
 		node.addChild(background)
 		node.addChild(label)
-		[node,background,label].forEach { $0.name = "pLabel" }
+		let nodeName = "pLabel"
+		[node,background,label].forEach { $0.name = nodeName }
+		self.moveableLabels.insert(nodeName)
 		return node
 	}()
 	
@@ -175,7 +183,9 @@ public final class IntroScene: RSAScene {
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
 		node.addChild(background)
 		node.addChild(label)
-		[node,background,label].forEach { $0.name = "qLabel" }
+		let nodeName = "qLabel"
+		[node,background,label].forEach { $0.name = nodeName }
+		self.moveableLabels.insert(nodeName)
 		return node
 	}()
 	
@@ -217,6 +227,10 @@ public final class IntroScene: RSAScene {
 	// MARK: Tracking Variables
 	private var currentlySelectedLabel:String?
 	private var currentlyRepeatingNodes = [SKNode]()
+	/// a set containing all moveable labels
+	private var moveableLabels = Set<String>()
+	/// the label that is currently being dragged and moved (different from currently selected label)
+	private var movingLabel:String?
 	
 	// MARK: - Methods
 	
@@ -514,23 +528,16 @@ public final class IntroScene: RSAScene {
 					key.updatePosition(to: point)
 				}
 			}
-			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, label == "pLabel" {
-				pLabel.xScale = 2
-				pLabel.yScale = 2
-				pLabel.alpha = 0.7
-				pLabel.position = point
-			}
-			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, label == "qLabel" {
-				qLabel.xScale = 2
-				qLabel.yScale = 2
-				qLabel.alpha = 0.7
-				qLabel.position = point
-			}
-			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, label == "modLabel" {
-				modLabel.xScale = 2
-				modLabel.yScale = 2
-				modLabel.alpha = 0.7
-				modLabel.position = point
+			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
+				guard let movingLabel = self.childNode(withName: label) else { return }
+				if self.movingLabel == nil {
+					self.movingLabel = label
+					let scale = SKAction.scale(to: 1.6, duration: 0.2)
+					let fade = SKAction.fadeAlpha(to: 0.7, duration: 0.2)
+					let startMovingAction = SKAction.group([scale,fade])
+					movingLabel.run(startMovingAction, withKey: "startMovingAction")
+				}
+				movingLabel.position = point
 			}
         }
 	}
