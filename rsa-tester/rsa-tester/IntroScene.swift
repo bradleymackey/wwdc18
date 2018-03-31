@@ -329,13 +329,13 @@ public final class IntroScene: RSAScene {
         switch paperState {
         case is PaperNormalState:
             // perform the maths animation if enabled, otherwise just morph
-            guard IntroScene.mathsEnabled else {
-                self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
-                // inform that we are no longer animating after the animation when we are not using maths animations
-               	self.setSceneNotAnimating(afterDelay: PaperEncryptedState.moveToCryptoTime)
-                return
-            }
-            self.performMathsAnimation(transformToState: .encrypted)
+			if IntroScene.mathsEnabled {
+				self.performMathsAnimation()
+			} else {
+				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
+				// inform that we are no longer animating after the animation when we are not using maths animations
+				self.setSceneNotAnimating(afterDelay: PaperEncryptedState.moveToCryptoTime)
+			}
         case is PaperEncryptedState:
 			// move to the question mark state
 			self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
@@ -358,27 +358,17 @@ public final class IntroScene: RSAScene {
 			self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3) // *3 => change, wait, change
         case is PaperEncryptedState:
             // perform the maths animation is enabled, otherwise just morph
-            guard IntroScene.mathsEnabled else {
-                self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
-                // inform that we are no longer animating after the animation when we are not using maths animations
-                self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
-                return
-            }
-            self.performMathsAnimation(transformToState: .unencrypted)
+			if IntroScene.mathsEnabled {
+				self.performMathsAnimation()
+			} else {
+				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
+				// inform that we are no longer animating after the animation when we are not using maths animations
+				self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
+			}
 		default:
 			return
         }
     }
-	
-	/// the animation that should run when the incorrect key is brought to the box
-	private func setSceneNotAnimating(afterDelay delay:TimeInterval) {
-		let wait = SKAction.wait(forDuration: delay)
-		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-			self.sceneStateMachine.enter(SceneWaitState.self)
-		}
-		let invalidContactSequence = SKAction.sequence([wait,notAnimating])
-		self.run(invalidContactSequence)
-	}
 	
 	private func stopForeverAnimations() {
 		defer {
@@ -390,12 +380,14 @@ public final class IntroScene: RSAScene {
 	}
     
     /// animates the maths labels when the key is brought to the message label/crypto box
-    private func performMathsAnimation(transformToState state:Message3DScene.PaperState) {
+    private func performMathsAnimation() {
+		
+		guard let paperState = self.messageNode.sceneStateMachine.currentState else { return }
 		
 		// in prep for the maths animation
 		self.stopForeverAnimations()
-        
-        let encrypting = state == .encrypted
+		
+        let encrypting = paperState is PaperNormalState
         let keyLabel:SKLabelNode = encrypting ? eLabel : dLabel
         let oldMessageLabel:SKLabelNode = encrypting ? mLabel : cLabel
         let newMessageLabel:SKLabelNode = encrypting ? cLabel : mLabel
@@ -435,11 +427,9 @@ public final class IntroScene: RSAScene {
         let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
         let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
 			if encrypting {
-				IntroScene.paperScene.morphToCrypto(duration: IntroScene.mathsAnimationMoveTime)
-				self.messageNode.run(self.encryptSound)
+				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 			} else {
-				IntroScene.paperScene.morphToPaper(duration: IntroScene.mathsAnimationMoveTime)
-				self.messageNode.run(self.decryptSound)
+				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 			}
         }
         let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
@@ -449,6 +439,8 @@ public final class IntroScene: RSAScene {
         }
         let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
         self.run(morphSeq)
+		
+		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 1.8)
     }
     
     private func moveShrinkFadeRemoveCopy(node:SKNode, movePosition:CGPoint, shrinkPosition:CGPoint) {

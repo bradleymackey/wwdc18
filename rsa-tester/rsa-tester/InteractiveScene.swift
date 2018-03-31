@@ -314,18 +314,14 @@ public final class InteractiveScene: RSAScene  {
     private func publicKeyContact(keyOwner: KeyOwner) {
 		guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
 		sceneStateMachine.enter(SceneAnimatingState.self)
-        switch (InteractiveScene.paperScene.paperState) {
-        case .unencrypted:
+		guard let paperState = messageNode.sceneStateMachine.currentState else { return }
+        switch paperState {
+        case is PaperNormalState:
             // mark who has encrypted this
             InteractiveScene.paperScene.encryptedBy = keyOwner
             // mark the new state
-            InteractiveScene.paperScene.paperState = .encrypted
-            // perform the maths animation if enabled, otherwise just morph
-            InteractiveScene.paperScene.morphToCrypto(duration: InteractiveScene.cubeChangeTime)
-            // inform that we are no longer animating after the animation when we are not using maths animations
-            DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
-                self.sceneStateMachine.enter(SceneWaitState.self)
-            }
+            self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
+			self.setSceneNotAnimating(afterDelay: PaperEncryptedState.moveToCryptoTime)
 			// the character success animation
             self.characterInRange?.successAnimation()
 			// update the label above the message
@@ -335,70 +331,48 @@ public final class InteractiveScene: RSAScene  {
 				// the previous message before we lock the message
 				self.previousLockedMessage = messageText
 			}
-			// play the ecnrypt sound
-			self.messageNode.run(encryptSound)
-        case .encrypted:
+        case is PaperEncryptedState:
             // do the question mark animation
-            self.invalidContactAnimation(forState: .encrypted)
+			self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
+			self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3)
             self.characterInRange?.failAnimation()
-			// play the fail sound
-			self.messageNode.run(failSound)
+		default:
+			return
         }
     }
     
     private func privateKeyContact(keyOwner: KeyOwner) {
 		guard let state = sceneStateMachine.currentState, state.isKind(of: SceneWaitState.self) else { return }
 		sceneStateMachine.enter(SceneAnimatingState.self)
-        switch (InteractiveScene.paperScene.paperState) {
-        case .unencrypted:
+		guard let paperState = messageNode.sceneStateMachine.currentState else { return }
+        switch paperState {
+        case is PaperNormalState:
             // do the question mark animation
-            self.invalidContactAnimation(forState: .unencrypted)
+            self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
+			self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3)
             self.characterInRange?.failAnimation()
-			// play the fail sound
-			self.messageNode.run(failSound)
-        case .encrypted:
+        case is PaperEncryptedState:
             // the decryptor key must be owned by same as encryptor
             guard let encryptor = InteractiveScene.paperScene.encryptedBy, keyOwner == encryptor else {
-                self.invalidContactAnimation(forState: .encrypted)
+				self.messageNode.sceneStateMachine.enter(PaperErrorState.self)
+				self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3)
                 self.characterInRange?.failAnimation()
-				// play the fail sound
-				self.messageNode.run(failSound)
                 return
             }
             // mark the new state
-            InteractiveScene.paperScene.paperState = .unencrypted
-            // perform the maths animation if enabled, otherwise just morph
-            InteractiveScene.paperScene.morphToPaper(duration: InteractiveScene.cubeChangeTime)
-            // inform that we are no longer animating after the animation when we are not using maths animations
-            DispatchQueue.main.asyncAfter(deadline: .now() + InteractiveScene.cubeChangeTime) {
-                self.sceneStateMachine.enter(SceneWaitState.self)
-            }
+            self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
+			self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
+			// character animation
             self.characterInRange?.successAnimation()
 			// set the label above the message back to before it was encrypted
 			if let message = self.previousLockedMessage {
 				self.messageLabel.text = message
 			}
-			// play the decrypt sound
-			self.messageNode.run(decryptSound)
+		default:
+			return
         }
     }
 
-    /// the animation that should run when the incorrect key is brought to the box
-	/// - important:  this function should be called with `currentlyAnimating` already set to `true`
-    private func invalidContactAnimation(forState state:Message3DScene.PaperState) {
-        let wait = SKAction.wait(forDuration: IntroScene.invalidPulseTime)
-        let questionMark = SKAction.customAction(withDuration: 0) { _, _ in
-            InteractiveScene.paperScene.morphToQuestionMark(duration: IntroScene.invalidPulseTime)
-        }
-        let backToPaper = SKAction.customAction(withDuration: 0) { _, _ in
-            state == .encrypted ? InteractiveScene.paperScene.morphToCrypto(duration: InteractiveScene.invalidPulseTime) : InteractiveScene.paperScene.morphToPaper(duration: IntroScene.invalidPulseTime)
-        }
-        let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-            self.sceneStateMachine.enter(SceneWaitState.self)
-        }
-        let invalidContactSequence = SKAction.sequence([questionMark,wait,backToPaper,wait,notAnimating])
-        self.messageNode.run(invalidContactSequence)
-    }
     
     public override func update(_ currentTime: TimeInterval) {
         super.update(currentTime)

@@ -114,6 +114,16 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		node.run(moveToPosition)
 	}
 	
+	/// the animation that should run when the incorrect key is brought to the box
+	public func setSceneNotAnimating(afterDelay delay:TimeInterval) {
+		let wait = SKAction.wait(forDuration: delay)
+		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
+			self.sceneStateMachine.enter(SceneWaitState.self)
+		}
+		let invalidContactSequence = SKAction.sequence([wait,notAnimating])
+		self.run(invalidContactSequence)
+	}
+	
 	// MARK: Touch delegation
 	
 	override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
