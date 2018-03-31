@@ -29,7 +29,6 @@
 		972FE9732064459100AF243D /* RSAScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE9722064459100AF243D /* RSAScene.swift */; };
 		972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97620645D7B00AF243D /* KeyOwner.swift */; };
 		972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972FE97820651A2600AF243D /* CharacterSprite.swift */; };
-		973B5368206676CE001366A0 /* MoveableSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B5367206676CE001366A0 /* MoveableSprite.swift */; };
 		973B536A2066C325001366A0 /* KeyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973B53692066C325001366A0 /* KeyType.swift */; };
 		9748EFDF206E5E2F00FB3780 /* KeyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFDE206E5E2F00FB3780 /* KeyState.swift */; };
 		9748EFE1206E61BB00FB3780 /* KeyDragState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE0206E61BB00FB3780 /* KeyDragState.swift */; };
@@ -58,6 +57,10 @@
 		97F5C375206EB9C40091E7BA /* CharacterSuccessState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C374206EB9C40091E7BA /* CharacterSuccessState.swift */; };
 		97F5C377206EBA040091E7BA /* CharacterFailState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C376206EBA040091E7BA /* CharacterFailState.swift */; };
 		97F5C37A206EF5070091E7BA /* CharacterWaitingInactiveState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C379206EF5070091E7BA /* CharacterWaitingInactiveState.swift */; };
+		97F5C37C206F98270091E7BA /* MessageState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C37B206F98270091E7BA /* MessageState.swift */; };
+		97F5C37E206F9BC40091E7BA /* MessageWaitingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C37D206F9BC40091E7BA /* MessageWaitingState.swift */; };
+		97F5C380206F9BCE0091E7BA /* MessageRotatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C37F206F9BCE0091E7BA /* MessageRotatingState.swift */; };
+		97F5C382206F9BE00091E7BA /* MessageDraggingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C381206F9BE00091E7BA /* MessageDraggingState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,7 +109,6 @@
 		972FE9722064459100AF243D /* RSAScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAScene.swift; sourceTree = "<group>"; };
 		972FE97620645D7B00AF243D /* KeyOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyOwner.swift; sourceTree = "<group>"; };
 		972FE97820651A2600AF243D /* CharacterSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSprite.swift; sourceTree = "<group>"; };
-		973B5367206676CE001366A0 /* MoveableSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveableSprite.swift; sourceTree = "<group>"; };
 		973B53692066C325001366A0 /* KeyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyType.swift; sourceTree = "<group>"; };
 		9748EFDE206E5E2F00FB3780 /* KeyState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyState.swift; sourceTree = "<group>"; };
 		9748EFE0206E61BB00FB3780 /* KeyDragState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyDragState.swift; sourceTree = "<group>"; };
@@ -135,6 +137,10 @@
 		97F5C374206EB9C40091E7BA /* CharacterSuccessState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterSuccessState.swift; sourceTree = "<group>"; };
 		97F5C376206EBA040091E7BA /* CharacterFailState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterFailState.swift; sourceTree = "<group>"; };
 		97F5C379206EF5070091E7BA /* CharacterWaitingInactiveState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterWaitingInactiveState.swift; sourceTree = "<group>"; };
+		97F5C37B206F98270091E7BA /* MessageState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageState.swift; sourceTree = "<group>"; };
+		97F5C37D206F9BC40091E7BA /* MessageWaitingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageWaitingState.swift; sourceTree = "<group>"; };
+		97F5C37F206F9BCE0091E7BA /* MessageRotatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRotatingState.swift; sourceTree = "<group>"; };
+		97F5C381206F9BE00091E7BA /* MessageDraggingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDraggingState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,7 +200,6 @@
 				972FE95A20619B4100AF243D /* IntroScene.swift */,
 				972FE970206444A300AF243D /* InteractiveScene.swift */,
 				972FE97820651A2600AF243D /* CharacterSprite.swift */,
-				973B5367206676CE001366A0 /* MoveableSprite.swift */,
 				972FE95C20619B7000AF243D /* KeySprite.swift */,
 				972FE97620645D7B00AF243D /* KeyOwner.swift */,
 				973B53692066C325001366A0 /* KeyType.swift */,
@@ -204,6 +209,7 @@
 				97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */,
 				978DA807206C42AA0071A162 /* CageSprite.swift */,
 				976328872062884D000C9EAC /* RSAEncryptor.swift */,
+				97F5C383206F9BEC0091E7BA /* MessageState */,
 				97F5C378206EBA4E0091E7BA /* CharacterState */,
 				97F5C36C206E88AE0091E7BA /* KeyState */,
 				97F5C36D206E88BA0091E7BA /* SceneState */,
@@ -279,6 +285,17 @@
 				97F5C376206EBA040091E7BA /* CharacterFailState.swift */,
 			);
 			path = CharacterState;
+			sourceTree = "<group>";
+		};
+		97F5C383206F9BEC0091E7BA /* MessageState */ = {
+			isa = PBXGroup;
+			children = (
+				97F5C37B206F98270091E7BA /* MessageState.swift */,
+				97F5C37D206F9BC40091E7BA /* MessageWaitingState.swift */,
+				97F5C37F206F9BCE0091E7BA /* MessageRotatingState.swift */,
+				97F5C381206F9BE00091E7BA /* MessageDraggingState.swift */,
+			);
+			path = MessageState;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -434,6 +451,8 @@
 				972FE97720645D7B00AF243D /* KeyOwner.swift in Sources */,
 				972FE95D20619B7000AF243D /* KeySprite.swift in Sources */,
 				972FE96320619BBE00AF243D /* PhysicsCategory.swift in Sources */,
+				97F5C380206F9BCE0091E7BA /* MessageRotatingState.swift in Sources */,
+				97F5C382206F9BE00091E7BA /* MessageDraggingState.swift in Sources */,
 				97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */,
 				972FE9732064459100AF243D /* RSAScene.swift in Sources */,
 				9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */,
@@ -453,9 +472,10 @@
 				97F5C375206EB9C40091E7BA /* CharacterSuccessState.swift in Sources */,
 				97F5C367206E88810091E7BA /* SceneState.swift in Sources */,
 				972FE95F20619B9500AF243D /* Message3DNode.swift in Sources */,
+				97F5C37E206F9BC40091E7BA /* MessageWaitingState.swift in Sources */,
+				97F5C37C206F98270091E7BA /* MessageState.swift in Sources */,
 				9748EFE1206E61BB00FB3780 /* KeyDragState.swift in Sources */,
 				973B536A2066C325001366A0 /* KeyType.swift in Sources */,
-				973B5368206676CE001366A0 /* MoveableSprite.swift in Sources */,
 				972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */,
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,

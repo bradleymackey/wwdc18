@@ -9,9 +9,10 @@
 import Foundation
 import SpriteKit
 import SceneKit
+import GameplayKit
 
 /// the spritekit node that contains the 3D scene with the message object in
-public final class Message3DNode: SK3DNode, MoveableSprite {
+public final class Message3DNode: SK3DNode {
 	
 	// MARK: Constants
 	public static let timeForPaperRotation: TimeInterval = 2.1
@@ -20,14 +21,18 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	
 	/// the scene that is presented inside of the node
 	public let messageScene:Message3DScene
-	/// whether or not the cube is being rotated
-	private var isBeingRotated = false
+	
+	/// the possible states that the message node can be in
+	private var states:[MessageState] {
+		return [MessageWaitingState(message: self),
+				MessageRotatingState(message: self),
+				MessageDraggingState(message: self)]
+	}
+	
+	public lazy var stateMachine = GKStateMachine(states: self.states)
 	
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
-    
-    /// if the message node is currently being moved
-    private var isBeingMoved = false
 	
 	// MARK: Lifecycle
 	
@@ -85,13 +90,12 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	// MARK: Rotation (Intro Scene)
 	
 	public func startRotating(at point:CGPoint) {
-		self.isBeingRotated = true
 		lastRotationPoint = point
 	}
 	
 	/// updating the angle of the rotating
 	public func updateRotationIfRotating(newPoint point:CGPoint) {
-		guard self.isBeingRotated else { return }
+		guard let state = stateMachine.currentState, state.isKind(of: MessageRotatingState.self) else { return }
 		// rotate the paper
 		if let lastPoint = lastRotationPoint {
 			messageScene.rotatePaper(dx: (lastPoint.y - point.y)/80, dy: (point.x - lastPoint.x)/80)
@@ -101,7 +105,6 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
 	}
 	
 	public func endRotation() {
-		self.isBeingRotated = false
 		lastRotationPoint = nil
 	}
 	
@@ -109,20 +112,18 @@ public final class Message3DNode: SK3DNode, MoveableSprite {
     // MARK: Moving (Interactive Scene)
     
     public func startMoving(initialPoint:CGPoint) {
-        self.isBeingMoved = true
 		self.physicsBody?.pinned = false
         let moveAnimation = SKAction.move(to: initialPoint, duration: 0.04)
         self.run(moveAnimation)
     }
     
     public func updatePosition(to point: CGPoint) {
-        guard isBeingMoved else { return }
+		guard let state = stateMachine.currentState, state.isKind(of: MessageDraggingState.self) else { return }
         let moveAnimation = SKAction.move(to: point, duration: 0.02)
         self.run(moveAnimation)
     }
     
-    public func stopMoving(at lastPoint:CGPoint) {
-        self.isBeingMoved = false
+    public func stopMoving() {
 		self.physicsBody?.pinned = true
     }
 	

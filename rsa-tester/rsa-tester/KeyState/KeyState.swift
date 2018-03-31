@@ -23,7 +23,7 @@ public class KeyState: GKState {
 	/// unowned key as it is always present, but we do not want a reference cycle
 	public unowned let key: KeySprite
 	
-	/// the point where the key started moving, so we can tell it where to move
+	/// the point where the key started moving, so we can tell it where to move initially
 	public var startMovingPoint:CGPoint?
 	
 	/// the point that we stop moving the key at, to allow the key to calculate a correct 'fling'

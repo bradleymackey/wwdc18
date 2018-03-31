@@ -187,12 +187,6 @@ public final class InteractiveScene: RSAScene  {
         return [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode, bobPrivateKeyNode]
 	}
     
-    private lazy var allMoveable:[MoveableSprite] = {
-        var moveable:[MoveableSprite] = allKeys
-        moveable.append(messageNode)
-        return moveable
-    }()
-    
     private lazy var keyToKeyLabel:[KeySprite:SKLabelNode] = {
         return [alicePublicKeyNode:alicePublicLabel, alicePrivateKeyNode:alicePrivateLabel, bobPublicKeyNode:bobPublicLabel, bobPrivateKeyNode:bobPrivateLabel]
     }()
@@ -272,7 +266,8 @@ public final class InteractiveScene: RSAScene  {
         guard let nodeName = node.name else { return }
 		// start moving message node
 		if nodeName == "messageNode" {
-			self.messageNode.startMoving(initialPoint: point)
+			self.messageNode.stateMachine.state(forClass: MessageDraggingState.self)?.startMovingPoint = point
+			self.messageNode.stateMachine.enter(MessageDraggingState.self)
 		}
 		// start moving the key node once we set the start point
 		if nodeName.contains("KeyNode") {
@@ -290,7 +285,7 @@ public final class InteractiveScene: RSAScene  {
 		super.touchUp(atPoint: point)
 		// mark that all moveables are no longer being moved by the user
 		self.stopKeysMovingIfNeeded(at: point)
-		self.messageNode.stopMoving(at: point)
+		self.messageNode.stopMoving()
 	}
 	
 	public override func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
@@ -422,16 +417,18 @@ public final class InteractiveScene: RSAScene  {
         self.determineCharacterInRangeOfMessage()
         // ignore movement if position is outside scene
         if RSAScene.insideEdgeMargin(scene: self, point: point) {
-            // stop moving keys if the touch is outside the margin
+            // stop moving keys or message node if the touch is outside the margin
             self.stopKeysMovingIfNeeded(at: point)
-			self.messageNode.stopMoving(at: point)
+			self.messageNode.stateMachine.enter(MessageWaitingState.self)
         } else {
 			for key in allKeys {
 				if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
 					key.updatePosition(to: point)
 				}
 			}
-            self.messageNode.updatePosition(to: point)
+			if let state = self.messageNode.stateMachine.currentState, state.isKind(of: MessageDraggingState.self) {
+				self.messageNode.updatePosition(to: point)
+			}
         }
     }
 	

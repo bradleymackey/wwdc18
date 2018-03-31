@@ -11,7 +11,7 @@ import Foundation
 import SpriteKit
 import GameplayKit
 
-public final class KeySprite: SKSpriteNode, MoveableSprite {
+public final class KeySprite: SKSpriteNode {
 	
 	
 	// MARK: Properties
