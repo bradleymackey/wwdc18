@@ -90,11 +90,13 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		return body
 	}
 	
-	public class func backgroundDisk(forLabel label:SKLabelNode, color:UIColor) -> SKShapeNode {
-		let node = SKShapeNode(circleOfRadius: (label.frame.width/2)+8)
+	public class func backgroundSquare(forLabel label:SKLabelNode, color:UIColor) -> SKShapeNode {
+		let extraWidth = max(label.frame.size.width*1.4, label.frame.size.width+20)
+		let biggerSize = CGSize(width: extraWidth, height: label.frame.size.height*1.9)
+		let node = SKShapeNode(rectOf: biggerSize, cornerRadius: 7)
 		node.isAntialiased = true
 		node.fillColor = color
-		node.lineWidth = 3
+		node.lineWidth = 5
 		node.strokeColor = color
 		node.zPosition = 0.1
 		return node
@@ -120,8 +122,8 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
 			self.sceneStateMachine.enter(SceneWaitState.self)
 		}
-		let invalidContactSequence = SKAction.sequence([wait,notAnimating])
-		self.run(invalidContactSequence)
+		let notAnimatingSequence = SKAction.sequence([wait,notAnimating])
+		self.run(notAnimatingSequence)
 	}
 	
 	// MARK: Touch delegation
