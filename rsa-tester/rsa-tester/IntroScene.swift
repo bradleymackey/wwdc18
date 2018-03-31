@@ -93,14 +93,19 @@ public final class IntroScene: RSAScene {
 		return label
 	}()
 	
+	private lazy var nLabelText: SKLabelNode = {
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
+		label.zPosition = 3.0
+		label.alpha = 1
+		return label
+	}()
+	
 	/// the public modulus
 	private lazy var nLabel:SKNode = {
 		let node = SKNode()
 		node.position = CGPoint(x: (self.size.width/2), y: (3*self.size.height/4)-20)
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
-		label.zPosition = 3.0
-		label.alpha = 1 // initially hidden
+		let label = nLabelText
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
@@ -130,12 +135,17 @@ public final class IntroScene: RSAScene {
 		return label
 	}()
 	
+	private lazy var modLabelText:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: .white, bold: false)
+		label.zPosition = 3.0
+		return label
+	}()
+	
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
 		node.position =  CGPoint(x: self.nLabel.position.x-130, y: self.nLabel.position.y)
-		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: .white, bold: false)
-		label.zPosition = 3.0
+		let label = modLabelText
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
@@ -489,11 +499,11 @@ public final class IntroScene: RSAScene {
 		self.addChild(keyLabelCopy)
 		keyLabelCopy.run(moveKeyLabel)
 		// mod label
-		let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
-		self.moveHiddenCopyToLocationAndThenBlink(node: modLabel, location: newModPosition)
+		let modPlaceholderPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
+		self.moveHiddenCopyToLocationAndThenBlink(node: modLabelText, location: modPlaceholderPosition)
 		// n label
-		let newNPosition = CGPoint(x: (self.size.width/2)+120, y: oldMessageLabel.position.y)
-		self.moveHiddenCopyToLocationAndThenBlink(node: nLabel, location: newNPosition)
+		let nPlaceholderPosition = CGPoint(x: (self.size.width/2)+120, y: oldMessageLabel.position.y)
+		self.moveHiddenCopyToLocationAndThenBlink(node: nLabelText, location: nPlaceholderPosition)
 		// old message
 		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 105 : 115
 		let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
@@ -502,16 +512,17 @@ public final class IntroScene: RSAScene {
 		oldMessageLabel.run(moveOldMessageAnimation)
 	}
 	
-	private func moveHiddenCopyToLocationAndThenBlink(node:SKNode, location:CGPoint) {
+	private func moveHiddenCopyToLocationAndThenBlink(node:SKLabelNode, location:CGPoint) {
 		let moveCopyAction = SKAction.move(to: location, duration: IntroScene.mathsAnimationMoveTime)
-		let fadedDown = SKAction.fadeAlpha(to: 0.2, duration: 0.5)
-		fadedDown.timingMode = .easeInEaseOut
-		let fadedUp = SKAction.fadeAlpha(to: 0.3, duration: 0.5)
-		fadedUp.timingMode = .easeInEaseOut
+		let fadedDown = SKAction.fadeAlpha(to: 0.05, duration: 0.65)
+		fadedDown.timingMode = .easeOut
+		let fadedUp = SKAction.fadeAlpha(to: 0.15, duration: 0.65)
+		fadedUp.timingMode = .easeOut
 		let fadeCycle = SKAction.sequence([fadedDown,fadedUp])
 		let fadeForeverCycle = SKAction.repeatForever(fadeCycle)
 		let nodeCopySequence = SKAction.sequence([moveCopyAction,fadeForeverCycle])
-		let nodeCopy = node.copy() as! SKNode
+		let nodeCopy = node.copy() as! SKLabelNode
+		nodeCopy.fontColor = .black
 		nodeCopy.alpha = 0
 		let blinkingName = (node.name ?? "") + "-blinking"
 		mathsTasks.insert(blinkingName)
