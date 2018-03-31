@@ -26,7 +26,7 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = true
+	public static var useRealValues = false
 	
 	public static var message = 23
 	
@@ -144,7 +144,7 @@ public final class IntroScene: RSAScene {
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
-		node.position =  CGPoint(x: self.nLabel.position.x-130, y: self.nLabel.position.y)
+		node.position =  CGPoint(x: self.size.width-100, y: self.size.height-50)
 		let label = modLabelText
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
 		node.addChild(background)
@@ -554,7 +554,7 @@ public final class IntroScene: RSAScene {
 		let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
 		let oldMessageSequence = SKAction.sequence([pauseShrinkFade,grow,moveToCenter])
 		oldMessageLabel.run(oldMessageSequence)
-		
+		// fade in the stuff for next time
 		let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime)
 		let fadeBackIn = SKAction.fadeIn(withDuration: IntroScene.mathsAnimationMoveTime)
 		fadeBackIn.timingMode = .easeIn
@@ -563,7 +563,11 @@ public final class IntroScene: RSAScene {
 		keyLabel.run(fadeBackSequence)
 		modLabel.run(fadeBackSequence)
 		nLabel.run(fadeBackSequence)
-		
+		// update the message
+		self.updateMessageForCompletedMathsAnimation(encrypting: encrypting)
+	}
+	
+	private func updateMessageForCompletedMathsAnimation(encrypting:Bool) {
 		let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 0.8)
 		let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
 			if encrypting {
@@ -579,7 +583,6 @@ public final class IntroScene: RSAScene {
 		}
 		let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
 		self.run(morphSeq)
-		
 		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 0.8)
 	}
 	
