@@ -53,8 +53,6 @@ public final class IntroScene: RSAScene {
 	
 	// MARK: Sprites
 	
-	
-	
 	private lazy var publicKeyNode:KeySprite = {
 		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 55)
 		keySprite.name = "publicKeyNode"
@@ -98,7 +96,7 @@ public final class IntroScene: RSAScene {
 	/// the public modulus
 	private lazy var nLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: (self.size.width/2)+100, y: (3*self.size.height/4)-20)
+		node.position = CGPoint(x: (self.size.width/2), y: (3*self.size.height/4)-20)
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
 		label.zPosition = 3.0
@@ -135,7 +133,7 @@ public final class IntroScene: RSAScene {
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
-		node.position =  CGPoint(x: self.nLabel.position.x-120, y: self.nLabel.position.y)
+		node.position =  CGPoint(x: self.nLabel.position.x-130, y: self.nLabel.position.y)
 		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
@@ -161,7 +159,7 @@ public final class IntroScene: RSAScene {
 	
 	private lazy var pLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+80)
+		node.position = CGPoint(x: nLabel.position.x-50, y: nLabel.position.y+80)
         let pText = IntroScene.useRealValues ? "\(IntroScene.encryptor.p)" : "p"
 		let label = RSAScene.mathsLabel(text: pText, fontSize: 28, color: .white, bold: false)
 		label.zPosition = 3.0
@@ -176,7 +174,7 @@ public final class IntroScene: RSAScene {
 	
 	private lazy var qLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+80)
+		node.position = CGPoint(x: nLabel.position.x+50, y: nLabel.position.y+80)
         let qText = IntroScene.useRealValues ? "\(IntroScene.encryptor.q)" : "q"
 		let label = RSAScene.mathsLabel(text: qText, fontSize: 28, color: .white, bold: false)
 		label.zPosition = 3.0
@@ -367,7 +365,7 @@ public final class IntroScene: RSAScene {
         case is PaperNormalState:
             // perform the maths animation if enabled, otherwise just morph
 			if IntroScene.mathsEnabled {
-				self.performMathsAnimation()
+				self.setupMathsLabelsForInteraction()
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 				// inform that we are no longer animating after the animation when we are not using maths animations
@@ -396,7 +394,7 @@ public final class IntroScene: RSAScene {
         case is PaperEncryptedState:
             // perform the maths animation is enabled, otherwise just morph
 			if IntroScene.mathsEnabled {
-				self.performMathsAnimation()
+				self.setupMathsLabelsForInteraction()
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 				// inform that we are no longer animating after the animation when we are not using maths animations
@@ -415,6 +413,51 @@ public final class IntroScene: RSAScene {
 			node.removeFromParent()
 		}
 	}
+	
+	
+	/// puts all the automatically moving maths labels in the correct places, starts all the correct looping animations.
+	/// generally gets the scene ready for the interaction phase
+	private func setupMathsLabelsForInteraction() {
+		guard let paperState = self.messageNode.sceneStateMachine.currentState else { return }
+		// in prep for the maths animation
+		self.stopForeverAnimations()
+		// determine the correct labels
+		let encrypting = paperState is PaperNormalState
+		let keyLabel:SKNode = encrypting ? eLabel : dLabel
+		let oldMessageLabel:SKLabelNode = encrypting ? mLabel : cLabel
+		let newMessageLabel:SKLabelNode = encrypting ? cLabel : mLabel
+		
+		let centerPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
+		
+		// animate key label
+		let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-65, y: oldMessageLabel.position.y+34)
+		let moveKeyLabel = SKAction.move(to: keyLabelNewPosition, duration: IntroScene.mathsAnimationMoveTime)
+		moveKeyLabel.timingMode = .easeOut
+		let keyLabelCopy = keyLabel.copy() as! SKNode
+		keyLabel.alpha = 0
+		self.addChild(keyLabelCopy)
+		keyLabelCopy.run(moveKeyLabel)
+		// mod label
+		let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
+		self.moveHiddenCopyToLocationAndThenBlink(node: modLabel, location: newModPosition)
+		// n label
+		let newNPosition = CGPoint(x: (self.size.width/2)+120, y: oldMessageLabel.position.y)
+		self.moveHiddenCopyToLocationAndThenBlink(node: nLabel, location: newNPosition)
+	}
+	
+	private func moveHiddenCopyToLocationAndThenBlink(node:SKNode, location:CGPoint) {
+		let moveCopyAction = SKAction.move(to: location, duration: IntroScene.mathsAnimationMoveTime)
+		let fadedDown = SKAction.fadeAlpha(to: 0.4, duration: 0.7)
+		let fadedUp = SKAction.fadeAlpha(to: 0.7, duration: 0.7)
+		let fadeCycle = SKAction.sequence([fadedDown,fadedUp])
+		let fadeForeverCycle = SKAction.repeatForever(fadeCycle)
+		let nodeCopySequence = SKAction.sequence([moveCopyAction,fadeForeverCycle])
+		let nodeCopy = node.copy() as! SKNode
+		nodeCopy.alpha = 0
+		self.addChild(nodeCopy)
+		nodeCopy.run(nodeCopySequence)
+		currentlyRepeatingNodes.append(nodeCopy)
+	}
     
     /// animates the maths labels when the key is brought to the message label/crypto box
     private func performMathsAnimation() {
@@ -431,17 +474,32 @@ public final class IntroScene: RSAScene {
         
         let centerPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
         // animate key label
-        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-65, y: oldMessageLabel.position.y+31)
-        self.moveShrinkFadeRemoveCopy(node: keyLabel, movePosition: keyLabelNewPosition, shrinkPosition: centerPosition)
+//        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-65, y: oldMessageLabel.position.y+34)
+//		let moveKeyLabel = SKAction.move(to: keyLabelNewPosition, duration: IntroScene.mathsAnimationMoveTime)
+//		moveKeyLabel.timingMode = .easeOut
+//		let keyLabelCopy = keyLabel.copy() as! SKNode
+//		keyLabel.alpha = 0
+//		self.addChild(keyLabelCopy)
+//		keyLabelCopy.run(moveKeyLabel)
+       // self.moveShrinkFadeRemoveCopy(node: keyLabel, movePosition: keyLabelNewPosition, shrinkPosition: centerPosition)
         // animate mod label
-        let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
-        self.moveShrinkFadeRemoveCopy(node: modLabel, movePosition: newModPosition, shrinkPosition: centerPosition)
-        // animate N
-        let newNPosition = CGPoint(x: (self.size.width/2)+90, y: oldMessageLabel.position.y)
-        self.moveShrinkFadeRemoveCopy(node: nLabel, movePosition: newNPosition, shrinkPosition: centerPosition)
+//        let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
+//		let moveModCopy = SKAction.move(to: newModPosition, duration: IntroScene.mathsAnimationMoveTime)
+//		let modCopy = modLabel.copy() as! SKNode
+//		modCopy.alpha = 0
+//		modCopy.run(moveModCopy)
+//        //self.moveShrinkFadeRemoveCopy(node: modLabel, movePosition: newModPosition, shrinkPosition: centerPosition)
+//        // animate N
+//        let newNPosition = CGPoint(x: (self.size.width/2)+120, y: oldMessageLabel.position.y)
+//		let moveNCopy = SKAction.move(to: newNPosition, duration: IntroScene.mathsAnimationMoveTime)
+//		let nCopy = nLabel.copy() as! SKNode
+//		nCopy.alpha = 0
+//		self.addChild(nCopy)
+//		nCopy.run(moveNCopy)
+        //self.moveShrinkFadeRemoveCopy(node: nLabel, movePosition: newNPosition, shrinkPosition: centerPosition)
         // animate old message label
 		// move the label more if there are 2 characters being displayed
-		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 100 : 110
+		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 105 : 115
         let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
         let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
         moveOldMessageAnimation.timingMode = .easeOut
@@ -452,44 +510,39 @@ public final class IntroScene: RSAScene {
         oldMessageLabel.run(oldMessageSequence)
         
         // animate new message label and other labels back in
-        let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime + 1.0)
-        let fadeBackIn = SKAction.fadeIn(withDuration: IntroScene.mathsAnimationMoveTime)
-        fadeBackIn.timingMode = .easeIn
-        let fadeBackSequence = SKAction.sequence([waitNewLabel,fadeBackIn])
-        newMessageLabel.run(fadeBackSequence)
-        keyLabel.run(fadeBackSequence)
-        modLabel.run(fadeBackSequence)
-        nLabel.run(fadeBackSequence)
-        
-        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
-        let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
-			if encrypting {
-				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
-			} else {
-				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
-			}
-        }
-        let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
-            self.sceneStateMachine.enter(SceneWaitState.self)
-			// restart the initial maths animations
-			self.startInitialMathsAnimationsIfNeeded()
-        }
-        let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
-        self.run(morphSeq)
-		
-		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 1.8)
+//        let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime + 1.0)
+//        let fadeBackIn = SKAction.fadeIn(withDuration: IntroScene.mathsAnimationMoveTime)
+//        fadeBackIn.timingMode = .easeIn
+//        let fadeBackSequence = SKAction.sequence([waitNewLabel,fadeBackIn])
+//        newMessageLabel.run(fadeBackSequence)
+//        keyLabel.run(fadeBackSequence)
+//        modLabel.run(fadeBackSequence)
+//        nLabel.run(fadeBackSequence)
+//
+//        let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 1.8)
+//        let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
+//			if encrypting {
+//				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
+//			} else {
+//				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
+//			}
+//        }
+//        let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
+//            self.sceneStateMachine.enter(SceneWaitState.self)
+//			// restart the initial maths animations
+//			self.startInitialMathsAnimationsIfNeeded()
+//        }
+//        let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
+//        self.run(morphSeq)
+//
+//		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 1.8)
     }
     
-    private func moveShrinkFadeRemoveCopy(node:SKNode, movePosition:CGPoint, shrinkPosition:CGPoint) {
-        let moveAnimation = SKAction.move(to: movePosition, duration: IntroScene.mathsAnimationMoveTime)
-        moveAnimation.timingMode = .easeOut
+    private func shrinkFadeRemoveCopy(node:SKNode, shrinkPosition:CGPoint) {
         let pauseShrinkFadeAction = IntroScene.pauseShrinkFade(toPosition: shrinkPosition)
         let removeNode = SKAction.removeFromParent()
-        let sequence = SKAction.sequence([moveAnimation,pauseShrinkFadeAction,removeNode])
-        let nodeCopy = node.copy() as! SKNode
-        self.addChild(nodeCopy)
-        node.alpha = 0
-        nodeCopy.run(sequence)
+        let sequence = SKAction.sequence([pauseShrinkFadeAction,removeNode])
+        node.run(sequence)
     }
 	
 	private func mathsCreateValueRepeat(node:SKNode, shrinkPosition:CGPoint) {
