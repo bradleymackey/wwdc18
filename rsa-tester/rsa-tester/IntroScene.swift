@@ -345,7 +345,9 @@ public final class IntroScene: RSAScene {
 		return nil
 	}
 	
+	/// moves a maths label that we are dragging on top of the blinking label perfectly, and removes the blinking label
 	private func alignDraggingLabelWithBlinkingLabel(dragging:SKNode, blinking:SKNode) {
+		// move the dragging label to the correct position
 		let fadeIn = SKAction.fadeIn(withDuration: 0.2)
 		fadeIn.timingMode = .easeOut
 		let scale = SKAction.scale(to: 1, duration: 0.2)
@@ -354,10 +356,14 @@ public final class IntroScene: RSAScene {
 		moveToBlinking.timingMode = .easeOut
 		let group = SKAction.group([fadeIn, scale, moveToBlinking])
 		dragging.run(group)
+		// fade out and remove the blinking label, we no longer need it
+		let fadeOutBlinking = SKAction.fadeOut(withDuration: 0.3)
 		let removeBlinking = SKAction.removeFromParent()
-		blinking.run(removeBlinking)
+		let fadeRemove = SKAction.sequence([fadeOutBlinking,removeBlinking])
+		blinking.run(fadeRemove)
 	}
 	
+	/// drops the dragging label into the ether, and fades in the original label once more
 	private func dropDraggingLabel(_ node:SKNode, label:String) {
 		let scaleUp = SKAction.scale(to: 0.6, duration: 0.2)
 		let fadeOut = SKAction.fadeOut(withDuration: 0.2)
@@ -629,34 +635,37 @@ public final class IntroScene: RSAScene {
 		// update finger position or exit
         guard let point = currentFingerPosition else { return }
         // ignore movement if position is outside scene (smaller margin on bottom)
-        if RSAScene.insideEdgeMargin(scene: self, point: point) {
+        guard RSAScene.insideEdgeMargin(scene: self, point: point) == false else {
             // stop moving keys if the touch is outside the margin
 			self.stopKeysMovingIfNeeded(at: point)
-        } else {
-			for key in allKeys {
-				if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
-					key.updatePosition(to: point)
-				}
-			}
-			if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
-				guard let movingLabel = self.childNode(withName: label + "-copy") else {
-					guard let regular = self.childNode(withName: label) else { return }
-					let copy = regular.copy() as! SKNode
-					regular.alpha = 0
-					copy.name = label + "-copy"
-					for child in copy.children {
-						child.name = label + "-copy"
-					}
-					self.addChild(copy)
-					let scale = SKAction.scale(to: 1.2, duration: 0.2)
-					let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
-					let startMovingAction = SKAction.group([scale,fade])
-					copy.run(startMovingAction, withKey: "startMovingAction")
-					return
-				}
-				movingLabel.position = point
-			}
+			return
         }
+		for key in allKeys {
+			if let state = key.stateMachine.currentState, state.isKind(of: KeyDragState.self) {
+				key.updatePosition(to: point)
+			}
+		}
+		guard movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) else { return }
+		if let movingLabel = self.childNode(withName: label + "-copy") {
+			movingLabel.position = point
+		} else {
+			guard let regular = self.childNode(withName: label) else { return }
+			self.createDraggingLabel(fromLabel: regular, name: label)
+		}
+	}
+	
+	private func createDraggingLabel(fromLabel label:SKNode, name:String) {
+		let copy = label.copy() as! SKNode
+		label.alpha = 0
+		copy.name = name + "-copy"
+		for child in copy.children {
+			child.name = name + "-copy"
+		}
+		self.addChild(copy)
+		let scale = SKAction.scale(to: 1.2, duration: 0.2)
+		let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
+		let startMovingAction = SKAction.group([scale,fade])
+		copy.run(startMovingAction, withKey: "startMovingAction")
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
