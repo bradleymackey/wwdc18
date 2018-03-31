@@ -24,11 +24,6 @@ public class PaperState: GKState {
 	
 	// MARK: - Lifecycle
 	
-	public override func didEnter(from previousState: GKState?) {
-		super.didEnter(from: previousState)
-		print("entered state",self.debugDescription)
-	}
-	
 	public init(messageNode:Message3DNode) {
 		self.messageNode = messageNode
 	}

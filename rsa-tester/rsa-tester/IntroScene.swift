@@ -26,7 +26,7 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = false
+	public static var useRealValues = true
 	
 	public static var message = 23
 	
@@ -203,13 +203,14 @@ public final class IntroScene: RSAScene {
 	/// simple non-interactive label that prompts the user to rotate the 3D message
 	private lazy var dragToRotateLabel:SKLabelNode = {
 		let label = RSAScene.mathsLabel(text: "Drag to rotate", fontSize: 12, color: .gray, bold: false)
+		label.fontName = "Helvetica-Bold"
 		label.name = "dragToRotate"
 		label.position = CGPoint(x: self.size.width/2, y: messageNode.position.y-110)
 		return label
 	}()
 	
 	private lazy var promptLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Create N: drag p and q together.", fontSize: 28, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: "Create N: drag p and q together to multiply them.", fontSize: 22, color: .black, bold: true)
 		label.fontName = "Helvetica-Bold"
 		label.name = "prompt"
 		label.horizontalAlignmentMode = .left
@@ -217,7 +218,6 @@ public final class IntroScene: RSAScene {
 		label.position = CGPoint(x: 30, y: self.size.height-30)
 		return label
 	}()
-	
 	
 	// MARK: State Machines
 	
@@ -331,7 +331,7 @@ public final class IntroScene: RSAScene {
 			if !nCreated {
 				if (label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel")) || (label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel")) {
 					self.showNLabelForFirstTime()
-					self.promptLabel.text = "Encrypt the message!"
+					self.promptLabel.text = "Encrypt the message using the public key."
 				}
 			}
 			// start any initial animations again if needed
@@ -604,11 +604,11 @@ public final class IntroScene: RSAScene {
 			if encrypting {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 				// update the prompt
-				self.promptLabel.text = "Decrypt the message!"
+				self.promptLabel.text = "Decrypt the message using the private key."
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 				// update the prompt
-				self.promptLabel.text = "Encrypt the message!"
+				self.promptLabel.text = "Encrypt the message using the public key."
 			}
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
