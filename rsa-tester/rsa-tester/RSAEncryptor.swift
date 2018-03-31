@@ -14,8 +14,12 @@ public final class RSAEncryptor {
     // MARK: Properties
     
     // the prime numbers that we choose
-    public let p:Int
+	public let p:Int
     public let q:Int
+	public let message:Int
+	
+	// just some primes so we can change incorrect user values
+	private let primes = [3,5,7,11,13,17,19,23,29]
 	
 	/// public modulus
     public var N:Int {
@@ -51,30 +55,28 @@ public final class RSAEncryptor {
         }
         return possibleD
     }()
+	
+	public lazy var cipherText:Int = {
+		let number = Int(pow(Double(message), Double(e)))
+		let result = number % N
+		return result
+	}()
     
     // MARK: Lifecycle
     
-    required public init(p:Int, q:Int) {
-        self.p = p
-        self.q = q
-		if p > 29 || q > 29 {
-			fatalError("p and q must be 29 or less!")
-		}
-        if p == q {
-            fatalError("p and q must be different!")
+	required public init(p:Int, q:Int, message:Int) {
+		var tempP = p > 29 ? 29 : p
+		self.q = q > 29 ? 29 : q
+		self.message = message > 21 ? 21 : message
+        while tempP == q {
+			let random = arc4random_uniform(UInt32(self.primes.count))
+			tempP = primes[Int(random)]
         }
+		self.p = tempP
     }
     
     // MARK: Methods
-    
-    /// encrypts a message based on the public modulus and `e`
-    public func encryption(forMessage message:Int) -> Int {
-		// we must use a double to be able to handle potentially huge numbers
-        let number = Int(pow(Double(message), Double(e)))
-		let result = number % N
-		return result
-    }
-    
+	
     /// simple iterative gcd
     private class func gcd(first:Int, second:Int) -> Int {
         var a = first, b = second, r = 0

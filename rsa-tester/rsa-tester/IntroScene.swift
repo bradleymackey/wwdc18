@@ -28,8 +28,6 @@ public final class IntroScene: RSAScene {
     public static var mathsEnabled = true
 	public static var useRealValues = true
 	
-	public static var message = 23
-	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
@@ -51,7 +49,7 @@ public final class IntroScene: RSAScene {
 	// MARK: Encryption
 	
 	/// the encryption engine
-	public static var encryptor = RSAEncryptor(p: 19, q: 13)
+	public static var encryptor = RSAEncryptor(p: 17, q: 13, message: 14)
 	
 	// MARK: Sprites
 	
@@ -88,7 +86,7 @@ public final class IntroScene: RSAScene {
 	
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.message)" : "M"
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.message)" : "M"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+115)
 		label.name = "mLabel"
@@ -161,8 +159,7 @@ public final class IntroScene: RSAScene {
 	/// the encrpyted message label
 	private lazy var cLabel:SKLabelNode = {
 		// encrypt the message using the encryptor
-		let encryptedMessage = IntroScene.encryptor.encryption(forMessage: IntroScene.message)
-		let labelText = IntroScene.useRealValues ? "\(encryptedMessage)" : "C"
+		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.cipherText)" : "C"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
 		label.position = CGPoint(x: self.mLabel.position.x, y: self.mLabel.position.y)
 		label.name = "cLabel"
