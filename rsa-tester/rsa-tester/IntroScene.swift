@@ -34,6 +34,8 @@ public final class IntroScene: RSAScene {
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
     private let clickSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
+	public static let pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
+	public static let dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
 	
 	// MARK: State
 	
@@ -206,22 +208,16 @@ public final class IntroScene: RSAScene {
 		return label
 	}()
 	
-	/// static to do title
-	private lazy var toDoLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "To-Do", fontSize: 35, color: .black, bold: true)
-		label.name = "toDo"
+	private lazy var promptLabel:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "Create N: drag p and q together.", fontSize: 32, color: .black, bold: true)
+		label.fontName = "Helvetica-Bold"
+		label.name = "prompt"
 		label.horizontalAlignmentMode = .left
-		label.position = CGPoint(x: 30, y: self.size.height-45)
+		label.verticalAlignmentMode = .top
+		label.position = CGPoint(x: 25, y: self.size.height-25)
 		return label
 	}()
 	
-	private lazy var listItem:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "• multiply p and q", fontSize: 18, color: .darkGray, bold: false)
-		label.name = "listItem"
-		label.horizontalAlignmentMode = .left
-		label.position = CGPoint(x: toDoLabel.position.x, y: toDoLabel.position.y-40)
-		return label
-	}()
 	
 	// MARK: State Machines
 	
@@ -279,7 +275,7 @@ public final class IntroScene: RSAScene {
 	private func addMathsLabelsIfNeeded() {
 		guard IntroScene.mathsEnabled else { return }
 		// add the maths labels to the scene
-		[mLabel, nLabel, eLabel, dLabel, modLabel, cLabel, pLabel, qLabel, toDoLabel, listItem].forEach {
+		[mLabel, eLabel, dLabel, modLabel, nLabel, cLabel, pLabel, qLabel, promptLabel].forEach {
 			self.addChild($0)
 		}
 	}
@@ -335,6 +331,7 @@ public final class IntroScene: RSAScene {
 			if !nCreated {
 				if (label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel")) || (label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel")) {
 					self.showNLabelForFirstTime()
+					self.promptLabel.text = "Encrypt the message!"
 				}
 			}
 			// start any initial animations again if needed
@@ -346,6 +343,7 @@ public final class IntroScene: RSAScene {
 				// not in the right place, just drop the label
 				self.dropDraggingLabel(movingLabel, label: label)
 			}
+			self.run(IntroScene.dropKeySound)
 		}
 		// call the implementation in RSAScene
 		super.touchUp(atPoint: point)
@@ -542,6 +540,8 @@ public final class IntroScene: RSAScene {
 		let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
 		moveOldMessageAnimation.timingMode = .easeOut
 		oldMessageLabel.run(moveOldMessageAnimation)
+		// update the prompt
+		self.promptLabel.text = "Drag the labels to the correct place."
 	}
 	
 	private func moveHiddenCopyToLocationAndThenBlink(node:SKLabelNode, location:CGPoint) {
@@ -603,8 +603,12 @@ public final class IntroScene: RSAScene {
 		let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
 			if encrypting {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
+				// update the prompt
+				self.promptLabel.text = "Decrypt the message!"
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
+				// update the prompt
+				self.promptLabel.text = "Encrypt the message!"
 			}
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
@@ -696,6 +700,7 @@ public final class IntroScene: RSAScene {
 		let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
 		let startMovingAction = SKAction.group([scale,fade])
 		copy.run(startMovingAction, withKey: "startMovingAction")
+		self.run(IntroScene.pickupKeySound)
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
