@@ -119,7 +119,7 @@ public final class CharacterSprite: SKLabelNode {
 			self.stateMachine.enter(CharacterInRangeState.self)
 		}
 		let sequence = SKAction.sequence([change,wait,changeToInRange])
-		self.run(sequence)
+		self.run(sequence, withKey: "briefAnimation")
 	}
     
     public func successAnimation() {

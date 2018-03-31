@@ -283,9 +283,8 @@ public final class IntroScene: RSAScene {
 	
 	private func startInitialMathsAnimationsIfNeeded() {
         guard IntroScene.mathsEnabled else { return }
-		[pLabel, qLabel].forEach {
-			self.mathsCreateValueRepeat(node: $0, shrinkPosition: nLabel.position)
-		}
+		self.mathsCreateValueRepeat(node: pLabel, shrinkPosition: qLabel.position)
+		self.mathsCreateValueRepeat(node: qLabel, shrinkPosition: pLabel.position)
 	}
 	
 	// MARK: Methods
@@ -502,7 +501,8 @@ public final class IntroScene: RSAScene {
 		let modPlaceholderPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
 		self.moveHiddenCopyToLocationAndThenBlink(node: modLabelText, location: modPlaceholderPosition)
 		// n label
-		let nPlaceholderPosition = CGPoint(x: (self.size.width/2)+120, y: oldMessageLabel.position.y)
+		let nPlaceholderOffset:CGFloat = IntroScene.useRealValues ? 120 : 90
+		let nPlaceholderPosition = CGPoint(x: (self.size.width/2)+nPlaceholderOffset, y: oldMessageLabel.position.y)
 		self.moveHiddenCopyToLocationAndThenBlink(node: nLabelText, location: nPlaceholderPosition)
 		// old message
 		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 105 : 115

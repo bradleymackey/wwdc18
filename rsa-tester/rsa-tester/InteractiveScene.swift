@@ -463,6 +463,7 @@ public final class InteractiveScene: RSAScene  {
         self.characterInRange = character
         character.stateMachine.enter(CharacterInRangeState.self)
         for other in defocus {
+			other.removeAction(forKey: "briefAnimation") // remove actions so we won't change state in an unexpected way
 			other.stateMachine.enter(CharacterWaitingInactiveState.self)
         }
     }
@@ -487,6 +488,7 @@ public final class InteractiveScene: RSAScene  {
         self.characterInRange = nil
         // no characters in range, set all waiting with full alpha
         for character in allCharacters {
+			character.removeAction(forKey: "briefAnimation") // remove actions so we won't change state in an unexpected way
 			character.stateMachine.enter(CharacterWaitingState.self)
         }
     }
