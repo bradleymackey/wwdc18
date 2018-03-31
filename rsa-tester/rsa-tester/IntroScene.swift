@@ -94,54 +94,50 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	/// the public modulus
-	private lazy var nLabel:SKLabelNode = {
+	private lazy var nLabel:SKNode = {
+		let node = SKNode()
+		node.position = CGPoint(x: (self.size.width/2)+50, y: 3*self.size.height/4)
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: IntroScene.publicColor, bold: true)
-		label.position =  CGPoint(x: (self.size.width/2)+50, y: 3*self.size.height/4)
-		label.name = "nLabel"
-		label.zPosition = 2.0
-		label.alpha = 0 // initially hidden
-		return label
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
+		label.zPosition = 3.0
+		label.alpha = 1 // initially hidden
+		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
+		node.addChild(background)
+		node.addChild(label)
+		[node, background, label].forEach { $0.name = "nLabel" }
+		return node
 	}()
 	
 	/// the public exponent
 	private lazy var eLabel:SKNode = {
-		let node = SKNode()
-		node.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
-		node.name = "eLabel"
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: .white, bold: false)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.publicColor, bold: true)
+		label.name = "eLabel"
+		label.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
 		label.zPosition = 3.0
-		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
-		node.addChild(background)
-		node.addChild(label)
-		return node
+		return label
 	}()
 	
 	/// the private exponent
 	private lazy var dLabel:SKNode = {
-		let node = SKNode()
-		node.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
-		node.name = "dLabel"
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: .white, bold: false)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.privateColor, bold: true)
+		label.name = "dLabel"
+		label.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
 		label.zPosition = 3.0
-		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
-		node.addChild(background)
-		node.addChild(label)
-		return node
+		return label
 	}()
 	
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
 		node.position =  CGPoint(x: self.nLabel.position.x-90, y: self.nLabel.position.y)
-		node.name = "modLabel"
 		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
+		[node, background, label].forEach { $0.name = "modLabel" }
 		return node
 	}()
 	
@@ -160,26 +156,26 @@ public final class IntroScene: RSAScene {
 	private lazy var pLabel:SKNode = {
 		let node = SKNode()
 		node.position = CGPoint(x: nLabel.position.x-95, y: nLabel.position.y+80)
-		node.name = "pLabel"
         let pText = IntroScene.useRealValues ? "\(IntroScene.encryptor.p)" : "p"
 		let label = RSAScene.mathsLabel(text: pText, fontSize: 28, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
 		node.addChild(background)
 		node.addChild(label)
+		[node,background,label].forEach { $0.name = "pLabel" }
 		return node
 	}()
 	
 	private lazy var qLabel:SKNode = {
 		let node = SKNode()
 		node.position = CGPoint(x: nLabel.position.x, y: nLabel.position.y+80)
-		node.name = "qLabel"
         let qText = IntroScene.useRealValues ? "\(IntroScene.encryptor.q)" : "q"
 		let label = RSAScene.mathsLabel(text: qText, fontSize: 28, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
 		node.addChild(background)
 		node.addChild(label)
+		[node,background,label].forEach { $0.name = "qLabel" }
 		return node
 	}()
 	
