@@ -287,6 +287,9 @@ public final class IntroScene: RSAScene {
 	private func startInitialMathsAnimationsIfNeeded() {
         guard IntroScene.mathsEnabled else { return }
 		guard !nCreated else { return }
+		// so that we cannot use the keys until we create N
+		self.sceneStateMachine.enter(SceneAnimatingState.self)
+		// start the prompting animation to drag p and q together
 		self.mathsCreateValueRepeat(node: pLabel, shrinkPosition: qLabel.position)
 		self.mathsCreateValueRepeat(node: qLabel, shrinkPosition: pLabel.position)
 	}
@@ -329,32 +332,13 @@ public final class IntroScene: RSAScene {
 	override public func touchUp(atPoint point: CGPoint) {
 		if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
 			guard let movingLabel = self.childNode(withName: label + "-copy") else { return }
-			
 			if !nCreated {
-				if label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel") {
-					let scale = SKAction.scale(to: 1, duration: 0.2)
-					let fade = SKAction.fadeIn(withDuration: 0.2)
-					let grouped = SKAction.group([scale,fade])
-					self.nLabel.run(grouped)
-					self.nCreated = true
-					self.sceneStateMachine.enter(SceneWaitState.self)
-					self.stopForeverAnimations()
-				}
-				if label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel") {
-					let scale = SKAction.scale(to: 1, duration: 0.2)
-					let fade = SKAction.fadeIn(withDuration: 0.2)
-					let grouped = SKAction.group([scale,fade])
-					self.nLabel.run(grouped)
-					self.nCreated = true
-					self.sceneStateMachine.enter(SceneWaitState.self)
-					self.stopForeverAnimations()
+				if (label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel")) || (label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel")) {
+					self.showNLabelForFirstTime()
 				}
 			}
-			
 			// start any initial animations again if needed
 			self.startInitialMathsAnimationsIfNeeded()
-			
-			
 			if let blinking = self.draggedLabelOnTopOfBlinkingLabel(point: point, label: label) {
 				// we have made contact with the correct blinking label, so merge the dragging label to the correct position
 				self.alignDraggingLabelWithBlinkingLabel(dragging: movingLabel, blinking: blinking)
@@ -399,6 +383,16 @@ public final class IntroScene: RSAScene {
 			return node
 		}
 		return nil
+	}
+	
+	private func showNLabelForFirstTime() {
+		let scale = SKAction.scale(to: 1, duration: 0.2)
+		let fade = SKAction.fadeIn(withDuration: 0.2)
+		let grouped = SKAction.group([scale,fade])
+		self.nLabel.run(grouped)
+		self.nCreated = true
+		self.sceneStateMachine.enter(SceneWaitState.self)
+		self.stopForeverAnimations()
 	}
 	
 	/// moves a maths label that we are dragging on top of the blinking label perfectly, and removes the blinking label
@@ -583,9 +577,9 @@ public final class IntroScene: RSAScene {
 		let remove = SKAction.removeFromParent()
 		let pauseShrinkFadeRemove = SKAction.sequence([pauseShrinkFade,remove])
 		// run action on most ephemeral labels
-		self.runOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: keyLabel)
-		self.runOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: modLabel)
-		self.runOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: nLabel)
+		self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: keyLabel)
+		self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: modLabel)
+		self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: nLabel)
 		// move the old message label ready for next animation
 		let grow = SKAction.scale(to: 1, duration: 0)
 		let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
@@ -621,7 +615,7 @@ public final class IntroScene: RSAScene {
 		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 0.8)
 	}
 	
-	private func runOnCopyIfCopyExists(action:SKAction,node:SKNode) {
+	private func runActionOnCopyIfCopyExists(action:SKAction,node:SKNode) {
 		if let nodeName = node.name {
 			if let nodeCopy = self.childNode(withName: nodeName + "-copy") {
 				nodeCopy.run(action)
@@ -706,7 +700,10 @@ public final class IntroScene: RSAScene {
 	
 	private func showInfoPanel(forLabel label:String) {
 		// play a little click sound after the delegation call
-        defer { self.run(clickSound) }
+		var shouldClick = true
+        defer {
+			if shouldClick { self.run(clickSound) }
+		}
 		switch label {
 		case "mLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations. We can encrypt the message by using the Public Modulus and Public Exponent.")
@@ -725,7 +722,8 @@ public final class IntroScene: RSAScene {
 		case "qLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Prime q", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n   1. it must be a prime number\n   2. it must be different from p\n\nWe multiply p and q to calculate the public modulus N.")
 		default:
-			return
+			// no click sound if we present to information popup
+			shouldClick = false
 		}
 	}
 	
