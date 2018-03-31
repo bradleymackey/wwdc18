@@ -209,12 +209,12 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var promptLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Create N: drag p and q together.", fontSize: 32, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: "Create N: drag p and q together.", fontSize: 28, color: .black, bold: true)
 		label.fontName = "Helvetica-Bold"
 		label.name = "prompt"
 		label.horizontalAlignmentMode = .left
 		label.verticalAlignmentMode = .top
-		label.position = CGPoint(x: 25, y: self.size.height-25)
+		label.position = CGPoint(x: 30, y: self.size.height-30)
 		return label
 	}()
 	
