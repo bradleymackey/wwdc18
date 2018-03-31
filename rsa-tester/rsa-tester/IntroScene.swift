@@ -187,7 +187,7 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var listItem:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "• multiply p and q", fontSize: 21, color: .darkGray, bold: false)
+		let label = RSAScene.mathsLabel(text: "• multiply p and q", fontSize: 18, color: .darkGray, bold: false)
 		label.name = "listItem"
 		label.horizontalAlignmentMode = .left
 		label.position = CGPoint(x: toDoLabel.position.x, y: toDoLabel.position.y-40)
@@ -265,13 +265,12 @@ public final class IntroScene: RSAScene {
 			return
 		}
 		// start rotating the cube/message
-		guard nodeName != "messageNode" else {
+		if nodeName == "messageNode" {
 			self.messageNode.stateMachine.state(forClass: MessageDraggingState.self)?.startMovingPoint = point
 			self.messageNode.stateMachine.enter(MessageRotatingState.self)
-			return
 		}
 		// start moving the key node
-		if nodeName.contains("KeyNode") {
+		else if nodeName.contains("KeyNode") {
 			guard let keyNode = node as? KeySprite else { return }
 			keyNode.stateMachine.state(forClass: KeyDragState.self)?.startMovingPoint = point
 			keyNode.stateMachine.enter(KeyDragState.self)

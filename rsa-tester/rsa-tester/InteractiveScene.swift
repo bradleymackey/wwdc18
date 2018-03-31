@@ -270,7 +270,7 @@ public final class InteractiveScene: RSAScene  {
 			self.messageNode.stateMachine.enter(MessageDraggingState.self)
 		}
 		// start moving the key node once we set the start point
-		if nodeName.contains("KeyNode") {
+		else if nodeName.contains("KeyNode") {
 			guard let keyNode = node as? KeySprite else { return }
 			keyNode.stateMachine.state(forClass: KeyDragState.self)?.startMovingPoint = point
 			keyNode.stateMachine.enter(KeyDragState.self)
