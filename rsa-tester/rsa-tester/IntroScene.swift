@@ -33,9 +33,6 @@ public final class IntroScene: RSAScene {
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
-	private let encryptSound = SKAction.playSoundFileNamed("encrypt.caf", waitForCompletion: false)
-	private let decryptSound = SKAction.playSoundFileNamed("decrypt.caf", waitForCompletion: false)
-	private let failSound = SKAction.playSoundFileNamed("fail.caf", waitForCompletion: false)
     private let clickSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
 	
 	// MARK: State

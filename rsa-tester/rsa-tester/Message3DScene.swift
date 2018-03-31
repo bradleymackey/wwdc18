@@ -225,8 +225,6 @@ public final class Message3DScene: SCNScene {
         SCNTransaction.commit()
     }
 	
-	
-	
 	public func rotatePaper(dx: CGFloat, dy: CGFloat) {
 		SCNTransaction.begin()
 		SCNTransaction.animationDuration = 0.03

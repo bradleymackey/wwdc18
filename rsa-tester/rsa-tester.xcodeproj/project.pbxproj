@@ -61,6 +61,10 @@
 		97F5C37E206F9BC40091E7BA /* MessageWaitingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C37D206F9BC40091E7BA /* MessageWaitingState.swift */; };
 		97F5C380206F9BCE0091E7BA /* MessageRotatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C37F206F9BCE0091E7BA /* MessageRotatingState.swift */; };
 		97F5C382206F9BE00091E7BA /* MessageDraggingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C381206F9BE00091E7BA /* MessageDraggingState.swift */; };
+		97F5C385206FA5710091E7BA /* PaperState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C384206FA5710091E7BA /* PaperState.swift */; };
+		97F5C387206FA63E0091E7BA /* PaperNormalState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C386206FA63E0091E7BA /* PaperNormalState.swift */; };
+		97F5C389206FA6450091E7BA /* PaperErrorState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C388206FA6450091E7BA /* PaperErrorState.swift */; };
+		97F5C38B206FA64E0091E7BA /* PaperEncryptedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C38A206FA64E0091E7BA /* PaperEncryptedState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +145,10 @@
 		97F5C37D206F9BC40091E7BA /* MessageWaitingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageWaitingState.swift; sourceTree = "<group>"; };
 		97F5C37F206F9BCE0091E7BA /* MessageRotatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRotatingState.swift; sourceTree = "<group>"; };
 		97F5C381206F9BE00091E7BA /* MessageDraggingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDraggingState.swift; sourceTree = "<group>"; };
+		97F5C384206FA5710091E7BA /* PaperState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperState.swift; sourceTree = "<group>"; };
+		97F5C386206FA63E0091E7BA /* PaperNormalState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperNormalState.swift; sourceTree = "<group>"; };
+		97F5C388206FA6450091E7BA /* PaperErrorState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperErrorState.swift; sourceTree = "<group>"; };
+		97F5C38A206FA64E0091E7BA /* PaperEncryptedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaperEncryptedState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +217,7 @@
 				97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */,
 				978DA807206C42AA0071A162 /* CageSprite.swift */,
 				976328872062884D000C9EAC /* RSAEncryptor.swift */,
+				97F5C38C206FA6550091E7BA /* PaperState */,
 				97F5C383206F9BEC0091E7BA /* MessageState */,
 				97F5C378206EBA4E0091E7BA /* CharacterState */,
 				97F5C36C206E88AE0091E7BA /* KeyState */,
@@ -296,6 +305,17 @@
 				97F5C381206F9BE00091E7BA /* MessageDraggingState.swift */,
 			);
 			path = MessageState;
+			sourceTree = "<group>";
+		};
+		97F5C38C206FA6550091E7BA /* PaperState */ = {
+			isa = PBXGroup;
+			children = (
+				97F5C384206FA5710091E7BA /* PaperState.swift */,
+				97F5C386206FA63E0091E7BA /* PaperNormalState.swift */,
+				97F5C388206FA6450091E7BA /* PaperErrorState.swift */,
+				97F5C38A206FA64E0091E7BA /* PaperEncryptedState.swift */,
+			);
+			path = PaperState;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -454,6 +474,7 @@
 				97F5C380206F9BCE0091E7BA /* MessageRotatingState.swift in Sources */,
 				97F5C382206F9BE00091E7BA /* MessageDraggingState.swift in Sources */,
 				97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */,
+				97F5C387206FA63E0091E7BA /* PaperNormalState.swift in Sources */,
 				972FE9732064459100AF243D /* RSAScene.swift in Sources */,
 				9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */,
 				97F5C377206EBA040091E7BA /* CharacterFailState.swift in Sources */,
@@ -462,6 +483,8 @@
 				972FE96120619BA800AF243D /* Message3DScene.swift in Sources */,
 				972FE92D20619AF800AF243D /* GameScene.swift in Sources */,
 				97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */,
+				97F5C38B206FA64E0091E7BA /* PaperEncryptedState.swift in Sources */,
+				97F5C385206FA5710091E7BA /* PaperState.swift in Sources */,
 				972FE95B20619B4100AF243D /* IntroScene.swift in Sources */,
 				9748EFE5206E61F900FB3780 /* KeyInactiveState.swift in Sources */,
 				972FE92F20619AF800AF243D /* GameViewController.swift in Sources */,
@@ -477,6 +500,7 @@
 				9748EFE1206E61BB00FB3780 /* KeyDragState.swift in Sources */,
 				973B536A2066C325001366A0 /* KeyType.swift in Sources */,
 				972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */,
+				97F5C389206FA6450091E7BA /* PaperErrorState.swift in Sources */,
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,
 				978DA808206C42AA0071A162 /* CageSprite.swift in Sources */,
