@@ -266,7 +266,8 @@ public final class IntroScene: RSAScene {
 		}
 		// start rotating the cube/message
 		guard nodeName != "messageNode" else {
-			self.messageNode.startRotating(at: point)
+			self.messageNode.stateMachine.state(forClass: MessageDraggingState.self)?.startMovingPoint = point
+			self.messageNode.stateMachine.enter(MessageRotatingState.self)
 			return
 		}
 		// start moving the key node
@@ -300,7 +301,7 @@ public final class IntroScene: RSAScene {
 		// set the stop moving points, so we can compute the fling
 		self.stopKeysMovingIfNeeded(at: point)
 		// stop the cube rotation
-		self.messageNode.endRotation()
+		self.messageNode.stateMachine.enter(MessageWaitingState.self)
 	}
 	
 	override public func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {
@@ -547,9 +548,8 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
-        defer {
-            self.run(clickSound)
-        }
+		// play a little click sound after the delegation call
+        defer { self.run(clickSound) }
 		switch label {
 		case "mLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations. We can encrypt the message by using the Public Modulus and Public Exponent.")

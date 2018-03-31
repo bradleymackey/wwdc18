@@ -285,7 +285,7 @@ public final class InteractiveScene: RSAScene  {
 		super.touchUp(atPoint: point)
 		// mark that all moveables are no longer being moved by the user
 		self.stopKeysMovingIfNeeded(at: point)
-		self.messageNode.stopMoving()
+		self.messageNode.stateMachine.enter(MessageWaitingState.self)
 	}
 	
 	public override func bodyContact(firstBody: SKPhysicsBody, secondBody: SKPhysicsBody) {

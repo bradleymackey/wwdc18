@@ -12,6 +12,12 @@ import GameplayKit
 
 public final class MessageRotatingState: MessageState {
 	
+	public override func didEnter(from previousState: GKState?) {
+		super.didEnter(from: previousState)
+		guard let state = previousState, state.isKind(of: MessageWaitingState.self) else { return }
+		guard let startPoint = self.startMovingPoint else { return }
+		self.message.startRotating(at: startPoint)
+	}
 	
 	public override func isValidNextState(_ stateClass: AnyClass) -> Bool {
 		// wait after rotating

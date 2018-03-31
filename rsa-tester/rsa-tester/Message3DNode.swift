@@ -29,7 +29,12 @@ public final class Message3DNode: SK3DNode {
 				MessageDraggingState(message: self)]
 	}
 	
-	public lazy var stateMachine = GKStateMachine(states: self.states)
+	/// for managing the states of MOVING and ROTATING the message
+	public lazy var stateMachine: GKStateMachine = {
+		let machine = GKStateMachine(states: self.states)
+		machine.enter(MessageWaitingState.self)
+		return machine
+	}()
 	
 	/// the last point that was registered during the cube rotation
 	private var lastRotationPoint:CGPoint?
