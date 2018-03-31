@@ -26,9 +26,9 @@ public final class IntroScene: RSAScene {
 	public static let invalidPulseTime:TimeInterval = 0.4
     
     public static var mathsEnabled = true
-	public static var useRealValues = false
+	public static var useRealValues = true
 	
-	public static var message = 3
+	public static var message = 23
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
@@ -96,7 +96,7 @@ public final class IntroScene: RSAScene {
 	/// the public modulus
 	private lazy var nLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: (self.size.width/2)+50, y: 3*self.size.height/4)
+		node.position = CGPoint(x: (self.size.width/2)+100, y: (3*self.size.height/4)-20)
 		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
 		label.zPosition = 3.0
@@ -131,7 +131,7 @@ public final class IntroScene: RSAScene {
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
-		node.position =  CGPoint(x: self.nLabel.position.x-90, y: self.nLabel.position.y)
+		node.position =  CGPoint(x: self.nLabel.position.x-120, y: self.nLabel.position.y)
 		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
@@ -404,7 +404,7 @@ public final class IntroScene: RSAScene {
         
         let centerPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
         // animate key label
-        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-48, y: oldMessageLabel.position.y+34)
+        let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-65, y: oldMessageLabel.position.y+31)
         self.moveShrinkFadeRemoveCopy(node: keyLabel, movePosition: keyLabelNewPosition, shrinkPosition: centerPosition)
         // animate mod label
         let newModPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
@@ -414,7 +414,7 @@ public final class IntroScene: RSAScene {
         self.moveShrinkFadeRemoveCopy(node: nLabel, movePosition: newNPosition, shrinkPosition: centerPosition)
         // animate old message label
 		// move the label more if there are 2 characters being displayed
-		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 90 : 100
+		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 100 : 110
         let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
         let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
         moveOldMessageAnimation.timingMode = .easeOut

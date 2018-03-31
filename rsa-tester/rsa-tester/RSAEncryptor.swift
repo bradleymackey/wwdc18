@@ -21,13 +21,20 @@ public final class RSAEncryptor {
     public var N:Int {
         return p*q
     }
-	
+
 	/// public exponent
     public lazy var e:Int = {
-        let primes = [3,5,7,11,13,17,19,23]
-        let primeCount = UInt32(primes.count)
-		let index = Int(arc4random_uniform(primeCount))
-        return primes[index]
+		var candidates = Set<Int>()
+		let toBeCoprime = (p-1)*(q-1) // find numbers coprime to (p-1)(q-1)
+		for num in 2...13 { // limited number range so its not too big
+			if RSAEncryptor.gcd(first: num, second: toBeCoprime) == 1 {
+				candidates.insert(num)
+			}
+		}
+		let numbersCount = UInt32(candidates.count)
+		let random = Int(arc4random_uniform(numbersCount))
+		let index = candidates.index(candidates.startIndex, offsetBy: random)
+		return candidates[index]
     }()
 	
 	/// private exponent
@@ -36,6 +43,10 @@ public final class RSAEncryptor {
         // find a `d` such that e*d == 1 mod (p-1)(q-1)
         while (possibleD*e)%((p-1)*(q-1)) != 1 {
             possibleD += 1
+			if possibleD > N {
+				// so we dont just loop forever
+				return 0
+			}
         }
         return possibleD
     }()
@@ -57,14 +68,10 @@ public final class RSAEncryptor {
     
     /// encrypts a message based on the public modulus and `e`
     public func encryption(forMessage message:Int) -> Int {
-        let value = Int(pow(Double(message), Double(e)))
-        return value % Int(N)
-    }
-	
-    /// decrypts some cipertext based on the public modulus and `d`
-    public func decryption(forCipherText ciper:Int) -> Int {
-        let value = Int(pow(Double(ciper), Double(d)))
-        return value % Int(N)
+		// we must use a double to be able to handle potentially huge numbers
+        let number = Int(pow(Double(message), Double(e)))
+		let result = number % N
+		return result
     }
     
     /// simple iterative gcd
