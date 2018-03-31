@@ -49,7 +49,7 @@ public final class IntroScene: RSAScene {
 	// MARK: Encryption
 	
 	/// the encryption engine
-	public static var encryptor = RSAEncryptor(p: 17, q: 13, message: 14)
+	public static var encryptor = RSAEncryptor(p: 17, q: 17, message: 14)
 	
 	// MARK: Sprites
 	

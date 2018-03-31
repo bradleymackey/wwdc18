@@ -16,6 +16,7 @@ public final class RSAEncryptor {
     // the prime numbers that we choose
 	public let p:Int
     public let q:Int
+	// the message we will encrypt
 	public let message:Int
 	
 	// just some primes so we can change incorrect user values
