@@ -207,7 +207,7 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var promptLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Create N: drag p and q together to multiply them.", fontSize: 22, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: "Encrypt the message using the public key.", fontSize: 22, color: .black, bold: true)
 		label.fontName = "Helvetica-Bold"
 		label.name = "prompt"
 		label.horizontalAlignmentMode = .left
@@ -221,8 +221,14 @@ public final class IntroScene: RSAScene {
 	/// bolier-plate for intro scene key machine
 	private class func introKeyMachine(forKey key:KeySprite) -> GKStateMachine {
 		let machine = GKStateMachine(states: [KeyDragState(key: key),
-											  KeyWaitState(key: key)])
-		machine.enter(KeyWaitState.self)
+											  KeyWaitState(key: key),
+											  KeyInactiveState(key: key)])
+		// inactive initially if maths is enabled
+		if IntroScene.mathsEnabled {
+			machine.enter(KeyInactiveState.self)
+		} else {
+			machine.enter(KeyWaitState.self)
+		}
 		return machine
 	}
 
@@ -250,6 +256,8 @@ public final class IntroScene: RSAScene {
 	override public func sceneDidLoad() {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
+		// add the prompt
+		self.addChild(promptLabel)
 		// create the paper and the scene node
 		self.addMessageSceneNode()
 		// create the key sprites
@@ -272,9 +280,11 @@ public final class IntroScene: RSAScene {
 	private func addMathsLabelsIfNeeded() {
 		guard IntroScene.mathsEnabled else { return }
 		// add the maths labels to the scene
-		[mLabel, eLabel, dLabel, modLabel, nLabel, cLabel, pLabel, qLabel, promptLabel].forEach {
+		[mLabel, eLabel, dLabel, modLabel, nLabel, cLabel, pLabel, qLabel].forEach {
 			self.addChild($0)
 		}
+		// update the prompt message to reflect the action that is required
+		promptLabel.text = "Create N: drag p and q together to multiply them."
 	}
 	
 	private func startInitialMathsAnimationsIfNeeded() {
@@ -328,6 +338,11 @@ public final class IntroScene: RSAScene {
 			if !nCreated {
 				if (label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel")) || (label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel")) {
 					self.showNLabelForFirstTime()
+					// make the keys interactable
+					[publicKeyNode, privateKeyNode].forEach {
+						$0.stateMachine.enter(KeyWaitState.self)
+					}
+					// update the prompt
 					self.promptLabel.text = "Encrypt the message using the public key."
 				}
 			}
