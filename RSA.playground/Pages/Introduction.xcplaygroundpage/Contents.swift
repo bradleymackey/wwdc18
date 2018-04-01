@@ -47,6 +47,8 @@ This means that to encrypt a message, it firstly has to be converted into a numb
 
 At the heart of RSA is a number called the *public modulus*, `N`.
 
+We create this number by multiplying together 2 prime numbers that we choose: `p` and `q`.
+
 ### Have a look!
 Go ahead and **turn on** `viewMaths` to see the calculations that are done as we encrypt and decrypt!
 

@@ -812,9 +812,9 @@ public final class MathematicsScene: RSAScene {
 		case "dLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Private Exponent (d)", message: "This is the one of the parts of the private key.\n\nIt is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N.\n\nIt is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work).\n\nYou can only easily calculate this number if you originally knew the 2 prime numbers p and q.")
 		case "pLabel":
-            self.informationDelegate?.presentInformationPopup(title: "Prime Number (p)", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n   1. it must be a prime number\n   2. it must be different from q\n\nWe multiply p and q to calculate the public modulus N.")
+            self.informationDelegate?.presentInformationPopup(title: "Prime Number (p)", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n\n   1. it must be a prime number\n   2. it must be different from q\n\nWe multiply p and q to calculate the public modulus N.")
 		case "qLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Prime Number (q)", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n   1. it must be a prime number\n   2. it must be different from p\n\nWe multiply p and q to calculate the public modulus N.")
+			self.informationDelegate?.presentInformationPopup(title: "Prime Number (q)", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n\n   1. it must be a prime number\n   2. it must be different from p\n\nWe multiply p and q to calculate the public modulus N.")
 		default:
 			// no click sound if we present to information popup
 			shouldClick = false
