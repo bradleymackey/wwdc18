@@ -35,6 +35,7 @@
 		9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */; };
 		9748EFE5206E61F900FB3780 /* KeyInactiveState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */; };
 		976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976328872062884D000C9EAC /* RSAEncryptor.swift */; };
+		978203412070FC2D00272D1F /* MathematicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978203402070FC2D00272D1F /* MathematicsView.swift */; };
 		978DA806206BF2AA0071A162 /* popup.caf in Resources */ = {isa = PBXBuildFile; fileRef = 978DA805206BF2AA0071A162 /* popup.caf */; };
 		978DA808206C42AA0071A162 /* CageSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978DA807206C42AA0071A162 /* CageSprite.swift */; };
 		9795F50F206BFAA100E39E93 /* cage.png in Resources */ = {isa = PBXBuildFile; fileRef = 9795F50E206BFAA100E39E93 /* cage.png */; };
@@ -54,6 +55,7 @@
 		97C120052070E4B4005CB3A0 /* success-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120022070E4B3005CB3A0 /* success-drop.caf */; };
 		97C120092070EA0D005CB3A0 /* Sparks.sks in Resources */ = {isa = PBXBuildFile; fileRef = 97C120082070EA0D005CB3A0 /* Sparks.sks */; };
 		97C1200B2070F33E005CB3A0 /* fireworks.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C1200A2070F33E005CB3A0 /* fireworks.caf */; };
+		97C1200D2070F7D3005CB3A0 /* MyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C1200C2070F7D3005CB3A0 /* MyView.swift */; };
 		97F5C367206E88810091E7BA /* SceneState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C366206E88810091E7BA /* SceneState.swift */; };
 		97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C368206E889A0091E7BA /* SceneWaitState.swift */; };
 		97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */; };
@@ -125,6 +127,7 @@
 		9748EFE2206E61DC00FB3780 /* KeyWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyWaitState.swift; sourceTree = "<group>"; };
 		9748EFE4206E61F900FB3780 /* KeyInactiveState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyInactiveState.swift; sourceTree = "<group>"; };
 		976328872062884D000C9EAC /* RSAEncryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSAEncryptor.swift; sourceTree = "<group>"; };
+		978203402070FC2D00272D1F /* MathematicsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MathematicsView.swift; path = ../../RSA.playground/Sources/MathematicsView.swift; sourceTree = "<group>"; };
 		978DA805206BF2AA0071A162 /* popup.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = popup.caf; sourceTree = "<group>"; };
 		978DA807206C42AA0071A162 /* CageSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CageSprite.swift; sourceTree = "<group>"; };
 		9795F50E206BFAA100E39E93 /* cage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cage.png; sourceTree = "<group>"; };
@@ -144,6 +147,7 @@
 		97C120022070E4B3005CB3A0 /* success-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "success-drop.caf"; sourceTree = "<group>"; };
 		97C120082070EA0D005CB3A0 /* Sparks.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Sparks.sks; sourceTree = "<group>"; };
 		97C1200A2070F33E005CB3A0 /* fireworks.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fireworks.caf; sourceTree = "<group>"; };
+		97C1200C2070F7D3005CB3A0 /* MyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyView.swift; sourceTree = "<group>"; };
 		97F5C366206E88810091E7BA /* SceneState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneState.swift; sourceTree = "<group>"; };
 		97F5C368206E889A0091E7BA /* SceneWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneWaitState.swift; sourceTree = "<group>"; };
 		97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAnimatingState.swift; sourceTree = "<group>"; };
@@ -217,12 +221,14 @@
 				972FE92C20619AF800AF243D /* GameScene.swift */,
 				97C120082070EA0D005CB3A0 /* Sparks.sks */,
 				972FE92E20619AF800AF243D /* GameViewController.swift */,
+				97C1200C2070F7D3005CB3A0 /* MyView.swift */,
 				972FE9722064459100AF243D /* RSAScene.swift */,
 				972FE95A20619B4100AF243D /* MathematicsScene.swift */,
 				972FE970206444A300AF243D /* InteractiveScene.swift */,
 				972FE97820651A2600AF243D /* CharacterSprite.swift */,
 				972FE95C20619B7000AF243D /* KeySprite.swift */,
 				972FE97620645D7B00AF243D /* KeyOwner.swift */,
+				978203402070FC2D00272D1F /* MathematicsView.swift */,
 				973B53692066C325001366A0 /* KeyType.swift */,
 				972FE95E20619B9500AF243D /* Message3DNode.swift */,
 				972FE96020619BA800AF243D /* Message3DScene.swift */,
@@ -500,6 +506,7 @@
 				97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */,
 				97F5C387206FA63E0091E7BA /* PaperNormalState.swift in Sources */,
 				972FE9732064459100AF243D /* RSAScene.swift in Sources */,
+				97C1200D2070F7D3005CB3A0 /* MyView.swift in Sources */,
 				9748EFE3206E61DC00FB3780 /* KeyWaitState.swift in Sources */,
 				97F5C377206EBA040091E7BA /* CharacterFailState.swift in Sources */,
 				97F5C373206EB9280091E7BA /* CharacterInRangeState.swift in Sources */,
@@ -525,6 +532,7 @@
 				973B536A2066C325001366A0 /* KeyType.swift in Sources */,
 				972FE97920651A2600AF243D /* CharacterSprite.swift in Sources */,
 				97F5C389206FA6450091E7BA /* PaperErrorState.swift in Sources */,
+				978203412070FC2D00272D1F /* MathematicsView.swift in Sources */,
 				972FE971206444A300AF243D /* InteractiveScene.swift in Sources */,
 				976328882062884D000C9EAC /* RSAEncryptor.swift in Sources */,
 				978DA808206C42AA0071A162 /* CageSprite.swift in Sources */,

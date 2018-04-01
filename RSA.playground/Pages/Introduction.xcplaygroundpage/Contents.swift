@@ -73,25 +73,6 @@ Don't worry if things are still a little confusing, it can take some time to rea
 // change the RSAEncryptor engine values
 // change the message value
 
-/*:
-## Sweet!
-Now we understand the basics, let's go and see how it's used.
-
-[Click Here.](@next)
-*/
-
-
-//let view = SKView(frame: CGRect(x: 0, y: 0, width: 500, height: 500))
-
-// Load the SKScene from 'GameScene.sks'
-//let scene = IntroScene(size: view.bounds.size)
-
-// Set the scale mode to scale to fit the window
-//scene.scaleMode = .aspectFill
-
-// Present the scene
-//view.presentScene(scene)
-
-//PlaygroundPage.current.liveView = view
-
-
+let frame = CGRect(x: 0, y: 0, width: 500, height: 500)
+let view = MathematicsView(frame: frame)
+PlaygroundPage.current.liveView = view
