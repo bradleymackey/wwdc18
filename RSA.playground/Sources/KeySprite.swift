@@ -12,7 +12,6 @@ import GameplayKit
 
 public final class KeySprite: SKSpriteNode {
 	
-	
 	// MARK: Properties
 	
 	/// texture to be used for the key
@@ -74,7 +73,8 @@ public final class KeySprite: SKSpriteNode {
 		self.owner = owner
 		self.type = type
         self.keyWidth = size
-		super.init(texture: KeySprite.keyTexture, color: color, size: self.dimensions)
+		let preInitDimensions = CGSize(width: size, height: size)
+		super.init(texture: KeySprite.keyTexture, color: color, size: preInitDimensions)
 		// setup the sprite
 		self.physicsBody = self.physicsBody(texture: KeySprite.keyTexture, mask: categoryMask)
 		self.colorBlendFactor = 1
