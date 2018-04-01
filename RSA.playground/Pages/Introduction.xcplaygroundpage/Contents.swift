@@ -27,6 +27,8 @@ Then **decrypt the message** using the red *private key*.
 */
 
 // change color of keys here
+MathematicsScene.publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
+MathematicsScene.privateColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
 
 /*:
 ## How does it work?
@@ -50,8 +52,8 @@ See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and de
 **Tap on the labels** for a description of what they are and what they do.
 */
 
-// view maths toggle
-
+// see the variables used
+MathematicsScene.mathsEnabled = true
 
 /*:
 
@@ -69,10 +71,20 @@ Don't worry if things are still a little confusing, it can take some time to rea
 *Prime numbers to try: 3, 5, 7, 11, 13, 17, 19, 23, 29*
 */
 
-// toggle to turn on real values
-// change the RSAEncryptor engine values
-// change the message value
+// use real numbers!
+MathematicsScene.useRealValues = false
 
+// change the RSAEncryptor engine values
+MathematicsScene.encryptor = RSAEncryptor(p: 13, q: 19, message: 12)
+
+/*:
+## Sweet!
+Now we understand the basics, let's go and see how it's used.
+
+[Click Here.](@next)
+*/
+
+// present the scene
 let frame = CGRect(x: 0, y: 0, width: 500, height: 500)
 let view = MathematicsView(frame: frame)
 PlaygroundPage.current.liveView = view
