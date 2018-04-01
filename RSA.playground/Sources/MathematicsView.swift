@@ -23,9 +23,9 @@ public final class MathematicsView: SKView, MathematicsSceneInformationDelegate 
 	
 	/// the big bold title label that is displayed in the information view
 	private lazy var informationTitleLabel:UILabel = {
-		let labelFrame = CGRect(x: 40, y: 25, width: (self.frame.width/2)-60, height: 50)
+		let labelFrame = CGRect(x: 40, y: 25, width: (2*self.frame.width/3)-60, height: 50)
 		let label = UILabel(frame: labelFrame)
-		label.font = UIFont.boldSystemFont(ofSize: 32)
+		label.font = UIFont.boldSystemFont(ofSize: 25)
 		label.numberOfLines = 0
 		label.textColor = .white
 		return label
@@ -33,9 +33,9 @@ public final class MathematicsView: SKView, MathematicsSceneInformationDelegate 
 	
 	/// the detail message label that is displayed in the information view
 	private lazy var informationDetailLabel:UILabel = {
-		let labelFrame = CGRect(x: 30, y: 55, width: (self.frame.width/2)-60, height: self.frame.height-400)
+		let labelFrame = CGRect(x: 30, y: 55, width: (2*self.frame.width/3)-60, height: self.frame.height-300)
 		let label = UILabel(frame: labelFrame)
-		label.font = UIFont.systemFont(ofSize: 20)
+		label.font = UIFont.systemFont(ofSize: 16)
 		label.textColor = .white
 		label.numberOfLines = 0
 		return label
@@ -43,7 +43,7 @@ public final class MathematicsView: SKView, MathematicsSceneInformationDelegate 
 	
 	/// the message that tells people to drag down to dismiss the message
 	private lazy var dismissLabel:UILabel = {
-		let labelFrame = CGRect(x: 0, y: self.frame.height-335, width: self.frame.width/2, height: 24)
+		let labelFrame = CGRect(x: 0, y: self.frame.height-235, width: 2*self.frame.width/3, height: 24)
 		let label = UILabel(frame: labelFrame)
 		label.text = "Drag down to dismiss"
 		label.font = UIFont.systemFont(ofSize: 15)
@@ -55,7 +55,7 @@ public final class MathematicsView: SKView, MathematicsSceneInformationDelegate 
 	/// the view that diplays the information about the label that was tapped
 	private lazy var informationView:UIView = {
 		// make the view a bit shorter than the height of the full view and set it offscreen initially.
-		let viewFrame = CGRect(x: self.frame.width/4, y: self.frame.height, width: self.frame.width/2, height: self.frame.height-300)
+		let viewFrame = CGRect(x: self.frame.width/6, y: self.frame.height, width: 2*self.frame.width/3, height: self.frame.height-200)
 		let view = UIView(frame: viewFrame)
 		view.backgroundColor = #colorLiteral(red: 0.6379951485, green: 0.6427444434, blue: 0.6216148005, alpha: 1)
 		// only mask the corners at the top of the view
@@ -94,7 +94,7 @@ public final class MathematicsView: SKView, MathematicsSceneInformationDelegate 
 		self.cancelPriorAnimationIfNeeded()
 		// animate upwards
 		informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
-			self.informationView.frame = CGRect(x: self.frame.width/4, y: 300, width: self.frame.width/2, height: self.frame.height-300)
+			self.informationView.frame = CGRect(x: self.frame.width/6, y: 200, width: 2*self.frame.width/3, height: self.frame.height-200)
 			self.informationView.layer.cornerRadius = 50
 			self.blurView.effect = UIBlurEffect(style: .light)
 			// make sure the user cannot tap other scene elements
@@ -109,7 +109,7 @@ public final class MathematicsView: SKView, MathematicsSceneInformationDelegate 
 			// cancel and restart animation when user drags
 			self.cancelPriorAnimationIfNeeded()
 			informationPaneAnimator = UIViewPropertyAnimator(duration: 0.4, curve: .easeOut) {
-				self.informationView.frame = CGRect(x: self.frame.width/4, y: self.frame.height, width: self.frame.width/2, height: self.frame.height-300)
+				self.informationView.frame = CGRect(x: self.frame.width/6, y: self.frame.height, width: 2*self.frame.width/3, height: self.frame.height-200)
 				self.informationView.layer.cornerRadius = 0
 				self.blurView.effect = nil
 				// ensure that the scene is fully interactive again

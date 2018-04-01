@@ -4,6 +4,8 @@
 
 import UIKit
 import SpriteKit
+import SceneKit
+import GameplayKit
 import PlaygroundSupport
 
 /*:
@@ -73,10 +75,10 @@ Don't worry if things are still a little confusing, it can take some time to rea
 */
 
 // use real numbers!
-MathematicsScene.useRealValues = false
+MathematicsScene.useRealValues = true
 
 // change the RSAEncryptor engine values
-MathematicsScene.encryptor = RSAEncryptor(p: 13, q: 19, message: 12)
+MathematicsScene.encryptor = RSAEncryptor(p: 13, q: 7, message: 8)
 
 /*:
 ## Sweet!

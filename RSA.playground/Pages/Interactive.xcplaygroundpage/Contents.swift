@@ -4,6 +4,9 @@
 
 import Foundation
 import UIKit
+import SpriteKit
+import SceneKit
+import GameplayKit
 import PlaygroundSupport
 
 //: [Back to Introduction](@previous)

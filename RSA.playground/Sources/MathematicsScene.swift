@@ -38,6 +38,11 @@ public final class MathematicsScene: RSAScene {
 	public let dropLabelSuccess = SKAction.playSoundFileNamed("success-drop.caf", waitForCompletion: false)
 	public let fireworks = SKAction.playSoundFileNamed("fireworks.caf", waitForCompletion: false)
 	
+	private static let decryptPrompt = "Decrypt the message\nusing the private key."
+	private static let encryptPrompt = "Encrypt the message\nusing the public key."
+	private static let createNPrompt = "Create N: drag p and q\ntogether to multiply them."
+	private static let dragSymbolsPrompt = "Drag the coloured symbols\nto the matching place."
+	
 	// MARK: State
 	
 	// MARK: Delegate
@@ -218,7 +223,7 @@ public final class MathematicsScene: RSAScene {
 	}()
 	
 	private lazy var promptLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Encrypt the message\nusing the public key.", fontSize: 15, color: .gray, bold: false)
+		let label = RSAScene.mathsLabel(text: MathematicsScene.encryptPrompt, fontSize: 15, color: .gray, bold: false)
 		label.name = "prompt"
 		label.numberOfLines = 0
 		label.horizontalAlignmentMode = .left
@@ -306,7 +311,7 @@ public final class MathematicsScene: RSAScene {
 			self.addChild($0)
 		}
 		// update the prompt message to reflect the action that is required
-		promptLabel.text = "Create N: drag p and q\ntogether to multiply them."
+		promptLabel.text = MathematicsScene.createNPrompt
 		// add the explosion emitter
 		if let emitter = explosionEmitter {
 			self.addChild(emitter)
@@ -405,7 +410,7 @@ public final class MathematicsScene: RSAScene {
 			$0.stateMachine.enter(KeyWaitState.self)
 		}
 		// update the prompt
-		self.promptLabel.text = "Encrypt the message\nusing the public key."
+		self.promptLabel.text = MathematicsScene.encryptPrompt
 		self.run(self.dropLabelSuccess)
 	}
 	
@@ -529,7 +534,7 @@ public final class MathematicsScene: RSAScene {
 				// inform that we are no longer animating after the animation when we are not using maths animations
 				self.setSceneNotAnimating(afterDelay: PaperEncryptedState.moveToCryptoTime)
 				// update the prompt
-				self.promptLabel.text = "Decrypt the message using the private key."
+				self.promptLabel.text = MathematicsScene.decryptPrompt
 			}
         case is PaperEncryptedState:
 			// move to the question mark state
@@ -562,7 +567,7 @@ public final class MathematicsScene: RSAScene {
 				// inform that we are no longer animating after the animation when we are not using maths animations
 				self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
 				// update the prompt
-				self.promptLabel.text = "Encrypt the message\nusing the public key."
+				self.promptLabel.text = MathematicsScene.encryptPrompt
 			}
 		default:
 			return
@@ -613,7 +618,7 @@ public final class MathematicsScene: RSAScene {
 		moveOldMessageAnimation.timingMode = .easeOut
 		oldMessageLabel.run(moveOldMessageAnimation)
 		// update the prompt
-		self.promptLabel.text = "Drag the coloured symbols\nto the matching place."
+		self.promptLabel.text = MathematicsScene.dragSymbolsPrompt
 	}
 	
 	private func moveHiddenCopyToLocationAndThenBlink(node:SKLabelNode, location:CGPoint) {
@@ -688,11 +693,11 @@ public final class MathematicsScene: RSAScene {
 			if encrypting {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 				// update the prompt
-				self.promptLabel.text = "Decrypt the message\nusing the private key."
+				self.promptLabel.text = MathematicsScene.decryptPrompt
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 				// update the prompt
-				self.promptLabel.text = "Encrypt the message\nusing the public key."
+				self.promptLabel.text = MathematicsScene.encryptPrompt
 			}
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
@@ -795,17 +800,17 @@ public final class MathematicsScene: RSAScene {
 		}
 		switch label {
 		case "mLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations. We can encrypt the message by using the Public Modulus and Public Exponent.")
+			self.informationDelegate?.presentInformationPopup(title: "Message", message: "This is the message that we will encrypt, in the format of a number, so we can do the required maths operations.\n\nWe encrypt the message by using the Public Modulus and Public Exponent.\n\nThe longer the message you want to send, the longer the numbers and more complicated the maths!")
 		case "cLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Ciphertext", message: "This is the encrypted message. We can only convert this back to the original message with the private key (by using the Public Modulus and Private Exponent).")
+			self.informationDelegate?.presentInformationPopup(title: "Ciphertext", message: "This is the encrypted message. We can only convert this back to the original message with the private key (by using the Public Modulus and Private Exponent).\n\nYou cannot use the public key to read a message (even if you are the one that just encrypted it)!")
 		case "modLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Modulo Operator", message: "This is the mathematical operator that is used to calculate the remainder after dividing some number by another number.\n\nModulo arithmetic is widely used in computer science for all sorts of different applications.")
 		case "nLabel":
 			self.informationDelegate?.presentInformationPopup(title: "Public Modulus", message: "This number is really easy to calculate. It is calculated by multiplying p and q, and is used when we encrypt the message and also when we decrypt the cipher text.\n\nAlthough, we can not figure out p and q just given this number (more on that later)!")
 		case "eLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key.\n\nIt is used to convert the message into the encrypted message (ciphertext), along with the public modulus N. It can be any number that we want that is co-prime to (p-1)*(q-1). This means the only factor that they have in common is 1.\n\nAn easy way to this number is to just use another prime number, because prime numbers share no factors apart from 1 with any other number.")
+			self.informationDelegate?.presentInformationPopup(title: "Public Exponent", message: "This is the one of the parts of the public key.\n\nIt is used to convert the message into the encrypted message (ciphertext), along with the public modulus N. It can be any number that we want that is co-prime to (p-1)*(q-1).\n\nThis means the only factor that e and (p-1)*(q-1) have in common is 1.")
 		case "dLabel":
-			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key.\n\nIt is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N.\n\nIt is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work). You can only easily calculate this number if you originally knew the 2 prime numbers p and q.")
+			self.informationDelegate?.presentInformationPopup(title: "Private Exponent", message: "This is the one of the parts of the private key.\n\nIt is used to convert the encrypted message (ciphertext) back to the original message, along with the public modulus N.\n\nIt is the unique integer such that e*d=1*mod(p-1)*(q-1) (there's only 1 possible value that d can be to make this equation work).\n\nYou can only easily calculate this number if you originally knew the 2 prime numbers p and q.")
 		case "pLabel":
             self.informationDelegate?.presentInformationPopup(title: "Prime p", message: "This is just a prime number that we pick (and keep secret!). It can be anything we want with 2 simple rules:\n   1. it must be a prime number\n   2. it must be different from q\n\nWe multiply p and q to calculate the public modulus N.")
 		case "qLabel":
