@@ -69,14 +69,14 @@ final class GameViewController: UIViewController, IntroSceneInformationDelegate 
 		return view
 	}()
 	
-	private var scene:IntroScene!
+	private var scene:MathematicsScene!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
 		if let view = self.view as! SKView? {
 			
-            scene = IntroScene(size: view.bounds.size)
+            scene = MathematicsScene(size: view.bounds.size)
             scene.informationDelegate = self
 
 //            scene = InteractiveScene(size: view.bounds.size)

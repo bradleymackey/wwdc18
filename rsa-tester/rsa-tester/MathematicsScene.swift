@@ -16,7 +16,7 @@ public protocol IntroSceneInformationDelegate: class {
 }
 
 /// the initial scene used to introduce the user to RSA
-public final class IntroScene: RSAScene {
+public final class MathematicsScene: RSAScene {
     
     // MARK: Constants
 	
@@ -25,13 +25,14 @@ public final class IntroScene: RSAScene {
     public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
 	public static let invalidPulseTime:TimeInterval = 0.4
     
-    public static var mathsEnabled = true
+    public static var mathsEnabled = false
 	public static var useRealValues = true
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
-    private let clickSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
+	public static let initialTapSound = SKAction.playSoundFileNamed("click.caf", waitForCompletion: false)
+    public static let popupSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
 	public static let pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
 	public static let dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
 	
@@ -54,18 +55,18 @@ public final class IntroScene: RSAScene {
 	// MARK: Sprites
 	
 	private lazy var publicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 55)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .alice, type: .`public`, size: 55)
 		keySprite.name = "publicKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
-		keySprite.stateMachine = IntroScene.introKeyMachine(forKey: keySprite)
+		keySprite.stateMachine = MathematicsScene.introKeyMachine(forKey: keySprite)
 		return keySprite
 	}()
 	
 	private lazy var privateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`, size: 55)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .alice, type: .`private`, size: 55)
 		keySprite.name = "privateKeyNode"
 		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
-		keySprite.stateMachine = IntroScene.introKeyMachine(forKey: keySprite)
+		keySprite.stateMachine = MathematicsScene.introKeyMachine(forKey: keySprite)
 		return keySprite
 	}()
 	
@@ -76,7 +77,7 @@ public final class IntroScene: RSAScene {
 	
 	private lazy var messageNode:Message3DNode = {
 		let sceneSize = CGSize(width: 220, height: 220)
-		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: IntroScene.paperScene)
+		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: MathematicsScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: 2*self.size.height/5)
 		sceneNode.name = "messageNode"
 		return sceneNode
@@ -86,7 +87,7 @@ public final class IntroScene: RSAScene {
 	
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.message)" : "M"
+		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.message)" : "M"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+115)
 		label.name = "mLabel"
@@ -94,7 +95,7 @@ public final class IntroScene: RSAScene {
 	}()
 	
 	private lazy var nLabelText: SKLabelNode = {
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.N)" : "N"
+		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.N)" : "N"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
 		label.zPosition = 3.0
 		return label
@@ -105,7 +106,7 @@ public final class IntroScene: RSAScene {
 		let node = SKNode()
 		node.position = CGPoint(x: (self.size.width/2), y: (3*self.size.height/4)-20)
 		let label = nLabelText
-		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
+		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
 		let nodeName = "nLabel"
@@ -118,8 +119,8 @@ public final class IntroScene: RSAScene {
 	
 	/// the public exponent
 	private lazy var eLabel:SKNode = {
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.e)" : "e"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.publicColor, bold: true)
+		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.e)" : "e"
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: MathematicsScene.publicColor, bold: true)
 		label.name = "eLabel"
 		label.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
 		label.zPosition = 3.0
@@ -128,8 +129,8 @@ public final class IntroScene: RSAScene {
 	
 	/// the private exponent
 	private lazy var dLabel:SKNode = {
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.d)" : "d"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: IntroScene.privateColor, bold: true)
+		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.d)" : "d"
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: MathematicsScene.privateColor, bold: true)
 		label.name = "dLabel"
 		label.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
 		label.zPosition = 3.0
@@ -147,7 +148,7 @@ public final class IntroScene: RSAScene {
 		let node = SKNode()
 		node.position =  CGPoint(x: self.size.width-100, y: self.size.height-50)
 		let label = modLabelText
-		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.publicColor)
+		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.publicColor)
 		node.addChild(background)
 		node.addChild(label)
 		let nodeName = "modLabel"
@@ -159,7 +160,7 @@ public final class IntroScene: RSAScene {
 	/// the encrpyted message label
 	private lazy var cLabel:SKLabelNode = {
 		// encrypt the message using the encryptor
-		let labelText = IntroScene.useRealValues ? "\(IntroScene.encryptor.cipherText)" : "C"
+		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.cipherText)" : "C"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
 		label.position = CGPoint(x: self.mLabel.position.x, y: self.mLabel.position.y)
 		label.name = "cLabel"
@@ -170,10 +171,10 @@ public final class IntroScene: RSAScene {
 	private lazy var pLabel:SKNode = {
 		let node = SKNode()
 		node.position = CGPoint(x: nLabel.position.x-50, y: nLabel.position.y+80)
-        let pText = IntroScene.useRealValues ? "\(IntroScene.encryptor.p)" : "p"
+        let pText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.p)" : "p"
 		let label = RSAScene.mathsLabel(text: pText, fontSize: 28, color: .white, bold: false)
 		label.zPosition = 3.0
-		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
+		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.privateColor)
 		node.addChild(background)
 		node.addChild(label)
 		let nodeName = "pLabel"
@@ -185,10 +186,10 @@ public final class IntroScene: RSAScene {
 	private lazy var qLabel:SKNode = {
 		let node = SKNode()
 		node.position = CGPoint(x: nLabel.position.x+50, y: nLabel.position.y+80)
-        let qText = IntroScene.useRealValues ? "\(IntroScene.encryptor.q)" : "q"
+        let qText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.q)" : "q"
 		let label = RSAScene.mathsLabel(text: qText, fontSize: 28, color: .white, bold: false)
 		label.zPosition = 3.0
-		let background = RSAScene.backgroundSquare(forLabel: label, color: IntroScene.privateColor)
+		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.privateColor)
 		node.addChild(background)
 		node.addChild(label)
 		let nodeName = "qLabel"
@@ -224,7 +225,7 @@ public final class IntroScene: RSAScene {
 											  KeyWaitState(key: key),
 											  KeyInactiveState(key: key)])
 		// inactive initially if maths is enabled
-		if IntroScene.mathsEnabled {
+		if MathematicsScene.mathsEnabled {
 			machine.enter(KeyInactiveState.self)
 		} else {
 			machine.enter(KeyWaitState.self)
@@ -278,7 +279,7 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func addMathsLabelsIfNeeded() {
-		guard IntroScene.mathsEnabled else { return }
+		guard MathematicsScene.mathsEnabled else { return }
 		// add the maths labels to the scene
 		[mLabel, eLabel, dLabel, modLabel, nLabel, cLabel, pLabel, qLabel].forEach {
 			self.addChild($0)
@@ -288,7 +289,7 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func startInitialMathsAnimationsIfNeeded() {
-        guard IntroScene.mathsEnabled else { return }
+        guard MathematicsScene.mathsEnabled else { return }
 		guard !nCreated else { return }
 		// so that we cannot use the keys until we create N
 		self.sceneStateMachine.enter(SceneAnimatingState.self)
@@ -355,7 +356,7 @@ public final class IntroScene: RSAScene {
 				// not in the right place, just drop the label
 				self.dropDraggingLabel(movingLabel, label: label)
 			}
-			self.run(IntroScene.dropKeySound)
+			self.run(MathematicsScene.dropKeySound)
 		}
 		// call the implementation in RSAScene
 		super.touchUp(atPoint: point)
@@ -468,12 +469,16 @@ public final class IntroScene: RSAScene {
         switch paperState {
         case is PaperNormalState:
             // perform the maths animation if enabled, otherwise just morph
-			if IntroScene.mathsEnabled {
+			if MathematicsScene.mathsEnabled {
 				self.setupMathsLabelsForInteraction()
+				// play a small click
+				self.messageNode.run(MathematicsScene.initialTapSound)
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 				// inform that we are no longer animating after the animation when we are not using maths animations
 				self.setSceneNotAnimating(afterDelay: PaperEncryptedState.moveToCryptoTime)
+				// update the prompt
+				self.promptLabel.text = "Decrypt the message using the private key."
 			}
         case is PaperEncryptedState:
 			// move to the question mark state
@@ -497,12 +502,16 @@ public final class IntroScene: RSAScene {
 			self.setSceneNotAnimating(afterDelay: PaperErrorState.errorFlashTime*3) // *3 => change, wait, change
         case is PaperEncryptedState:
             // perform the maths animation is enabled, otherwise just morph
-			if IntroScene.mathsEnabled {
+			if MathematicsScene.mathsEnabled {
 				self.setupMathsLabelsForInteraction()
+				// play a small click
+				self.messageNode.run(MathematicsScene.initialTapSound)
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 				// inform that we are no longer animating after the animation when we are not using maths animations
 				self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
+				// update the prompt
+				self.promptLabel.text = "Encrypt the message using the public key."
 			}
 		default:
 			return
@@ -532,7 +541,7 @@ public final class IntroScene: RSAScene {
 		
 		// animate key label
 		let keyLabelNewPosition = CGPoint(x: (self.size.width/2)-65, y: oldMessageLabel.position.y+34)
-		let moveKeyLabel = SKAction.move(to: keyLabelNewPosition, duration: IntroScene.mathsAnimationMoveTime)
+		let moveKeyLabel = SKAction.move(to: keyLabelNewPosition, duration: MathematicsScene.mathsAnimationMoveTime)
 		moveKeyLabel.timingMode = .easeOut
 		let keyLabelCopy = keyLabel.copy() as! SKNode
 		keyLabelCopy.name = (keyLabel.name ?? "") + "-copy"
@@ -543,13 +552,13 @@ public final class IntroScene: RSAScene {
 		let modPlaceholderPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
 		self.moveHiddenCopyToLocationAndThenBlink(node: modLabelText, location: modPlaceholderPosition)
 		// n label
-		let nPlaceholderOffset:CGFloat = IntroScene.useRealValues ? 120 : 90
+		let nPlaceholderOffset:CGFloat = MathematicsScene.useRealValues ? 120 : 90
 		let nPlaceholderPosition = CGPoint(x: (self.size.width/2)+nPlaceholderOffset, y: oldMessageLabel.position.y)
 		self.moveHiddenCopyToLocationAndThenBlink(node: nLabelText, location: nPlaceholderPosition)
 		// old message
 		let amountToMove:CGFloat = oldMessageLabel.text!.count == 1 ? 105 : 115
 		let oldMessageEquationPosition = CGPoint(x: (self.size.width/2)-amountToMove, y: oldMessageLabel.position.y)
-		let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: IntroScene.mathsAnimationMoveTime)
+		let moveOldMessageAnimation = SKAction.move(to: oldMessageEquationPosition, duration: MathematicsScene.mathsAnimationMoveTime)
 		moveOldMessageAnimation.timingMode = .easeOut
 		oldMessageLabel.run(moveOldMessageAnimation)
 		// update the prompt
@@ -557,7 +566,7 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func moveHiddenCopyToLocationAndThenBlink(node:SKLabelNode, location:CGPoint) {
-		let moveCopyAction = SKAction.move(to: location, duration: IntroScene.mathsAnimationMoveTime)
+		let moveCopyAction = SKAction.move(to: location, duration: MathematicsScene.mathsAnimationMoveTime)
 		let fadedDown = SKAction.fadeAlpha(to: 0.05, duration: 0.65)
 		fadedDown.timingMode = .easeOut
 		let fadedUp = SKAction.fadeAlpha(to: 0.15, duration: 0.65)
@@ -585,7 +594,7 @@ public final class IntroScene: RSAScene {
 		let newMessageLabel:SKLabelNode = encrypting ? cLabel : mLabel
 		// create the action
 		let centerPosition = CGPoint(x: self.size.width/2, y: oldMessageLabel.position.y)
-		let pauseShrinkFade = IntroScene.pauseShrinkFade(toPosition: centerPosition)
+		let pauseShrinkFade = MathematicsScene.pauseShrinkFade(toPosition: centerPosition)
 		let remove = SKAction.removeFromParent()
 		let pauseShrinkFadeRemove = SKAction.sequence([pauseShrinkFade,remove])
 		// run action on most ephemeral labels
@@ -598,8 +607,8 @@ public final class IntroScene: RSAScene {
 		let oldMessageSequence = SKAction.sequence([pauseShrinkFade,grow,moveToCenter])
 		oldMessageLabel.run(oldMessageSequence)
 		// fade in the stuff for next time
-		let waitNewLabel = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime)
-		let fadeBackIn = SKAction.fadeIn(withDuration: IntroScene.mathsAnimationMoveTime)
+		let waitNewLabel = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime)
+		let fadeBackIn = SKAction.fadeIn(withDuration: MathematicsScene.mathsAnimationMoveTime)
 		fadeBackIn.timingMode = .easeIn
 		let fadeBackSequence = SKAction.sequence([waitNewLabel,fadeBackIn])
 		newMessageLabel.run(fadeBackSequence)
@@ -611,7 +620,7 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func updateMessageForCompletedMathsAnimation(encrypting:Bool) {
-		let waitUntilEnd = SKAction.wait(forDuration: IntroScene.mathsAnimationMoveTime + 0.8)
+		let waitUntilEnd = SKAction.wait(forDuration: MathematicsScene.mathsAnimationMoveTime + 0.8)
 		let morphAction = SKAction.customAction(withDuration: 0) { _, _ in
 			if encrypting {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
@@ -640,7 +649,7 @@ public final class IntroScene: RSAScene {
 	}
 	
 	private func mathsCreateValueRepeat(node:SKNode, shrinkPosition:CGPoint) {
-		let shrinkFade = IntroScene.pauseShrinkFade(toPosition: shrinkPosition)
+		let shrinkFade = MathematicsScene.pauseShrinkFade(toPosition: shrinkPosition)
 		let initialPosition = node.position
 		let moveBack = SKAction.move(to: initialPosition, duration: 0)
 		let fadeUp = SKAction.fadeIn(withDuration: 0)
@@ -659,12 +668,12 @@ public final class IntroScene: RSAScene {
 	}
     
     private class func pauseShrinkFade(toPosition newPosition:CGPoint) -> SKAction {
-        let pauseTime = SKAction.wait(forDuration: IntroScene.mathsAnimationPauseTime)
-        let shrinkAnimation = SKAction.scale(to: 0.6, duration: IntroScene.mathsAnimationShrinkFadeTime)
+        let pauseTime = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime)
+        let shrinkAnimation = SKAction.scale(to: 0.6, duration: MathematicsScene.mathsAnimationShrinkFadeTime)
         shrinkAnimation.timingMode = .easeIn
-        let fadeAnimation = SKAction.fadeOut(withDuration: IntroScene.mathsAnimationShrinkFadeTime/1.2)
+        let fadeAnimation = SKAction.fadeOut(withDuration: MathematicsScene.mathsAnimationShrinkFadeTime/1.2)
         fadeAnimation.timingMode = .easeIn
-        let animateToPosition = SKAction.move(to: newPosition, duration: IntroScene.mathsAnimationShrinkFadeTime)
+        let animateToPosition = SKAction.move(to: newPosition, duration: MathematicsScene.mathsAnimationShrinkFadeTime)
         animateToPosition.timingMode = .easeIn
         let group = SKAction.group([shrinkAnimation, fadeAnimation, animateToPosition])
         return SKAction.sequence([pauseTime,group])
@@ -673,7 +682,7 @@ public final class IntroScene: RSAScene {
 	override public func update(_ currentTime: TimeInterval) {
         super.update(currentTime)
         // make sure that the maths labels are above the keys if needed
-        if IntroScene.mathsEnabled {
+        if MathematicsScene.mathsEnabled {
             self.move(node: eLabel, above: publicKeyNode, by: 45.0)
             self.move(node: dLabel, above: privateKeyNode, by: 45.0)
         }
@@ -712,14 +721,14 @@ public final class IntroScene: RSAScene {
 		let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
 		let startMovingAction = SKAction.group([scale,fade])
 		copy.run(startMovingAction, withKey: "startMovingAction")
-		self.run(IntroScene.pickupKeySound)
+		self.run(MathematicsScene.pickupKeySound)
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
 		// play a little click sound after the delegation call
 		var shouldClick = true
         defer {
-			if shouldClick { self.run(clickSound) }
+			if shouldClick { self.run(MathematicsScene.popupSound) }
 		}
 		switch label {
 		case "mLabel":

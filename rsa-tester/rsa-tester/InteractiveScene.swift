@@ -97,7 +97,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .alice, type: .`public`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .alice, type: .`public`, size: 45)
 		keySprite.name = "alicePublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)-40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -105,7 +105,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
-        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .alice, type: .`private`, size: 45)
+        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .alice, type: .`private`, size: 45)
 		keySprite.name = "alicePrivateKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -113,7 +113,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.publicColor, owner: .bob, type: .`public`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .bob, type: .`public`, size: 45)
 		keySprite.name = "bobPublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)+40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -121,7 +121,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: IntroScene.privateColor, owner: .bob, type: .`private`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .bob, type: .`private`, size: 45)
 		keySprite.name = "bobPrivateKeyNode"
 		keySprite.position = CGPoint(x: 8*self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
