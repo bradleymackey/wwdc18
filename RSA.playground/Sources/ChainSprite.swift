@@ -69,7 +69,7 @@ public final class ChainSprite: SKNode {
             var friction = CGFloat(0.9)
 			if jointNumber ==  chainLinks.count - 1 {
 				// on the last one, subtract so the cage touches the chain
-				subtract = 22
+				subtract = 17
                 friction = 0.05
 			}
 			let nodeA = chainLinks[jointNumber-1]

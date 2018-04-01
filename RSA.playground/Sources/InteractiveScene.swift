@@ -85,14 +85,14 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var aliceCharacter:CharacterSprite = {
         let alice = InteractiveScene.aliceCharacterDetails
 		alice.name = "aliceCharacter"
-        alice.position = CGPoint(x: self.size.width/4, y: 30)
+        alice.position = CGPoint(x: self.size.width/6, y: 30)
 		return alice
 	}()
 	
 	private lazy var bobCharacter:CharacterSprite = {
         let bob = InteractiveScene.bobCharacterDetails
 		bob.name = "bobCharacter"
-        bob.position = CGPoint(x: 3*self.size.width/4, y: 30)
+        bob.position = CGPoint(x: 5*self.size.width/6, y: 30)
 		return bob
 	}()
 	
@@ -158,6 +158,7 @@ public final class InteractiveScene: RSAScene  {
     
     private lazy var bobPrivateLabel:SKLabelNode = {
         let label = InteractiveScene.keyLabel(text: "Bob")
+		label.alpha = InteractiveScene.fadedDown
 		self.updatePosition(forNode: label, aboveNode: bobPrivateKeyNode)
 		self.bobPrivateKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
@@ -213,7 +214,6 @@ public final class InteractiveScene: RSAScene  {
 	private var noCharactersFocused = false
 	/// keeps track of if no keys are currently focused (for efficiency)
 	private var noKeysFocused = false
-
 	
 	// MARK: - Setup
 	
@@ -224,7 +224,7 @@ public final class InteractiveScene: RSAScene  {
 		// focus on alice, our first character
 		self.setCharacterFocusIfNeeded(character: self.aliceCharacter)
 		// add the chains to the scene
-		self.addChainsToScene()
+		self.addChainsToScene(chainLength: 45)
 	}
     
     private func addNodesToScene() {
@@ -249,14 +249,14 @@ public final class InteractiveScene: RSAScene  {
         }
     }
 	
-	private func addChainsToScene() {
+	private func addChainsToScene(chainLength length: Int) {
 		// alice chain
-		let aliceChainAttachmentPoint = CGPoint(x: self.size.width/9, y: self.size.height)
-		let aliceChain = ChainSprite(attachmentPoint: aliceChainAttachmentPoint, attachedElement: self.aliceCage, length: 65)
+		let aliceChainAttachmentPoint = CGPoint(x: self.aliceCharacter.position.x, y: self.size.height)
+		let aliceChain = ChainSprite(attachmentPoint: aliceChainAttachmentPoint, attachedElement: self.aliceCage, length: length)
 		aliceChain.addChainElementsToScene(self)
 		// bob chain
-		let bobChainAttachmentPoint = CGPoint(x: 8*self.size.width/9, y: self.size.height)
-		let bobChain = ChainSprite(attachmentPoint: bobChainAttachmentPoint, attachedElement: self.bobCage, length: 65)
+		let bobChainAttachmentPoint = CGPoint(x: self.bobCharacter.position.x, y: self.size.height)
+		let bobChain = ChainSprite(attachmentPoint: bobChainAttachmentPoint, attachedElement: self.bobCage, length: length)
 		bobChain.addChainElementsToScene(self)
 	}
 	
@@ -442,7 +442,7 @@ public final class InteractiveScene: RSAScene  {
             let x = messageNode.position.x - char.position.x
             let y = messageNode.position.y - char.position.y
             let dist = sqrt(x*x + y*y)
-            if dist < 100 {
+            if dist < 150 {
                 self.setCharacterFocusIfNeeded(character: char)
                 // exit after this
                 return
