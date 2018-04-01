@@ -52,6 +52,7 @@
 		97C120032070E4B4005CB3A0 /* pickup-wood.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120002070E4B3005CB3A0 /* pickup-wood.caf */; };
 		97C120042070E4B4005CB3A0 /* fail-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120012070E4B3005CB3A0 /* fail-drop.caf */; };
 		97C120052070E4B4005CB3A0 /* success-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120022070E4B3005CB3A0 /* success-drop.caf */; };
+		97C120092070EA0D005CB3A0 /* Sparks.sks in Resources */ = {isa = PBXBuildFile; fileRef = 97C120082070EA0D005CB3A0 /* Sparks.sks */; };
 		97F5C367206E88810091E7BA /* SceneState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C366206E88810091E7BA /* SceneState.swift */; };
 		97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C368206E889A0091E7BA /* SceneWaitState.swift */; };
 		97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */; };
@@ -140,6 +141,7 @@
 		97C120002070E4B3005CB3A0 /* pickup-wood.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pickup-wood.caf"; sourceTree = "<group>"; };
 		97C120012070E4B3005CB3A0 /* fail-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fail-drop.caf"; sourceTree = "<group>"; };
 		97C120022070E4B3005CB3A0 /* success-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "success-drop.caf"; sourceTree = "<group>"; };
+		97C120082070EA0D005CB3A0 /* Sparks.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Sparks.sks; sourceTree = "<group>"; };
 		97F5C366206E88810091E7BA /* SceneState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneState.swift; sourceTree = "<group>"; };
 		97F5C368206E889A0091E7BA /* SceneWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneWaitState.swift; sourceTree = "<group>"; };
 		97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAnimatingState.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				972FE92820619AF800AF243D /* GameScene.sks */,
 				972FE92A20619AF800AF243D /* Actions.sks */,
 				972FE92C20619AF800AF243D /* GameScene.swift */,
+				97C120082070EA0D005CB3A0 /* Sparks.sks */,
 				972FE92E20619AF800AF243D /* GameViewController.swift */,
 				972FE9722064459100AF243D /* RSAScene.swift */,
 				972FE95A20619B4100AF243D /* MathematicsScene.swift */,
@@ -449,6 +452,7 @@
 				972FE96E20619E2B00AF243D /* key@3x.png in Resources */,
 				97C120052070E4B4005CB3A0 /* success-drop.caf in Resources */,
 				97A89AA02068232E00DF4B59 /* helloman.caf in Resources */,
+				97C120092070EA0D005CB3A0 /* Sparks.sks in Resources */,
 				972FE93420619AF800AF243D /* Assets.xcassets in Resources */,
 				97C120032070E4B4005CB3A0 /* pickup-wood.caf in Resources */,
 				9795F50F206BFAA100E39E93 /* cage.png in Resources */,

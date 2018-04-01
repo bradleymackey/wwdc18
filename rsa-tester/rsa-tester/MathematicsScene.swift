@@ -218,6 +218,15 @@ public final class MathematicsScene: RSAScene {
 		return label
 	}()
 	
+	private lazy var explosionEmitter:SKEmitterNode? = {
+		guard let emitter = SKEmitterNode(fileNamed: "Sparks.sks") else { return nil }
+		emitter.zPosition = 10
+		emitter.position = cLabel.position
+		emitter.name = "explosionEmitter"
+		emitter.advanceSimulationTime(5)
+		return emitter
+	}()
+	
 	// MARK: State Machines
 	
 	/// bolier-plate for intro scene key machine
@@ -287,6 +296,10 @@ public final class MathematicsScene: RSAScene {
 		}
 		// update the prompt message to reflect the action that is required
 		promptLabel.text = "Create N: drag p and q together to multiply them."
+		// add the explosion emitter
+		if let emitter = explosionEmitter {
+			self.addChild(emitter)
+		}
 	}
 	
 	private func startInitialMathsAnimationsIfNeeded() {
@@ -335,33 +348,9 @@ public final class MathematicsScene: RSAScene {
 	}
 	
 	override public func touchUp(atPoint point: CGPoint) {
+		// firstly determine if we need to drop a label
 		if movedSignificantlyThisTouch, let label = currentlySelectedLabel, self.moveableLabels.contains(label) {
-			guard let movingLabel = self.childNode(withName: label + "-copy") else { return }
-			if !nCreated {
-				if (label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel")) || (label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel")) {
-					self.showNLabelForFirstTime()
-					// make the keys interactable
-					[publicKeyNode, privateKeyNode].forEach {
-						$0.stateMachine.enter(KeyWaitState.self)
-					}
-					// update the prompt
-					self.promptLabel.text = "Encrypt the message using the public key."
-					self.run(MathematicsScene.dropLabelSuccess)
-				}
-			}
-			// start any initial animations again if needed
-			self.startInitialMathsAnimationsIfNeeded()
-			if let blinking = self.draggedLabelOnTopOfBlinkingLabel(point: point, label: label) {
-				// we have made contact with the correct blinking label, so merge the dragging label to the correct position
-				self.alignDraggingLabelWithBlinkingLabel(dragging: movingLabel, blinking: blinking)
-				// success sound
-				self.run(MathematicsScene.dropLabelSuccess)
-			} else {
-				// not in the right place, just drop the label
-				self.dropDraggingLabel(movingLabel, label: label)
-				// fail sound
-				self.run(MathematicsScene.dropLabelFail)
-			}
+			self.dropLabelCopyWithCorrectAnimation(forLabel: label, atPoint: point)
 		}
 		// call the implementation in RSAScene
 		super.touchUp(atPoint: point)
@@ -379,6 +368,52 @@ public final class MathematicsScene: RSAScene {
 		self.stopKeysMovingIfNeeded(at: point)
 		// stop the cube rotation
 		self.messageNode.stateMachine.enter(MessageWaitingState.self)
+	}
+	
+	/// performs the correct actions to drop a label's copy that is being moved
+	private func dropLabelCopyWithCorrectAnimation(forLabel label:String, atPoint point:CGPoint) {
+		guard let movingLabel = self.childNode(withName: label + "-copy") else { return }
+		if !nCreated {
+			if (label == "pLabel" && self.touchingOtherLabel(point: point, label: "qLabel")) || (label == "qLabel" && self.touchingOtherLabel(point: point, label: "pLabel")) {
+				// p and q have contacted
+				self.pAndQFirstContact()
+				self.movingLabelDropAnimation(node: movingLabel, point: point, label: label, playSound: false)
+				return
+			}
+		}
+		// start any initial animations again if needed
+		self.startInitialMathsAnimationsIfNeeded()
+		// do the correct drop animation for the corresponding label
+		self.movingLabelDropAnimation(node: movingLabel, point: point, label: label, playSound: true)
+	}
+	
+	private func pAndQFirstContact() {
+		self.showNLabelForFirstTime()
+		// make the keys interactable
+		[publicKeyNode, privateKeyNode].forEach {
+			$0.stateMachine.enter(KeyWaitState.self)
+		}
+		// update the prompt
+		self.promptLabel.text = "Encrypt the message using the public key."
+		self.run(MathematicsScene.dropLabelSuccess)
+	}
+	
+	private func movingLabelDropAnimation(node:SKNode, point: CGPoint, label:String, playSound:Bool) {
+		if let blinking = self.draggedLabelOnTopOfBlinkingLabel(point: point, label: label) {
+			// we have made contact with the correct blinking label, so merge the dragging label to the correct position
+			self.alignDraggingLabelWithBlinkingLabel(dragging: node, blinking: blinking)
+			// success sound
+			if playSound {
+				self.run(MathematicsScene.dropLabelSuccess)
+			}
+		} else {
+			// not in the right place, just drop the label
+			self.dropDraggingLabel(node, label: label)
+			// fail sound
+			if playSound {
+				self.run(MathematicsScene.dropLabelFail)
+			}
+		}
 	}
 	
 	private func touchingOtherLabel(point:CGPoint, label:String) -> Bool {
@@ -620,6 +655,13 @@ public final class MathematicsScene: RSAScene {
 		keyLabel.run(fadeBackSequence)
 		modLabel.run(fadeBackSequence)
 		nLabel.run(fadeBackSequence)
+		// the sequeunce for the explosion
+		let longerWait = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime + 0.3)
+		let explode = SKAction.customAction(withDuration: 0) { (_, _) in
+			self.explosionEmitter?.resetSimulation()
+		}
+		let explodeSequence = SKAction.sequence([longerWait,explode])
+		self.explosionEmitter?.run(explodeSequence)
 		// update the message
 		self.updateMessageForCompletedMathsAnimation(encrypting: encrypting)
 	}
