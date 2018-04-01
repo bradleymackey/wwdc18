@@ -33,7 +33,7 @@ Go ahead and **turn on** `snoopingEnabled` to say hello to Eve.
 */
 
 // let's see eve snoop!
-InteractiveScene.snoopingEnabled = true
+InteractiveScene.snoopingEnabled = false
 
 /*:
 ## How's it secure?
