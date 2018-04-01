@@ -75,9 +75,9 @@ public final class InteractiveScene: RSAScene  {
     }()
 	
 	private lazy var messageNode:Message3DNode = {
-		let sceneSize = CGSize(width: 140, height: 140)
+		let sceneSize = CGSize(width: 110, height: 110)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: InteractiveScene.paperScene)
-		sceneNode.position = CGPoint(x: aliceCharacter.position.x, y: aliceCharacter.position.y + 140)
+		sceneNode.position = CGPoint(x: aliceCharacter.position.x, y: aliceCharacter.position.y + 110)
 		sceneNode.name = "messageNode"
 		return sceneNode
 	}()
@@ -85,14 +85,14 @@ public final class InteractiveScene: RSAScene  {
 	private lazy var aliceCharacter:CharacterSprite = {
         let alice = InteractiveScene.aliceCharacterDetails
 		alice.name = "aliceCharacter"
-        alice.position = CGPoint(x: self.size.width/4, y: 40)
+        alice.position = CGPoint(x: self.size.width/4, y: 30)
 		return alice
 	}()
 	
 	private lazy var bobCharacter:CharacterSprite = {
         let bob = InteractiveScene.bobCharacterDetails
 		bob.name = "bobCharacter"
-        bob.position = CGPoint(x: 3*self.size.width/4, y: 40)
+        bob.position = CGPoint(x: 3*self.size.width/4, y: 30)
 		return bob
 	}()
 	
@@ -104,7 +104,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePublicColor, owner: .alice, type: .`public`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePublicColor, owner: .alice, type: .`public`, size: 38)
 		keySprite.name = "alicePublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)-40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -112,7 +112,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
-        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePrivateColor, owner: .alice, type: .`private`, size: 45)
+        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePrivateColor, owner: .alice, type: .`private`, size: 38)
 		keySprite.name = "alicePrivateKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -120,7 +120,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPublicColor, owner: .bob, type: .`public`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPublicColor, owner: .bob, type: .`public`, size: 38)
 		keySprite.name = "bobPublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)+40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -128,7 +128,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPrivateColor, owner: .bob, type: .`private`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPrivateColor, owner: .bob, type: .`private`, size: 38)
 		keySprite.name = "bobPrivateKeyNode"
 		keySprite.position = CGPoint(x: 8*self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -165,21 +165,21 @@ public final class InteractiveScene: RSAScene  {
 	
 	private lazy var messageLabel:SKLabelNode = {
 		let label = InteractiveScene.keyLabel(text: "Alice's Message")
-		label.fontSize = 12
+		label.fontSize = 10
 		label.numberOfLines = 2
 		label.lineBreakMode = .byWordWrapping
-		self.updatePosition(forNode: label, aboveNode: messageNode, by: 60.0)
+		self.updatePosition(forNode: label, aboveNode: messageNode, by: 50.0)
 		return label
 	}()
     
     private lazy var aliceCage:CageSprite = {
-        let cageSize = CGSize(width: alicePrivateKeyNode.size.width+50, height: alicePrivateKeyNode.size.height+50)
+        let cageSize = CGSize(width: alicePrivateKeyNode.size.width+40, height: alicePrivateKeyNode.size.height+40)
         let cage = CageSprite(size: cageSize)
         return cage
     }()
     
     private lazy var bobCage:CageSprite = {
-        let cageSize = CGSize(width: bobPrivateKeyNode.size.width+50, height: bobPrivateKeyNode.size.height+50)
+        let cageSize = CGSize(width: bobPrivateKeyNode.size.width+40, height: bobPrivateKeyNode.size.height+40)
         let cage = CageSprite(size: cageSize)
         return cage
     }()
@@ -223,6 +223,8 @@ public final class InteractiveScene: RSAScene  {
         self.addNodesToScene()
 		// focus on alice, our first character
 		self.setCharacterFocusIfNeeded(character: self.aliceCharacter)
+		// add the chains to the scene
+		self.addChainsToScene()
 	}
     
     private func addNodesToScene() {
@@ -245,14 +247,18 @@ public final class InteractiveScene: RSAScene  {
             self.addChild(key)
             self.addChild(keyLabel)
         }
-		
-		let point = CGPoint(x: self.size.width/9, y: self.size.height)
-        let aliceRope = ChainSprite(attachmentPoint: point, attachedElement: self.aliceCage, length: 65)
-        aliceRope.addChainElementsToScene(self)
-		let otherPoint = CGPoint(x: 8*self.size.width/9, y: self.size.height)
-		let bobRope = ChainSprite(attachmentPoint: otherPoint, attachedElement: self.bobCage, length: 65)
-        bobRope.addChainElementsToScene(self)
     }
+	
+	private func addChainsToScene() {
+		// alice chain
+		let aliceChainAttachmentPoint = CGPoint(x: self.size.width/9, y: self.size.height)
+		let aliceChain = ChainSprite(attachmentPoint: aliceChainAttachmentPoint, attachedElement: self.aliceCage, length: 65)
+		aliceChain.addChainElementsToScene(self)
+		// bob chain
+		let bobChainAttachmentPoint = CGPoint(x: 8*self.size.width/9, y: self.size.height)
+		let bobChain = ChainSprite(attachmentPoint: bobChainAttachmentPoint, attachedElement: self.bobCage, length: 65)
+		bobChain.addChainElementsToScene(self)
+	}
 	
 	// MARK: - Methods
     
@@ -402,7 +408,7 @@ public final class InteractiveScene: RSAScene  {
             }
             updatePosition(forNode: keyLabel, aboveNode: key)
         }
-		updatePosition(forNode: messageLabel, aboveNode: messageNode, by: 60.0)
+		updatePosition(forNode: messageLabel, aboveNode: messageNode, by: 50.0)
         // update finger position or exit
         guard let point = currentFingerPosition else { return }
         // determine which character is in range of message
@@ -436,7 +442,7 @@ public final class InteractiveScene: RSAScene  {
             let x = messageNode.position.x - char.position.x
             let y = messageNode.position.y - char.position.y
             let dist = sqrt(x*x + y*y)
-            if dist < 170 {
+            if dist < 100 {
                 self.setCharacterFocusIfNeeded(character: char)
                 // exit after this
                 return
