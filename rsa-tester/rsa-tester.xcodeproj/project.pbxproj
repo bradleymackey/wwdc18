@@ -48,7 +48,10 @@
 		97A89AAB2068272900DF4B59 /* encrypt.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89AA92068272800DF4B59 /* encrypt.caf */; };
 		97A89AAD206828F400DF4B59 /* fail.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97A89AAC206828F400DF4B59 /* fail.caf */; };
 		97A89AAF2068EDD900DF4B59 /* ChainSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */; };
-		97C11FFD2070E0AE005CB3A0 /* click.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C11FFC2070E0AD005CB3A0 /* click.caf */; };
+		97C11FFF2070E28D005CB3A0 /* click.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C11FFE2070E28D005CB3A0 /* click.caf */; };
+		97C120032070E4B4005CB3A0 /* pickup-wood.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120002070E4B3005CB3A0 /* pickup-wood.caf */; };
+		97C120042070E4B4005CB3A0 /* fail-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120012070E4B3005CB3A0 /* fail-drop.caf */; };
+		97C120052070E4B4005CB3A0 /* success-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120022070E4B3005CB3A0 /* success-drop.caf */; };
 		97F5C367206E88810091E7BA /* SceneState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C366206E88810091E7BA /* SceneState.swift */; };
 		97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C368206E889A0091E7BA /* SceneWaitState.swift */; };
 		97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */; };
@@ -133,7 +136,10 @@
 		97A89AA92068272800DF4B59 /* encrypt.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = encrypt.caf; sourceTree = "<group>"; };
 		97A89AAC206828F400DF4B59 /* fail.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fail.caf; sourceTree = "<group>"; };
 		97A89AAE2068EDD900DF4B59 /* ChainSprite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChainSprite.swift; sourceTree = "<group>"; };
-		97C11FFC2070E0AD005CB3A0 /* click.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.caf; sourceTree = "<group>"; };
+		97C11FFE2070E28D005CB3A0 /* click.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = click.caf; sourceTree = "<group>"; };
+		97C120002070E4B3005CB3A0 /* pickup-wood.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "pickup-wood.caf"; sourceTree = "<group>"; };
+		97C120012070E4B3005CB3A0 /* fail-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fail-drop.caf"; sourceTree = "<group>"; };
+		97C120022070E4B3005CB3A0 /* success-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "success-drop.caf"; sourceTree = "<group>"; };
 		97F5C366206E88810091E7BA /* SceneState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneState.swift; sourceTree = "<group>"; };
 		97F5C368206E889A0091E7BA /* SceneWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneWaitState.swift; sourceTree = "<group>"; };
 		97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAnimatingState.swift; sourceTree = "<group>"; };
@@ -229,7 +235,10 @@
 				972FE96B20619E2B00AF243D /* key@3x.png */,
 				9795F510206C09A800E39E93 /* circle.png */,
 				9795F50E206BFAA100E39E93 /* cage.png */,
-				97C11FFC2070E0AD005CB3A0 /* click.caf */,
+				97C120012070E4B3005CB3A0 /* fail-drop.caf */,
+				97C120002070E4B3005CB3A0 /* pickup-wood.caf */,
+				97C120022070E4B3005CB3A0 /* success-drop.caf */,
+				97C11FFE2070E28D005CB3A0 /* click.caf */,
 				978DA805206BF2AA0071A162 /* popup.caf */,
 				97A89A9E2068232E00DF4B59 /* hellolady1.caf */,
 				97A89A9C2068232D00DF4B59 /* hellolady2.caf */,
@@ -438,16 +447,19 @@
 				972FE92920619AF800AF243D /* GameScene.sks in Resources */,
 				972FE96F20619E2B00AF243D /* key.png in Resources */,
 				972FE96E20619E2B00AF243D /* key@3x.png in Resources */,
+				97C120052070E4B4005CB3A0 /* success-drop.caf in Resources */,
 				97A89AA02068232E00DF4B59 /* helloman.caf in Resources */,
 				972FE93420619AF800AF243D /* Assets.xcassets in Resources */,
+				97C120032070E4B4005CB3A0 /* pickup-wood.caf in Resources */,
 				9795F50F206BFAA100E39E93 /* cage.png in Resources */,
 				972FE93720619AF800AF243D /* LaunchScreen.storyboard in Resources */,
+				97C120042070E4B4005CB3A0 /* fail-drop.caf in Resources */,
 				97A89AAA2068272900DF4B59 /* decrypt.caf in Resources */,
 				97A89AAD206828F400DF4B59 /* fail.caf in Resources */,
 				97A89AA62068260C00DF4B59 /* pickup.caf in Resources */,
 				97A89AA72068260C00DF4B59 /* drop.caf in Resources */,
 				972FE92B20619AF800AF243D /* Actions.sks in Resources */,
-				97C11FFD2070E0AE005CB3A0 /* click.caf in Resources */,
+				97C11FFF2070E28D005CB3A0 /* click.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

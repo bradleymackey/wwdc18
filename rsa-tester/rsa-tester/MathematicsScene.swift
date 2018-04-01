@@ -25,7 +25,7 @@ public final class MathematicsScene: RSAScene {
     public static let mathsAnimationShrinkFadeTime:TimeInterval = 0.6
 	public static let invalidPulseTime:TimeInterval = 0.4
     
-    public static var mathsEnabled = false
+    public static var mathsEnabled = true
 	public static var useRealValues = true
 	
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
@@ -33,8 +33,9 @@ public final class MathematicsScene: RSAScene {
 	
 	public static let initialTapSound = SKAction.playSoundFileNamed("click.caf", waitForCompletion: false)
     public static let popupSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
-	public static let pickupKeySound = SKAction.playSoundFileNamed("pickup.caf", waitForCompletion: false)
-	public static let dropKeySound = SKAction.playSoundFileNamed("drop.caf", waitForCompletion: false)
+	public static let pickupLabel = SKAction.playSoundFileNamed("pickup-wood.caf", waitForCompletion: false)
+	public static let dropLabelFail = SKAction.playSoundFileNamed("fail-drop.caf", waitForCompletion: false)
+	public static let dropLabelSuccess = SKAction.playSoundFileNamed("success-drop.caf", waitForCompletion: false)
 	
 	// MARK: State
 	
@@ -345,6 +346,7 @@ public final class MathematicsScene: RSAScene {
 					}
 					// update the prompt
 					self.promptLabel.text = "Encrypt the message using the public key."
+					self.run(MathematicsScene.dropLabelSuccess)
 				}
 			}
 			// start any initial animations again if needed
@@ -352,11 +354,14 @@ public final class MathematicsScene: RSAScene {
 			if let blinking = self.draggedLabelOnTopOfBlinkingLabel(point: point, label: label) {
 				// we have made contact with the correct blinking label, so merge the dragging label to the correct position
 				self.alignDraggingLabelWithBlinkingLabel(dragging: movingLabel, blinking: blinking)
+				// success sound
+				self.run(MathematicsScene.dropLabelSuccess)
 			} else {
 				// not in the right place, just drop the label
 				self.dropDraggingLabel(movingLabel, label: label)
+				// fail sound
+				self.run(MathematicsScene.dropLabelFail)
 			}
-			self.run(MathematicsScene.dropKeySound)
 		}
 		// call the implementation in RSAScene
 		super.touchUp(atPoint: point)
@@ -721,7 +726,7 @@ public final class MathematicsScene: RSAScene {
 		let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
 		let startMovingAction = SKAction.group([scale,fade])
 		copy.run(startMovingAction, withKey: "startMovingAction")
-		self.run(MathematicsScene.pickupKeySound)
+		self.run(MathematicsScene.pickupLabel)
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
