@@ -1,6 +1,6 @@
 //
 //  DragBoxState.swift
-//  rsa-tester
+//  wwdc-2018
 //
 //  Created by Bradley Mackey on 31/03/2018.
 //  Copyright © 2018 Bradley Mackey. All rights reserved.
