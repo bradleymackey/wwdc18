@@ -57,7 +57,7 @@ public final class MathematicsScene: RSAScene {
 	// MARK: Sprites
 	
 	private lazy var publicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .alice, type: .`public`, size: 55)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .alice, type: .`public`, size: 42)
 		keySprite.name = "publicKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/4, y: self.size.height/4)
 		keySprite.stateMachine = MathematicsScene.introKeyMachine(forKey: keySprite)
@@ -65,7 +65,7 @@ public final class MathematicsScene: RSAScene {
 	}()
 	
 	private lazy var privateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .alice, type: .`private`, size: 55)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .alice, type: .`private`, size: 42)
 		keySprite.name = "privateKeyNode"
 		keySprite.position = CGPoint(x: 3*self.size.width/4, y: self.size.height/4)
 		keySprite.stateMachine = MathematicsScene.introKeyMachine(forKey: keySprite)
@@ -90,8 +90,8 @@ public final class MathematicsScene: RSAScene {
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.message)" : "M"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
-		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+115)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 45, color: .black, bold: true)
+		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+90)
 		label.name = "mLabel"
 		return label
 	}()
@@ -106,7 +106,7 @@ public final class MathematicsScene: RSAScene {
 	/// the public modulus
 	private lazy var nLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: (self.size.width/2), y: (3*self.size.height/4)-20)
+		node.position = CGPoint(x: self.size.width/2, y: 2*self.size.height/3)
 		let label = nLabelText
 		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.publicColor)
 		node.addChild(background)
@@ -124,7 +124,7 @@ public final class MathematicsScene: RSAScene {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.e)" : "e"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 22, color: MathematicsScene.publicColor, bold: true)
 		label.name = "eLabel"
-		label.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
+		label.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+40)
 		label.zPosition = 3.0
 		return label
 	}()
@@ -134,7 +134,7 @@ public final class MathematicsScene: RSAScene {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.d)" : "d"
 		let label = RSAScene.mathsLabel(text: labelText, fontSize: 22, color: MathematicsScene.privateColor, bold: true)
 		label.name = "dLabel"
-		label.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
+		label.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+40)
 		label.zPosition = 3.0
 		return label
 	}()
@@ -148,7 +148,7 @@ public final class MathematicsScene: RSAScene {
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
-		node.position =  CGPoint(x: self.size.width-50, y: self.size.height-30)
+		node.position =  CGPoint(x: self.size.width-70, y: self.size.height-50)
 		let label = modLabelText
 		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.publicColor)
 		node.addChild(background)
@@ -163,7 +163,7 @@ public final class MathematicsScene: RSAScene {
 	private lazy var cLabel:SKLabelNode = {
 		// encrypt the message using the encryptor
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.cipherText)" : "C"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 45, color: .black, bold: true)
 		label.position = CGPoint(x: self.mLabel.position.x, y: self.mLabel.position.y)
 		label.name = "cLabel"
 		label.alpha = 0
@@ -172,9 +172,9 @@ public final class MathematicsScene: RSAScene {
 	
 	private lazy var pLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: nLabel.position.x-50, y: nLabel.position.y+80)
+		node.position = CGPoint(x: nLabel.position.x-50, y: nLabel.position.y+60)
         let pText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.p)" : "p"
-		let label = RSAScene.mathsLabel(text: pText, fontSize: 28, color: .white, bold: false)
+		let label = RSAScene.mathsLabel(text: pText, fontSize: 23, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.privateColor)
 		node.addChild(background)
@@ -187,9 +187,9 @@ public final class MathematicsScene: RSAScene {
 	
 	private lazy var qLabel:SKNode = {
 		let node = SKNode()
-		node.position = CGPoint(x: nLabel.position.x+50, y: nLabel.position.y+80)
+		node.position = CGPoint(x: nLabel.position.x+50, y: nLabel.position.y+60)
         let qText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.q)" : "q"
-		let label = RSAScene.mathsLabel(text: qText, fontSize: 28, color: .white, bold: false)
+		let label = RSAScene.mathsLabel(text: qText, fontSize: 23, color: .white, bold: false)
 		label.zPosition = 3.0
 		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.privateColor)
 		node.addChild(background)
@@ -202,9 +202,9 @@ public final class MathematicsScene: RSAScene {
 	
 	/// simple non-interactive label that prompts the user to rotate the 3D message
 	private lazy var dragToRotateLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Drag to rotate", fontSize: 12, color: .gray, bold: false)
+		let label = RSAScene.mathsLabel(text: "Drag to rotate", fontSize: 12, color: .gray, bold: true)
 		label.name = "dragToRotate"
-		label.position = CGPoint(x: self.size.width/2, y: messageNode.position.y-110)
+		label.position = CGPoint(x: self.size.width/2, y: messageNode.position.y-80)
 		return label
 	}()
 	
@@ -218,7 +218,7 @@ public final class MathematicsScene: RSAScene {
 	}()
 	
 	private lazy var promptLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Encrypt the message\nusing the public key.", fontSize: 17, color: .gray, bold: true)
+		let label = RSAScene.mathsLabel(text: "Encrypt the message\nusing the public key.", fontSize: 15, color: .gray, bold: false)
 		label.name = "prompt"
 		label.numberOfLines = 0
 		label.horizontalAlignmentMode = .left
@@ -306,7 +306,7 @@ public final class MathematicsScene: RSAScene {
 			self.addChild($0)
 		}
 		// update the prompt message to reflect the action that is required
-		promptLabel.text = "Create N: drag p and q together to multiply them."
+		promptLabel.text = "Create N: drag p and q\ntogether to multiply them."
 		// add the explosion emitter
 		if let emitter = explosionEmitter {
 			self.addChild(emitter)
@@ -405,7 +405,7 @@ public final class MathematicsScene: RSAScene {
 			$0.stateMachine.enter(KeyWaitState.self)
 		}
 		// update the prompt
-		self.promptLabel.text = "Encrypt the message using the public key."
+		self.promptLabel.text = "Encrypt the message\nusing the public key."
 		self.run(self.dropLabelSuccess)
 	}
 	
@@ -562,7 +562,7 @@ public final class MathematicsScene: RSAScene {
 				// inform that we are no longer animating after the animation when we are not using maths animations
 				self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime)
 				// update the prompt
-				self.promptLabel.text = "Encrypt the message using the public key."
+				self.promptLabel.text = "Encrypt the message\nusing the public key."
 			}
 		default:
 			return
@@ -613,14 +613,14 @@ public final class MathematicsScene: RSAScene {
 		moveOldMessageAnimation.timingMode = .easeOut
 		oldMessageLabel.run(moveOldMessageAnimation)
 		// update the prompt
-		self.promptLabel.text = "Drag the labels to the correct place."
+		self.promptLabel.text = "Drag the coloured symbols\nto the matching place."
 	}
 	
 	private func moveHiddenCopyToLocationAndThenBlink(node:SKLabelNode, location:CGPoint) {
 		let moveCopyAction = SKAction.move(to: location, duration: MathematicsScene.mathsAnimationMoveTime)
 		let fadedDown = SKAction.fadeAlpha(to: 0.05, duration: 0.65)
 		fadedDown.timingMode = .easeOut
-		let fadedUp = SKAction.fadeAlpha(to: 0.15, duration: 0.65)
+		let fadedUp = SKAction.fadeAlpha(to: 0.75, duration: 0.65)
 		fadedUp.timingMode = .easeOut
 		let fadeCycle = SKAction.sequence([fadedDown,fadedUp])
 		let fadeForeverCycle = SKAction.repeatForever(fadeCycle)
@@ -688,11 +688,11 @@ public final class MathematicsScene: RSAScene {
 			if encrypting {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 				// update the prompt
-				self.promptLabel.text = "Decrypt the message using the private key."
+				self.promptLabel.text = "Decrypt the message\nusing the private key."
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 				// update the prompt
-				self.promptLabel.text = "Encrypt the message using the public key."
+				self.promptLabel.text = "Encrypt the message\nusing the public key."
 			}
 		}
 		let notAnimating = SKAction.customAction(withDuration: 0) { _, _ in
@@ -746,8 +746,8 @@ public final class MathematicsScene: RSAScene {
         super.update(currentTime)
         // make sure that the maths labels are above the keys if needed
         if MathematicsScene.mathsEnabled {
-            self.move(node: eLabel, above: publicKeyNode, by: 45.0)
-            self.move(node: dLabel, above: privateKeyNode, by: 45.0)
+            self.move(node: eLabel, above: publicKeyNode, by: 40.0)
+            self.move(node: dLabel, above: privateKeyNode, by: 40.0)
         }
 		// update finger position or exit
         guard let point = currentFingerPosition else { return }
