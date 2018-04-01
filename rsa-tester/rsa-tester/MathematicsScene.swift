@@ -31,11 +31,12 @@ public final class MathematicsScene: RSAScene {
 	public static var publicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
 	public static var privateColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
 	
-	public static let initialTapSound = SKAction.playSoundFileNamed("click.caf", waitForCompletion: false)
-    public static let popupSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
-	public static let pickupLabel = SKAction.playSoundFileNamed("pickup-wood.caf", waitForCompletion: false)
-	public static let dropLabelFail = SKAction.playSoundFileNamed("fail-drop.caf", waitForCompletion: false)
-	public static let dropLabelSuccess = SKAction.playSoundFileNamed("success-drop.caf", waitForCompletion: false)
+	public let initialTapSound = SKAction.playSoundFileNamed("click.caf", waitForCompletion: false)
+    public let popupSound = SKAction.playSoundFileNamed("popup.caf", waitForCompletion: false)
+	public let pickupLabel = SKAction.playSoundFileNamed("pickup-wood.caf", waitForCompletion: false)
+	public let dropLabelFail = SKAction.playSoundFileNamed("fail-drop.caf", waitForCompletion: false)
+	public let dropLabelSuccess = SKAction.playSoundFileNamed("success-drop.caf", waitForCompletion: false)
+	public let fireworks = SKAction.playSoundFileNamed("fireworks.caf", waitForCompletion: false)
 	
 	// MARK: State
 	
@@ -396,7 +397,7 @@ public final class MathematicsScene: RSAScene {
 		}
 		// update the prompt
 		self.promptLabel.text = "Encrypt the message using the public key."
-		self.run(MathematicsScene.dropLabelSuccess)
+		self.run(self.dropLabelSuccess)
 	}
 	
 	private func movingLabelDropAnimation(node:SKNode, point: CGPoint, label:String, playSound:Bool) {
@@ -405,14 +406,14 @@ public final class MathematicsScene: RSAScene {
 			self.alignDraggingLabelWithBlinkingLabel(dragging: node, blinking: blinking)
 			// success sound
 			if playSound {
-				self.run(MathematicsScene.dropLabelSuccess)
+				self.run(self.dropLabelSuccess)
 			}
 		} else {
 			// not in the right place, just drop the label
 			self.dropDraggingLabel(node, label: label)
 			// fail sound
 			if playSound {
-				self.run(MathematicsScene.dropLabelFail)
+				self.run(self.dropLabelFail)
 			}
 		}
 	}
@@ -513,7 +514,7 @@ public final class MathematicsScene: RSAScene {
 			if MathematicsScene.mathsEnabled {
 				self.setupMathsLabelsForInteraction()
 				// play a small click
-				self.messageNode.run(MathematicsScene.initialTapSound)
+				self.messageNode.run(self.initialTapSound)
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperEncryptedState.self)
 				// inform that we are no longer animating after the animation when we are not using maths animations
@@ -546,7 +547,7 @@ public final class MathematicsScene: RSAScene {
 			if MathematicsScene.mathsEnabled {
 				self.setupMathsLabelsForInteraction()
 				// play a small click
-				self.messageNode.run(MathematicsScene.initialTapSound)
+				self.messageNode.run(self.initialTapSound)
 			} else {
 				self.messageNode.sceneStateMachine.enter(PaperNormalState.self)
 				// inform that we are no longer animating after the animation when we are not using maths animations
@@ -657,10 +658,11 @@ public final class MathematicsScene: RSAScene {
 		modLabel.run(fadeBackSequence)
 		nLabel.run(fadeBackSequence)
 		// the sequeunce for the explosion
-		let longerWait = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime + 0.3)
+		let longerWait = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime + 0.35)
 		let explode = SKAction.customAction(withDuration: 0) { (_, _) in
 			self.explosionEmitter?.resetSimulation()
 			self.explosionEmitter?.isHidden = false
+			self.run(self.fireworks)
 		}
 		let reset = SKAction.customAction(withDuration: 0) { (_, _) in
 			self.explosionEmitter?.isHidden = true
@@ -689,7 +691,7 @@ public final class MathematicsScene: RSAScene {
 		}
 		let morphSeq = SKAction.sequence([waitUntilEnd,morphAction,notAnimating])
 		self.run(morphSeq)
-		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 0.8)
+		self.setSceneNotAnimating(afterDelay: PaperNormalState.moveToPaperTime + 0.5)
 	}
 	
 	private func runActionOnCopyIfCopyExists(action:SKAction,node:SKNode) {
@@ -773,14 +775,14 @@ public final class MathematicsScene: RSAScene {
 		let fade = SKAction.fadeAlpha(to: 0.8, duration: 0.2)
 		let startMovingAction = SKAction.group([scale,fade])
 		copy.run(startMovingAction, withKey: "startMovingAction")
-		self.run(MathematicsScene.pickupLabel)
+		self.run(self.pickupLabel)
 	}
 	
 	private func showInfoPanel(forLabel label:String) {
 		// play a little click sound after the delegation call
 		var shouldClick = true
         defer {
-			if shouldClick { self.run(MathematicsScene.popupSound) }
+			if shouldClick { self.run(self.popupSound) }
 		}
 		switch label {
 		case "mLabel":

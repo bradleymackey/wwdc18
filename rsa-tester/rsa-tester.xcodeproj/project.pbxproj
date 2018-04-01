@@ -53,6 +53,7 @@
 		97C120042070E4B4005CB3A0 /* fail-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120012070E4B3005CB3A0 /* fail-drop.caf */; };
 		97C120052070E4B4005CB3A0 /* success-drop.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C120022070E4B3005CB3A0 /* success-drop.caf */; };
 		97C120092070EA0D005CB3A0 /* Sparks.sks in Resources */ = {isa = PBXBuildFile; fileRef = 97C120082070EA0D005CB3A0 /* Sparks.sks */; };
+		97C1200B2070F33E005CB3A0 /* fireworks.caf in Resources */ = {isa = PBXBuildFile; fileRef = 97C1200A2070F33E005CB3A0 /* fireworks.caf */; };
 		97F5C367206E88810091E7BA /* SceneState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C366206E88810091E7BA /* SceneState.swift */; };
 		97F5C369206E889A0091E7BA /* SceneWaitState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C368206E889A0091E7BA /* SceneWaitState.swift */; };
 		97F5C36B206E88A60091E7BA /* SceneAnimatingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */; };
@@ -142,6 +143,7 @@
 		97C120012070E4B3005CB3A0 /* fail-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fail-drop.caf"; sourceTree = "<group>"; };
 		97C120022070E4B3005CB3A0 /* success-drop.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "success-drop.caf"; sourceTree = "<group>"; };
 		97C120082070EA0D005CB3A0 /* Sparks.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Sparks.sks; sourceTree = "<group>"; };
+		97C1200A2070F33E005CB3A0 /* fireworks.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = fireworks.caf; sourceTree = "<group>"; };
 		97F5C366206E88810091E7BA /* SceneState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneState.swift; sourceTree = "<group>"; };
 		97F5C368206E889A0091E7BA /* SceneWaitState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneWaitState.swift; sourceTree = "<group>"; };
 		97F5C36A206E88A60091E7BA /* SceneAnimatingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneAnimatingState.swift; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 				972FE96B20619E2B00AF243D /* key@3x.png */,
 				9795F510206C09A800E39E93 /* circle.png */,
 				9795F50E206BFAA100E39E93 /* cage.png */,
+				97C1200A2070F33E005CB3A0 /* fireworks.caf */,
 				97C120012070E4B3005CB3A0 /* fail-drop.caf */,
 				97C120002070E4B3005CB3A0 /* pickup-wood.caf */,
 				97C120022070E4B3005CB3A0 /* success-drop.caf */,
@@ -445,6 +448,7 @@
 				972FE93220619AF800AF243D /* Main.storyboard in Resources */,
 				97A89A9F2068232E00DF4B59 /* hellolady2.caf in Resources */,
 				978DA806206BF2AA0071A162 /* popup.caf in Resources */,
+				97C1200B2070F33E005CB3A0 /* fireworks.caf in Resources */,
 				97A89AAB2068272900DF4B59 /* encrypt.caf in Resources */,
 				9795F511206C09A900E39E93 /* circle.png in Resources */,
 				972FE92920619AF800AF243D /* GameScene.sks in Resources */,
