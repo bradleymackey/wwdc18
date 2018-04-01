@@ -224,6 +224,7 @@ public final class MathematicsScene: RSAScene {
 		emitter.position = cLabel.position
 		emitter.name = "explosionEmitter"
 		emitter.advanceSimulationTime(5)
+		emitter.isHidden = true
 		return emitter
 	}()
 	
@@ -659,8 +660,12 @@ public final class MathematicsScene: RSAScene {
 		let longerWait = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime + 0.3)
 		let explode = SKAction.customAction(withDuration: 0) { (_, _) in
 			self.explosionEmitter?.resetSimulation()
+			self.explosionEmitter?.isHidden = false
 		}
-		let explodeSequence = SKAction.sequence([longerWait,explode])
+		let reset = SKAction.customAction(withDuration: 0) { (_, _) in
+			self.explosionEmitter?.isHidden = true
+		}
+		let explodeSequence = SKAction.sequence([longerWait,explode,longerWait,reset])
 		self.explosionEmitter?.run(explodeSequence)
 		// update the message
 		self.updateMessageForCompletedMathsAnimation(encrypting: encrypting)
