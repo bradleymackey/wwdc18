@@ -104,7 +104,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePublicColor, owner: .alice, type: .`public`, size: 38)
+		let keySprite = KeySprite(color: InteractiveScene.alicePublicColor, owner: .alice, type: .`public`, size: 38)
 		keySprite.name = "alicePublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)-40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -112,7 +112,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
-        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePrivateColor, owner: .alice, type: .`private`, size: 38)
+        let keySprite = KeySprite(color: InteractiveScene.alicePrivateColor, owner: .alice, type: .`private`, size: 38)
 		keySprite.name = "alicePrivateKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -120,7 +120,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPublicColor, owner: .bob, type: .`public`, size: 38)
+		let keySprite = KeySprite(color: InteractiveScene.bobPublicColor, owner: .bob, type: .`public`, size: 38)
 		keySprite.name = "bobPublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)+40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -128,7 +128,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPrivateColor, owner: .bob, type: .`private`, size: 38)
+		let keySprite = KeySprite(color: InteractiveScene.bobPrivateColor, owner: .bob, type: .`private`, size: 38)
 		keySprite.name = "bobPrivateKeyNode"
 		keySprite.position = CGPoint(x: 8*self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)

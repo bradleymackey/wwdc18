@@ -52,6 +52,8 @@ Go ahead and **turn on** `viewMaths` to see the calculations that are done as we
 
 See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and decryption calculations.
 
+**Follow the instructions** in the top left to encrypt our message!
+
 **Tap on the labels** for a description of what they are and what they do.
 */
 
@@ -78,7 +80,7 @@ Don't worry if things are still a little confusing, it can take some time to rea
 MathematicsScene.useRealValues = true
 
 // change the RSAEncryptor engine values
-MathematicsScene.encryptor = RSAEncryptor(p: 13, q: 7, message: 8)
+MathematicsScene.encryptor = RSAEncryptor(p: 13, q: 7, message: 4)
 
 /*:
 ## Sweet!

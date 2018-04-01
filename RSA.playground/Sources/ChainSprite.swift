@@ -15,6 +15,8 @@ public final class ChainSprite: SKNode {
 	public let attachedElement:SKSpriteNode
 	private var chainLinks = [SKSpriteNode]()
 	
+	private static let linkTexture = SKTexture(imageNamed: "circle.png")
+	
 	required public init(attachmentPoint:CGPoint, attachedElement:SKSpriteNode, length:Int) {
 		self.attachmentPoint = attachmentPoint
 		self.attachedElement = attachedElement
@@ -41,7 +43,7 @@ public final class ChainSprite: SKNode {
     
     /// creates a new chain link sprite
     private class func newLinkSprite() -> SKSpriteNode {
-        let link = SKSpriteNode(imageNamed: "circle.png")
+        let link = SKSpriteNode(texture: ChainSprite.linkTexture)
         link.size = CGSize(width: 5, height: 5)
         link.physicsBody = SKPhysicsBody(circleOfRadius: link.size.height)
         link.physicsBody?.categoryBitMask = PhysicsCategory.chainLink

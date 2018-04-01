@@ -15,6 +15,9 @@ public final class KeySprite: SKSpriteNode {
 	
 	// MARK: Properties
 	
+	/// texture to be used for the key
+	public static let keyTexture = SKTexture(imageNamed: "key.png")
+
 	/// the previous point that the key was at
 	public var lastPoint:CGPoint?
 	
@@ -67,13 +70,13 @@ public final class KeySprite: SKSpriteNode {
 	
 	// MARK: Lifecycle
 	
-    required public init(texture: SKTexture, color: UIColor, owner: KeyOwner, type: KeyType, size:CGFloat) {
+    required public init(color: UIColor, owner: KeyOwner, type: KeyType, size:CGFloat) {
 		self.owner = owner
 		self.type = type
         self.keyWidth = size
-		super.init(texture: texture, color: color, size: self.dimensions)
+		super.init(texture: KeySprite.keyTexture, color: color, size: self.dimensions)
 		// setup the sprite
-		self.physicsBody = self.physicsBody(texture: texture, mask: categoryMask)
+		self.physicsBody = self.physicsBody(texture: KeySprite.keyTexture, mask: categoryMask)
 		self.colorBlendFactor = 1
 	}
 	
@@ -82,20 +85,6 @@ public final class KeySprite: SKSpriteNode {
 	}
 	
 	// MARK: Methods
-	
-	public class func textureForKey() -> SKTexture {
-		guard let path = Bundle.main.path(forResource: "key", ofType: "png") else {
-			fatalError("ERROR: could not find key texture")
-		}
-		guard let data = FileManager.default.contents(atPath: path) else {
-			fatalError("ERROR: could not load key texture")
-		}
-		guard let image = UIImage(data: data) else {
-			fatalError("ERROR: could not interpret key texture image")
-		}
-		let texture = SKTexture(image: image)
-		return texture
-	}
 	
 	private func physicsBody(texture:SKTexture,mask:UInt32) -> SKPhysicsBody {
 		let body = SKPhysicsBody(texture: texture, size: self.dimensions)

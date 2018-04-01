@@ -18,6 +18,8 @@ Good question.
 If Alice wants to send a message to Bob and the key to encrypt and decrypt the message was the same, the only way for Alice to tell Bob what key she is going to use is to meet in person and secretly tell him (otherwise somebody else could steal the key if she sends it online)!
 
 This is impractical on the internet. When the key used to lock the data (the public key) is different from the key used to unlock the data (the private key) it means that Bob can tell everyone what his public key is, and it doesn't mean that they can decrypt any data, because this key is only used for encrypting.
+
+So even the person encrypting the message can't read what they just encrypted!
  
 This means **both** Alice and Bob choose their own secret prime numbers and have their own public and private keys.
 
@@ -32,6 +34,7 @@ Go ahead and **turn on** `snoopingEnabled` to say hello to Eve.
 
 // let's see eve snoop!
 InteractiveScene.snoopingEnabled = true
+
 /*:
 ## How's it secure?
 The security of RSA depends on the fact that the public modulus `N` is easy to calculate by multiplying `p` and `q`, but it is ***infeasible*** (really difficult) to reverse `N` to get `p` and `q`.
@@ -62,6 +65,8 @@ InteractiveScene.eveCharacterDetails = CharacterSprite(characterName: "Eve", wai
 
 /*:
 ### Thanks for playing!
+I hope you took something away from this :)
+
 Playground by Bradley Mackey.
 */
 

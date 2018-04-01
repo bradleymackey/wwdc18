@@ -26,9 +26,6 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	/// tracks the location of a finger, can be useful for subclasses
 	public var currentFingerPosition:CGPoint?
 	
-	/// simply loads the key texture so we don't have to reload it for each key
-	public static let keyTexture = KeySprite.textureForKey()
-	
 	/// the edge margin where touches stop being detected
 	public static let edgeMargin:CGFloat = 5
 	/// an ideally smaller edge margin for the bottom, because most things rest on the bottom of the screen

@@ -11,7 +11,7 @@ import SpriteKit
 
 public final class CageSprite: SKSpriteNode {
 	
-	private static let textureImage = CageSprite.textureForCage()
+	private static let textureImage = SKTexture(imageNamed: "cage.png")
 	
 	private let spriteSize:CGSize
 	
@@ -26,20 +26,6 @@ public final class CageSprite: SKSpriteNode {
 	}
 	
 	// MARK: Methods
-	
-	public class func textureForCage() -> SKTexture {
-		guard let path = Bundle.main.path(forResource: "cage", ofType: "png") else {
-			fatalError("ERROR: could not find cage texture")
-		}
-		guard let data = FileManager.default.contents(atPath: path) else {
-			fatalError("ERROR: could not load cage texture")
-		}
-		guard let image = UIImage(data: data) else {
-			fatalError("ERROR: could not interpret cage texture image")
-		}
-		let texture = SKTexture(image: image)
-		return texture
-	}
 	
 	private func physicsBody(texture:SKTexture) -> SKPhysicsBody {
 		let body = SKPhysicsBody(texture: texture, size: self.spriteSize)
