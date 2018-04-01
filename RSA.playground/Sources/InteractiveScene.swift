@@ -29,6 +29,8 @@ public final class InteractiveScene: RSAScene  {
 	// MARK: - Properties
 	
 	// MARK: Constants
+	
+	public static var snoopingEnabled = false
     
     public static var fadedDown:CGFloat = 0.25
     public static var fadeTime:TimeInterval = 0.2
@@ -42,6 +44,11 @@ public final class InteractiveScene: RSAScene  {
 	public static var aliceCharacterDetails = CharacterSprite(characterName: "Alice", waiting: "💁🏽‍♀️", inRange: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
 	public static var bobCharacterDetails = CharacterSprite(characterName: "Bob", waiting: "💁🏼‍♂️", inRange: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
 	public static var eveCharacterDetails = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
+	
+	public static var alicePublicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
+	public static var alicePrivateColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+	public static var bobPublicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
+	public static var bobPrivateColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
 	
 	// MARK: Instance Variables
 	
@@ -97,7 +104,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .alice, type: .`public`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePublicColor, owner: .alice, type: .`public`, size: 45)
 		keySprite.name = "alicePublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)-40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -105,7 +112,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var alicePrivateKeyNode:KeySprite = {
-        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .alice, type: .`private`, size: 45)
+        let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.alicePrivateColor, owner: .alice, type: .`private`, size: 45)
 		keySprite.name = "alicePrivateKeyNode"
 		keySprite.position = CGPoint(x: self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -113,7 +120,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPublicKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.publicColor, owner: .bob, type: .`public`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPublicColor, owner: .bob, type: .`public`, size: 45)
 		keySprite.name = "bobPublicKeyNode"
 		keySprite.position = CGPoint(x: (self.size.width/2)+40, y: (self.size.height/5)+10)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -121,7 +128,7 @@ public final class InteractiveScene: RSAScene  {
 	}()
 	
 	private lazy var bobPrivateKeyNode:KeySprite = {
-		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: MathematicsScene.privateColor, owner: .bob, type: .`private`, size: 45)
+		let keySprite = KeySprite(texture: RSAScene.keyTexture, color: InteractiveScene.bobPrivateColor, owner: .bob, type: .`private`, size: 45)
 		keySprite.name = "bobPrivateKeyNode"
 		keySprite.position = CGPoint(x: 8*self.size.width/9, y: self.size.height/5)
 		keySprite.stateMachine = InteractiveScene.keyMachine(key: keySprite)
@@ -181,7 +188,12 @@ public final class InteractiveScene: RSAScene  {
     private lazy var allCharacters:[CharacterSprite] = {
         return [aliceCharacter, bobCharacter, eveCharacter]
     }()
-    
+	
+	/// convenience property to get alice and bob
+	private lazy var aliceAndBobCharacters:[CharacterSprite] = {
+		return [aliceCharacter, bobCharacter]
+	}()
+	
     /// convenience property to get all keys
     public override var allKeys:[KeySprite] {
         return [alicePublicKeyNode, alicePrivateKeyNode, bobPublicKeyNode, bobPrivateKeyNode]
@@ -215,9 +227,15 @@ public final class InteractiveScene: RSAScene  {
     
     private func addNodesToScene() {
         // characters
-        for character in allCharacters {
-            self.addChild(character)
-        }
+		if InteractiveScene.snoopingEnabled {
+			for character in allCharacters {
+				self.addChild(character)
+			}
+		} else {
+			for character in aliceAndBobCharacters {
+				self.addChild(character)
+			}
+		}
         // the 3d message
         self.addChild(messageNode)
 		self.addChild(messageLabel)
@@ -438,6 +456,8 @@ public final class InteractiveScene: RSAScene  {
             guard existingName != nodeName else { return }
         }
         guard let characterType = SceneCharacters(rawValue: nodeName) else { return }
+		// ignore if we aren't snooping and the character is eve
+		if !InteractiveScene.snoopingEnabled && characterType == .eve { return }
 		if let paperState = messageNode.sceneStateMachine.currentState, paperState is PaperNormalState {
 			// update the message shown on the paper (if unencrypted)
 			InteractiveScene.paperScene.updateMessage(toPerson: characterType)

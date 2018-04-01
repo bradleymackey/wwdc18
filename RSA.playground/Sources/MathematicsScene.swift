@@ -78,7 +78,7 @@ public final class MathematicsScene: RSAScene {
 	}
 	
 	private lazy var messageNode:Message3DNode = {
-		let sceneSize = CGSize(width: 220, height: 220)
+		let sceneSize = CGSize(width: 160, height: 160)
 		let sceneNode = Message3DNode(viewportSize: sceneSize, messageScene: MathematicsScene.paperScene)
 		sceneNode.position = CGPoint(x: self.size.width/2, y: 2*self.size.height/5)
 		sceneNode.name = "messageNode"
@@ -90,7 +90,7 @@ public final class MathematicsScene: RSAScene {
 	/// the message
 	private lazy var mLabel:SKLabelNode = {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.message)" : "M"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position =  CGPoint(x: self.size.width/2, y: self.messageNode.position.y+115)
 		label.name = "mLabel"
 		return label
@@ -98,7 +98,7 @@ public final class MathematicsScene: RSAScene {
 	
 	private lazy var nLabelText: SKLabelNode = {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.N)" : "N"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 44, color: .white, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 30, color: .white, bold: true)
 		label.zPosition = 3.0
 		return label
 	}()
@@ -122,7 +122,7 @@ public final class MathematicsScene: RSAScene {
 	/// the public exponent
 	private lazy var eLabel:SKNode = {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.e)" : "e"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: MathematicsScene.publicColor, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 22, color: MathematicsScene.publicColor, bold: true)
 		label.name = "eLabel"
 		label.position = CGPoint(x: publicKeyNode.position.x, y: publicKeyNode.position.y+45)
 		label.zPosition = 3.0
@@ -132,7 +132,7 @@ public final class MathematicsScene: RSAScene {
 	/// the private exponent
 	private lazy var dLabel:SKNode = {
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.d)" : "d"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 27, color: MathematicsScene.privateColor, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 22, color: MathematicsScene.privateColor, bold: true)
 		label.name = "dLabel"
 		label.position = CGPoint(x: privateKeyNode.position.x, y: privateKeyNode.position.y+45)
 		label.zPosition = 3.0
@@ -140,7 +140,7 @@ public final class MathematicsScene: RSAScene {
 	}()
 	
 	private lazy var modLabelText:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "mod", fontSize: 40, color: .white, bold: false)
+		let label = RSAScene.mathsLabel(text: "mod", fontSize: 25, color: .white, bold: false)
 		label.zPosition = 3.0
 		return label
 	}()
@@ -148,7 +148,7 @@ public final class MathematicsScene: RSAScene {
 	/// the 'mod' label that is just for visual completeness
 	private lazy var modLabel:SKNode = {
 		let node = SKNode()
-		node.position =  CGPoint(x: self.size.width-100, y: self.size.height-50)
+		node.position =  CGPoint(x: self.size.width-50, y: self.size.height-30)
 		let label = modLabelText
 		let background = RSAScene.backgroundSquare(forLabel: label, color: MathematicsScene.publicColor)
 		node.addChild(background)
@@ -163,7 +163,7 @@ public final class MathematicsScene: RSAScene {
 	private lazy var cLabel:SKLabelNode = {
 		// encrypt the message using the encryptor
 		let labelText = MathematicsScene.useRealValues ? "\(MathematicsScene.encryptor.cipherText)" : "C"
-		let label = RSAScene.mathsLabel(text: labelText, fontSize: 52, color: .black, bold: true)
+		let label = RSAScene.mathsLabel(text: labelText, fontSize: 40, color: .black, bold: true)
 		label.position = CGPoint(x: self.mLabel.position.x, y: self.mLabel.position.y)
 		label.name = "cLabel"
 		label.alpha = 0
@@ -203,19 +203,27 @@ public final class MathematicsScene: RSAScene {
 	/// simple non-interactive label that prompts the user to rotate the 3D message
 	private lazy var dragToRotateLabel:SKLabelNode = {
 		let label = RSAScene.mathsLabel(text: "Drag to rotate", fontSize: 12, color: .gray, bold: false)
-		label.fontName = "Helvetica-Bold"
 		label.name = "dragToRotate"
 		label.position = CGPoint(x: self.size.width/2, y: messageNode.position.y-110)
 		return label
 	}()
 	
-	private lazy var promptLabel:SKLabelNode = {
-		let label = RSAScene.mathsLabel(text: "Encrypt the message using the public key.", fontSize: 22, color: .black, bold: true)
-		label.fontName = "Helvetica-Bold"
-		label.name = "prompt"
+	private lazy var toDoLabel:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "To-Do", fontSize: 23, color: .black, bold: true)
+		label.name = "todo"
 		label.horizontalAlignmentMode = .left
 		label.verticalAlignmentMode = .top
 		label.position = CGPoint(x: 30, y: self.size.height-30)
+		return label
+	}()
+	
+	private lazy var promptLabel:SKLabelNode = {
+		let label = RSAScene.mathsLabel(text: "Encrypt the message\nusing the public key.", fontSize: 17, color: .gray, bold: true)
+		label.name = "prompt"
+		label.numberOfLines = 0
+		label.horizontalAlignmentMode = .left
+		label.verticalAlignmentMode = .top
+		label.position = CGPoint(x: 30, y: self.size.height-60)
 		return label
 	}()
 	
@@ -269,8 +277,9 @@ public final class MathematicsScene: RSAScene {
 	override public func sceneDidLoad() {
 		super.sceneDidLoad()
 		self.backgroundColor = .white
-		// add the prompt
+		// add the prompt and todo label
 		self.addChild(promptLabel)
+		self.addChild(toDoLabel)
 		// create the paper and the scene node
 		self.addMessageSceneNode()
 		// create the key sprites

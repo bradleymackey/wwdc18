@@ -30,9 +30,9 @@ public class RSAScene: SKScene, SKPhysicsContactDelegate {
 	public static let keyTexture = KeySprite.textureForKey()
 	
 	/// the edge margin where touches stop being detected
-	public static let edgeMargin:CGFloat = 25
+	public static let edgeMargin:CGFloat = 5
 	/// an ideally smaller edge margin for the bottom, because most things rest on the bottom of the screen
-	public static let bottomEdgeMargin:CGFloat = 10
+	public static let bottomEdgeMargin:CGFloat = 5
 	
 	/// the point that we initially touched at during a touch event (the touch point for the touch down event)
 	public var initialTouchPoint:CGPoint?

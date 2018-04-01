@@ -2,6 +2,10 @@
 // for WWDC 2018
 // Page 2
 
+import Foundation
+import UIKit
+import PlaygroundSupport
+
 //: [Back to Introduction](@previous)
 
 /*:
@@ -23,8 +27,8 @@ Go ahead and **turn on** `snoopingEnabled` to say hello to Eve.
 *Because everyone can see the public keys, even Eve can send her own messages to Alice and Bob!*
 */
 
-// variable to enable snooping
-
+// let's see eve snoop!
+InteractiveScene.snoopingEnabled = false
 /*:
 ## How's it secure?
 The security of RSA depends on the fact that the public modulus `N` is easy to calculate by multiplying `p` and `q`, but it is ***infeasible*** (really difficult) to reverse `N` to get `p` and `q`.
@@ -37,26 +41,28 @@ However, we are not totally sure if this is infeasible. Read about the [P vs. NP
 Go ahead and customise the scene by changing the variables below and **have a play**!
 */
 
-// variable to change alice's message
-// variable to change bob's message
-// variable to change eve's message
+// change the messages!
+InteractiveScene.aliceMessage = "Hi Bob! How are you doing? Nice weather we're having."
+InteractiveScene.bobMessage = "Hi Alice! I'm great. It's cool that our we can chat in private!"
+InteractiveScene.eveMessage = "Don't mind me, I'm just trying to EVEsdrop. Haha. Get it guys?"
 
-// change alice pub key color
-// change bob pub key color
+// change the color of the keys
+InteractiveScene.alicePublicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
+InteractiveScene.alicePrivateColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+InteractiveScene.bobPublicColor = #colorLiteral(red: 0.02509527327, green: 0.781170527, blue: 2.601820516e-16, alpha: 1)
+InteractiveScene.bobPrivateColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
 
-// change alice emojis
-// change bob emojis
-// change eve emojis
+// change the character emojis!
+InteractiveScene.aliceCharacterDetails = CharacterSprite(characterName: "Alice", waiting: "💁🏽‍♀️", inRange: "👩🏽‍💻", success: "🙆🏽‍♀️", fail: "🤦🏽‍♀️")
+InteractiveScene.bobCharacterDetails = CharacterSprite(characterName: "Bob", waiting: "💁🏼‍♂️", inRange: "👨🏼‍💻", success: "🙆🏼‍♂️", fail: "🤦🏼‍♂️")
+InteractiveScene.eveCharacterDetails = CharacterSprite(characterName: "Eve", waiting: "💁🏻‍♀️", inRange: "👩🏻‍💻", success: "🙆🏻‍♀️", fail: "🤦🏻‍♀️")
 
-import Foundation
-import UIKit
-import PlaygroundSupport
+/*:
+### Thanks for playing!
+Playground by Bradley Mackey.
+*/
 
-var str = "Hello, playground"
-
-
-let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-view.backgroundColor = .red
-
+// -- present the scene --
+let frame = CGRect(x: 0, y: 0, width: 500, height: 650)
+let view = InteractiveView(frame: frame)
 PlaygroundPage.current.liveView = view
-

@@ -85,7 +85,7 @@ Now we understand the basics, let's go and see how it's used.
 [Click Here.](@next)
 */
 
-// present the scene
+// -- present the scene --
 let frame = CGRect(x: 0, y: 0, width: 500, height: 650)
 let view = MathematicsView(frame: frame)
 PlaygroundPage.current.liveView = view

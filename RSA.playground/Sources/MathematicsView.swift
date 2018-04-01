@@ -1,5 +1,5 @@
 //
-//  GameViewController.swift
+//  MathematicsView.swift
 //  wwdc-2018
 //
 //  Created by Bradley Mackey on 20/03/2018.
