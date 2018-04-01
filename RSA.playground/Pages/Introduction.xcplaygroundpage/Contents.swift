@@ -54,7 +54,7 @@ See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and de
 */
 
 // see the variables used
-MathematicsScene.mathsEnabled = false
+MathematicsScene.mathsEnabled = true
 
 /*:
 
