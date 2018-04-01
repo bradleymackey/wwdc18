@@ -1,5 +1,6 @@
 // by Bradley Mackey
 // for WWDC 2018
+// Page 1
 
 import UIKit
 import SpriteKit
@@ -53,7 +54,7 @@ See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and de
 */
 
 // see the variables used
-MathematicsScene.mathsEnabled = true
+MathematicsScene.mathsEnabled = false
 
 /*:
 
@@ -85,6 +86,6 @@ Now we understand the basics, let's go and see how it's used.
 */
 
 // present the scene
-let frame = CGRect(x: 0, y: 0, width: 500, height: 500)
+let frame = CGRect(x: 0, y: 0, width: 500, height: 650)
 let view = MathematicsView(frame: frame)
 PlaygroundPage.current.liveView = view

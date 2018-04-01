@@ -1,3 +1,7 @@
+// by Bradley Mackey
+// for WWDC 2018
+// Page 2
+
 //: [Back to Introduction](@previous)
 
 /*:
