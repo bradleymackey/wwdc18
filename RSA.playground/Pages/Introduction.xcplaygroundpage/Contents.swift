@@ -60,7 +60,7 @@ See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and de
 */
 
 // see the variables used
-MathematicsScene.mathsEnabled = true
+MathematicsScene.mathsEnabled = false
 
 /*:
 
@@ -81,7 +81,7 @@ Don't worry if things are still a little confusing, it can take some time to rea
 */
 
 // use real numbers!
-MathematicsScene.useRealValues = true
+MathematicsScene.useRealValues = false
 
 // change the RSAEncryptor engine values
 MathematicsScene.encryptor = RSAEncryptor(p: 17, q: 13, message: 19)

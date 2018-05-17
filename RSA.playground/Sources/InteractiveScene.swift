@@ -136,28 +136,28 @@ public final class InteractiveScene: RSAScene  {
 	}()
     
     private lazy var alicePublicLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Alice")
+        let label = InteractiveScene.keyLabel(text: InteractiveScene.aliceCharacterDetails.characterName)
         self.updatePosition(forNode: label, aboveNode: alicePublicKeyNode)
 		self.alicePublicKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
     
     private lazy var alicePrivateLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Alice")
+        let label = InteractiveScene.keyLabel(text: InteractiveScene.aliceCharacterDetails.characterName)
         self.updatePosition(forNode: label, aboveNode: alicePrivateKeyNode)
 		self.alicePrivateKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
     
     private lazy var bobPublicLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Bob")
+        let label = InteractiveScene.keyLabel(text: InteractiveScene.bobCharacterDetails.characterName)
 		self.updatePosition(forNode: label, aboveNode: bobPublicKeyNode)
 		self.bobPublicKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
         return label
     }()
     
     private lazy var bobPrivateLabel:SKLabelNode = {
-        let label = InteractiveScene.keyLabel(text: "Bob")
+        let label = InteractiveScene.keyLabel(text: InteractiveScene.bobCharacterDetails.characterName)
 		label.alpha = InteractiveScene.fadedDown
 		self.updatePosition(forNode: label, aboveNode: bobPrivateKeyNode)
 		self.bobPrivateKeyNode.stateMachine.state(forClass: KeyInactiveState.self)?.label = label
@@ -165,7 +165,7 @@ public final class InteractiveScene: RSAScene  {
     }()
 	
 	private lazy var messageLabel:SKLabelNode = {
-		let label = InteractiveScene.keyLabel(text: "Alice's Message")
+		let label = InteractiveScene.keyLabel(text: InteractiveScene.aliceCharacterDetails.characterName + "'s Message")
 		label.fontSize = 10
 		label.numberOfLines = 2
 		label.lineBreakMode = .byWordWrapping
