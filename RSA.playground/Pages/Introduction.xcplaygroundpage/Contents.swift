@@ -50,7 +50,7 @@ At the heart of RSA is a number called the *public modulus*, `N`.
 We create this number by multiplying together 2 prime numbers that we choose: `p` and `q`.
 
 ### Have a look!
-Go ahead and **turn on** `viewMaths` to see the calculations that are done as we encrypt and decrypt!
+Go ahead and **turn on** `mathsEnabled` to see the calculations that are done as we encrypt and decrypt!
 
 See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and decryption calculations.
 
@@ -60,7 +60,7 @@ See how the numbers `p`, `q`, `e`, `d` and `N` are used in the encryption and de
 */
 
 // see the variables used
-MathematicsScene.mathsEnabled = false
+MathematicsScene.mathsEnabled = true
 
 /*:
 
@@ -81,7 +81,7 @@ Don't worry if things are still a little confusing, it can take some time to rea
 */
 
 // use real numbers!
-MathematicsScene.useRealValues = false
+MathematicsScene.useRealValues = true
 
 // change the RSAEncryptor engine values
 MathematicsScene.encryptor = RSAEncryptor(p: 17, q: 13, message: 19)
