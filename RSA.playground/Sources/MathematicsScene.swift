@@ -654,9 +654,9 @@ public final class MathematicsScene: RSAScene {
 		let remove = SKAction.removeFromParent()
 		let pauseShrinkFadeRemove = SKAction.sequence([pauseShrinkFade,remove])
 		// run action on most ephemeral labels
-		self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: keyLabel)
-		self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: modLabel)
-		self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: nLabel)
+		[keyLabel, modLabel, nLabel].forEach {
+			self.runActionOnCopyIfCopyExists(action: pauseShrinkFadeRemove, node: $0)
+		}
 		// move the old message label ready for next animation
 		let grow = SKAction.scale(to: 1, duration: 0)
 		let moveToCenter = SKAction.move(to: centerPosition, duration: 0)
@@ -667,10 +667,9 @@ public final class MathematicsScene: RSAScene {
 		let fadeBackIn = SKAction.fadeIn(withDuration: MathematicsScene.mathsAnimationMoveTime)
 		fadeBackIn.timingMode = .easeIn
 		let fadeBackSequence = SKAction.sequence([waitNewLabel,fadeBackIn])
-		newMessageLabel.run(fadeBackSequence)
-		keyLabel.run(fadeBackSequence)
-		modLabel.run(fadeBackSequence)
-		nLabel.run(fadeBackSequence)
+		[newMessageLabel, keyLabel, modLabel, nLabel].forEach {
+			$0.run(fadeBackSequence)
+		}
 		// the sequeunce for the explosion
 		let longerWait = SKAction.wait(forDuration: MathematicsScene.mathsAnimationPauseTime + 0.35)
 		let explode = SKAction.customAction(withDuration: 0) { (_, _) in
@@ -709,11 +708,9 @@ public final class MathematicsScene: RSAScene {
 	}
 	
 	private func runActionOnCopyIfCopyExists(action:SKAction,node:SKNode) {
-		if let nodeName = node.name {
-			if let nodeCopy = self.childNode(withName: nodeName + "-copy") {
-				nodeCopy.run(action)
-			}
-		}
+		guard let nodeName = node.name else { return }
+		guard let nodeCopy = self.childNode(withName: nodeName + "-copy") else { return }
+		nodeCopy.run(action)
 	}
 	
 	private func mathsCreateValueRepeat(node:SKNode, shrinkPosition:CGPoint) {
