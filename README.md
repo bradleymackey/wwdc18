@@ -8,4 +8,4 @@ If you don't want to download it, here's a [video](https://youtu.be/d36YmVfUD9s)
 Be sure to check out the [other awesome submissions here](https://wwdc.github.io/2018).
 
 ## Licence
-MIT
+GNU GPL 3.0
