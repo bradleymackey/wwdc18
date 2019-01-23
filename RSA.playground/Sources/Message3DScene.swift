@@ -166,9 +166,9 @@ public final class Message3DScene: SCNScene {
 		textLayer.frame = layer.bounds.insetBy(dx: 10, dy: 10)
 		textLayer.string = message
 		textLayer.isWrapped = true
-		textLayer.truncationMode = kCATruncationNone
-		textLayer.contentsGravity = kCAGravityCenter
-        textLayer.alignmentMode = superLarge ? kCAAlignmentCenter : kCAAlignmentLeft
+		textLayer.truncationMode = .none
+		textLayer.contentsGravity = .center
+        textLayer.alignmentMode = superLarge ? .center : .left
 		textLayer.font = CTFontCreateWithName("Courier" as CFString, 35, nil)
 		textLayer.foregroundColor = textColor.cgColor
         textLayer.fontSize = superLarge ? 100 : Message3DScene.surfaceFontSize
