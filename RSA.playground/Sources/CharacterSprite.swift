@@ -23,11 +23,11 @@ public final class CharacterSprite: SKLabelNode {
     // MARK: Instance
 	
 	public var labelForMessage:String {
-		return characterName + "'s Message"
+		return "\(characterName)'s Message"
 	}
 	
 	public var lockedByMessage:String {
-		return "🔒 by " + characterName + "'s Key"
+		return "🔒 by \(characterName)'s Key"
 	}
 	
     /// the name of the character

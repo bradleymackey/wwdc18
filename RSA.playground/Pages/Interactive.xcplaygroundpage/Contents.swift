@@ -33,7 +33,7 @@ Go ahead and **turn on** `snoopingEnabled` to say hello to Eve.
 */
 
 // let's see eve snoop!
-InteractiveScene.snoopingEnabled = false
+InteractiveScene.snoopingEnabled = true
 
 /*:
 ## How's it secure?
@@ -71,6 +71,6 @@ Playground by Bradley Mackey.
 */
 
 // -- present the scene --
-let frame = CGRect(x: 0, y: 0, width: 550, height: 600)
+let frame = CGRect(x: 0, y: 0, width: 700, height: 900)
 let view = InteractiveView(frame: frame)
 PlaygroundPage.current.liveView = view
